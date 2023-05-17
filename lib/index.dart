@@ -13,10 +13,6 @@ export '/pages/filter_pages/create_tag_page/create_tag_page_widget.dart'
     show CreateTagPageWidget;
 export '/popups/queue_song_hold_popup/queue_song_hold_popup_widget.dart'
     show QueueSongHoldPopupWidget;
-export '/pages/queue_pages/trim_queue_page/trim_queue_page_widget.dart'
-    show TrimQueuePageWidget;
-export '/pages/queue_pages/add_queue_page/add_queue_page_widget.dart'
-    show AddQueuePageWidget;
 export '/pages/queue_pages/queue_edit_filter_page/queue_edit_filter_page_widget.dart'
     show QueueEditFilterPageWidget;
 export '/pages/filter_pages/define_filter_page/define_filter_page_widget.dart'
@@ -43,3 +39,13 @@ export '/pages/library_pages/delete_songs_page/delete_songs_page_widget.dart'
     show DeleteSongsPageWidget;
 export '/pages/library_pages/change_songs_tags_by_group_page/change_songs_tags_by_group_page_widget.dart'
     show ChangeSongsTagsByGroupPageWidget;
+export '/popups/choose_tag_to_delete_popup/choose_tag_to_delete_popup_widget.dart'
+    show ChooseTagToDeletePopupWidget;
+export '/pages/queue_pages/add_to_queue_page/add_to_queue_page_widget.dart'
+    show AddToQueuePageWidget;
+export '/pages/queue_pages/trim_queue_page/trim_queue_page_widget.dart'
+    show TrimQueuePageWidget;
+export '/pages/control_pages/control_main_page/control_main_page_widget.dart'
+    show ControlMainPageWidget;
+export '/pages/control_pages/control_spotify_account/control_spotify_account_widget.dart'
+    show ControlSpotifyAccountWidget;

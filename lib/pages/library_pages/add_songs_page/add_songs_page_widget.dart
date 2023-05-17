@@ -39,6 +39,8 @@ class _AddSongsPageWidgetState extends State<AddSongsPageWidget> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).requestFocus(_unfocusNode),
       child: Scaffold(
@@ -101,11 +103,20 @@ class _AddSongsPageWidgetState extends State<AddSongsPageWidget> {
                   Padding(
                     padding:
                         EdgeInsetsDirectional.fromSTEB(0.0, 10.0, 0.0, 0.0),
-                    child: wrapWithModel(
-                      model: _model.searchBarWidgetModel,
-                      updateCallback: () => setState(() {}),
-                      child: SearchBarWidgetWidget(
-                        hintText: 'Enter Song Name Here',
+                    child: InkWell(
+                      splashColor: Colors.transparent,
+                      focusColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      onTap: () async {
+                        context.pushNamed('add_song_search_page');
+                      },
+                      child: wrapWithModel(
+                        model: _model.searchBarWidgetModel,
+                        updateCallback: () => setState(() {}),
+                        child: SearchBarWidgetWidget(
+                          hintText: 'Enter Song Name Here',
+                        ),
                       ),
                     ),
                   ),

@@ -40,6 +40,8 @@ class _AddSongSearchPageWidgetState extends State<AddSongSearchPageWidget> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).requestFocus(_unfocusNode),
       child: Scaffold(
@@ -118,10 +120,19 @@ class _AddSongSearchPageWidgetState extends State<AddSongSearchPageWidget> {
                       shrinkWrap: true,
                       scrollDirection: Axis.vertical,
                       children: [
-                        wrapWithModel(
-                          model: _model.defualtSongModel,
-                          updateCallback: () => setState(() {}),
-                          child: DefualtSongWidget(),
+                        InkWell(
+                          splashColor: Colors.transparent,
+                          focusColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onTap: () async {
+                            context.pushNamed('choose_song_tag_page');
+                          },
+                          child: wrapWithModel(
+                            model: _model.defualtSongModel,
+                            updateCallback: () => setState(() {}),
+                            child: DefualtSongWidget(),
+                          ),
                         ),
                       ],
                     ),

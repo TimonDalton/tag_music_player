@@ -41,6 +41,8 @@ class _SelectEditableSongTagsPopupWidgetState
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).requestFocus(_unfocusNode),
       child: Scaffold(
@@ -131,12 +133,22 @@ class _SelectEditableSongTagsPopupWidgetState
                           child: Padding(
                             padding: EdgeInsetsDirectional.fromSTEB(
                                 20.0, 0.0, 0.0, 0.0),
-                            child: wrapWithModel(
-                              model: _model.colourButtonModel2,
-                              updateCallback: () => setState(() {}),
-                              child: ColourButtonWidget(
-                                buttonColour: Color(0xFF2BB13F),
-                                text: 'Confirm',
+                            child: InkWell(
+                              splashColor: Colors.transparent,
+                              focusColor: Colors.transparent,
+                              hoverColor: Colors.transparent,
+                              highlightColor: Colors.transparent,
+                              onTap: () async {
+                                context.pushNamed(
+                                    'change_song_tags_individually_page');
+                              },
+                              child: wrapWithModel(
+                                model: _model.colourButtonModel2,
+                                updateCallback: () => setState(() {}),
+                                child: ColourButtonWidget(
+                                  buttonColour: Color(0xFF2BB13F),
+                                  text: 'Confirm',
+                                ),
                               ),
                             ),
                           ),

@@ -44,6 +44,8 @@ class _SearchBarWidgetWidgetState extends State<SearchBarWidgetWidget> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return Container(
       width: double.infinity,
       height: 50.0,
@@ -66,7 +68,6 @@ class _SearchBarWidgetWidgetState extends State<SearchBarWidgetWidget> {
                 padding: EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 0.0, 0.0),
                 child: TextFormField(
                   controller: _model.textController,
-                  autofocus: true,
                   obscureText: false,
                   decoration: InputDecoration(
                     hintText: widget.hintText,

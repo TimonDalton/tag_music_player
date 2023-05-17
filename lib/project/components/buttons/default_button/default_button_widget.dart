@@ -11,10 +11,19 @@ class DefaultButtonWidget extends StatefulWidget {
     Key? key,
     this.text,
     this.icon,
-  }) : super(key: key);
+    double? width,
+    double? height,
+    Color? colour,
+  })  : this.width = width ?? 60.0,
+        this.height = height ?? 60.0,
+        this.colour = colour ?? const Color(0x34FFFFFF),
+        super(key: key);
 
   final String? text;
   final Widget? icon;
+  final double width;
+  final double height;
+  final Color colour;
 
   @override
   _DefaultButtonWidgetState createState() => _DefaultButtonWidgetState();
@@ -44,69 +53,42 @@ class _DefaultButtonWidgetState extends State<DefaultButtonWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        Padding(
-          padding: EdgeInsetsDirectional.fromSTEB(0.0, 12.0, 0.0, 0.0),
-          child: Container(
-            width: 125.0,
-            height: 60.0,
-            decoration: BoxDecoration(
-              color: FlutterFlowTheme.of(context).primary,
-              borderRadius: BorderRadius.circular(0.0),
-              shape: BoxShape.rectangle,
-            ),
-            child: Align(
-              alignment: AlignmentDirectional(0.0, 0.0),
-              child: Container(
-                width: MediaQuery.of(context).size.width * 1.1,
-                height: 60.0,
-                decoration: BoxDecoration(
-                  color: FlutterFlowTheme.of(context).accent1,
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
-                child: Align(
-                  alignment: AlignmentDirectional(0.0, 0.0),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Expanded(
-                        flex: 5,
-                        child: Align(
-                          alignment: AlignmentDirectional(0.0, 0.0),
-                          child: Padding(
-                            padding: EdgeInsetsDirectional.fromSTEB(
-                                10.0, 0.0, 5.0, 0.0),
-                            child: Text(
-                              widget.text!,
-                              textAlign: TextAlign.start,
-                              style: FlutterFlowTheme.of(context)
-                                  .titleLarge
-                                  .override(
-                                    fontFamily: 'Roboto Condensed',
-                                    fontSize: 18.0,
-                                  ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(
-                              0.0, 0.0, 10.0, 0.0),
-                          child: widget.icon!,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
+    context.watch<FFAppState>();
+
+    return Container(
+      width: valueOrDefault<double>(
+        widget.width,
+        125.0,
+      ),
+      height: valueOrDefault<double>(
+        widget.height,
+        60.0,
+      ),
+      decoration: BoxDecoration(
+        color: FlutterFlowTheme.of(context).primary,
+      ),
+      child: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          color: FlutterFlowTheme.of(context).accent1,
+          borderRadius: BorderRadius.circular(8.0),
         ),
-      ],
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Text(
+              widget.text!,
+              style: FlutterFlowTheme.of(context).bodyMedium.override(
+                    fontFamily: 'Roboto Condensed',
+                    fontSize: 18.0,
+                  ),
+            ),
+            widget.icon!,
+          ],
+        ),
+      ),
     );
   }
 }

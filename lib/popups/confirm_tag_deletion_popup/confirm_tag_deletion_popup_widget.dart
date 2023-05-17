@@ -1,7 +1,7 @@
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
-import '/project/components/other/bottom_options_bar_widget/bottom_options_bar_widget_widget.dart';
+import '/project/components/bottom_bars/bottom_options_bar_widget/bottom_options_bar_widget_widget.dart';
 import '/project/components/tag_widgets/default_tag/default_tag_widget.dart';
 import '/project/components/text_widgets/heading_text/heading_text_widget.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +41,8 @@ class _ConfirmTagDeletionPopupWidgetState
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).requestFocus(_unfocusNode),
       child: Scaffold(

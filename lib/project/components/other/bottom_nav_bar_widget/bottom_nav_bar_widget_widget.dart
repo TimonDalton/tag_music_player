@@ -1,6 +1,7 @@
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -45,56 +46,65 @@ class _BottomNavBarWidgetWidgetState extends State<BottomNavBarWidgetWidget> {
       decoration: BoxDecoration(
         color: Color(0x00FFFFFF),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          FlutterFlowIconButton(
-            borderColor: Colors.transparent,
-            borderRadius: 25.0,
-            borderWidth: 1.0,
-            buttonSize: 50.0,
-            fillColor: FlutterFlowTheme.of(context).accent1,
-            icon: Icon(
-              Icons.queue_music_sharp,
-              color: FlutterFlowTheme.of(context).primaryText,
-              size: 25.0,
-            ),
-            onPressed: () {
-              print('IconButton pressed ...');
-            },
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(0.0),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(
+            sigmaX: 2.0,
+            sigmaY: 2.0,
           ),
-          FlutterFlowIconButton(
-            borderColor: Colors.transparent,
-            borderRadius: 30.0,
-            borderWidth: 1.0,
-            buttonSize: 50.0,
-            fillColor: FlutterFlowTheme.of(context).accent1,
-            icon: Icon(
-              Icons.dashboard_customize,
-              color: FlutterFlowTheme.of(context).primaryText,
-              size: 30.0,
-            ),
-            onPressed: () {
-              print('IconButton pressed ...');
-            },
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              FlutterFlowIconButton(
+                borderColor: Colors.transparent,
+                borderRadius: 25.0,
+                borderWidth: 1.0,
+                buttonSize: 50.0,
+                fillColor: FlutterFlowTheme.of(context).accent1,
+                icon: Icon(
+                  Icons.queue_music_sharp,
+                  color: FlutterFlowTheme.of(context).primaryText,
+                  size: 25.0,
+                ),
+                onPressed: () async {
+                  context.pushNamed('Queue_Page');
+                },
+              ),
+              FlutterFlowIconButton(
+                borderColor: Colors.transparent,
+                borderRadius: 30.0,
+                borderWidth: 1.0,
+                buttonSize: 50.0,
+                fillColor: FlutterFlowTheme.of(context).accent1,
+                icon: Icon(
+                  Icons.dashboard_customize,
+                  color: FlutterFlowTheme.of(context).primaryText,
+                  size: 30.0,
+                ),
+                onPressed: () async {
+                  context.pushNamed('Filters_Page');
+                },
+              ),
+              FlutterFlowIconButton(
+                borderColor: Colors.transparent,
+                borderRadius: 30.0,
+                borderWidth: 1.0,
+                buttonSize: 50.0,
+                fillColor: FlutterFlowTheme.of(context).accent1,
+                icon: Icon(
+                  Icons.local_library_outlined,
+                  color: FlutterFlowTheme.of(context).primaryText,
+                  size: 30.0,
+                ),
+                onPressed: () async {
+                  context.pushNamed('song_library_page');
+                },
+              ),
+            ],
           ),
-          FlutterFlowIconButton(
-            borderColor: Colors.transparent,
-            borderRadius: 30.0,
-            borderWidth: 1.0,
-            buttonSize: 50.0,
-            fillColor: FlutterFlowTheme.of(context).accent1,
-            icon: Icon(
-              Icons.local_library_outlined,
-              color: FlutterFlowTheme.of(context).primaryText,
-              size: 30.0,
-            ),
-            onPressed: () {
-              print('IconButton pressed ...');
-            },
-          ),
-        ],
+        ),
       ),
     );
   }

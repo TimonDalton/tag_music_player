@@ -38,6 +38,8 @@ class _EditSongsPopupWidgetState extends State<EditSongsPopupWidget> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).requestFocus(_unfocusNode),
       child: Scaffold(
@@ -103,21 +105,41 @@ class _EditSongsPopupWidgetState extends State<EditSongsPopupWidget> {
                     children: [
                       Align(
                         alignment: AlignmentDirectional(-0.4, 0.0),
-                        child: wrapWithModel(
-                          model: _model.defaultTextButtonModel1,
-                          updateCallback: () => setState(() {}),
-                          child: DefaultTextButtonWidget(
-                            text: 'Change \nSelected',
+                        child: InkWell(
+                          splashColor: Colors.transparent,
+                          focusColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onTap: () async {
+                            context
+                                .pushNamed('select_editable_song_tags_popup');
+                          },
+                          child: wrapWithModel(
+                            model: _model.defaultTextButtonModel1,
+                            updateCallback: () => setState(() {}),
+                            child: DefaultTextButtonWidget(
+                              text: 'Change \nSelected',
+                            ),
                           ),
                         ),
                       ),
                       Align(
                         alignment: AlignmentDirectional(-0.4, 0.0),
-                        child: wrapWithModel(
-                          model: _model.defaultTextButtonModel2,
-                          updateCallback: () => setState(() {}),
-                          child: DefaultTextButtonWidget(
-                            text: 'Change by \nGroup',
+                        child: InkWell(
+                          splashColor: Colors.transparent,
+                          focusColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onTap: () async {
+                            context
+                                .pushNamed('change_songs_tags_by_group_page');
+                          },
+                          child: wrapWithModel(
+                            model: _model.defaultTextButtonModel2,
+                            updateCallback: () => setState(() {}),
+                            child: DefaultTextButtonWidget(
+                              text: 'Change by \nGroup',
+                            ),
                           ),
                         ),
                       ),
@@ -135,11 +157,20 @@ class _EditSongsPopupWidgetState extends State<EditSongsPopupWidget> {
                   ),
                   Align(
                     alignment: AlignmentDirectional(-0.75, 0.0),
-                    child: wrapWithModel(
-                      model: _model.defaultTextButtonModel3,
-                      updateCallback: () => setState(() {}),
-                      child: DefaultTextButtonWidget(
-                        text: 'Edit Tags',
+                    child: InkWell(
+                      splashColor: Colors.transparent,
+                      focusColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      onTap: () async {
+                        context.pushNamed('edit_tags_popup');
+                      },
+                      child: wrapWithModel(
+                        model: _model.defaultTextButtonModel3,
+                        updateCallback: () => setState(() {}),
+                        child: DefaultTextButtonWidget(
+                          text: 'Edit Tags',
+                        ),
                       ),
                     ),
                   ),
@@ -155,11 +186,20 @@ class _EditSongsPopupWidgetState extends State<EditSongsPopupWidget> {
                   ),
                   Align(
                     alignment: AlignmentDirectional(-0.75, 0.0),
-                    child: wrapWithModel(
-                      model: _model.defaultTextButtonModel4,
-                      updateCallback: () => setState(() {}),
-                      child: DefaultTextButtonWidget(
-                        text: 'Remove \nSongs',
+                    child: InkWell(
+                      splashColor: Colors.transparent,
+                      focusColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      onTap: () async {
+                        context.pushNamed('delete_songs_page');
+                      },
+                      child: wrapWithModel(
+                        model: _model.defaultTextButtonModel4,
+                        updateCallback: () => setState(() {}),
+                        child: DefaultTextButtonWidget(
+                          text: 'Remove \nSongs',
+                        ),
                       ),
                     ),
                   ),

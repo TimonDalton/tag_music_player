@@ -1,6 +1,7 @@
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/project/components/buttons/colour_button/colour_button_widget.dart';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -59,42 +60,51 @@ class _BottomOptionsBarWidgetWidgetState
         ),
         child: Align(
           alignment: AlignmentDirectional(0.0, 0.0),
-          child: Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 7.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Align(
-                  alignment: AlignmentDirectional(0.0, 0.0),
-                  child: wrapWithModel(
-                    model: _model.colourButtonModel1,
-                    updateCallback: () => setState(() {}),
-                    child: ColourButtonWidget(
-                      buttonColour: FlutterFlowTheme.of(context).secondary,
-                      text: 'Cancel',
-                    ),
-                  ),
-                ),
-                Align(
-                  alignment: AlignmentDirectional(0.0, 0.0),
-                  child: wrapWithModel(
-                    model: _model.colourButtonModel2,
-                    updateCallback: () => setState(() {}),
-                    child: ColourButtonWidget(
-                      buttonColour: valueOrDefault<Color>(
-                        widget.confirmColour,
-                        FlutterFlowTheme.of(context).accent1,
-                      ),
-                      text: valueOrDefault<String>(
-                        widget.confirmText,
-                        '[Confirm]',
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(0.0),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(
+                sigmaX: 2.0,
+                sigmaY: 2.0,
+              ),
+              child: Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 7.0),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Align(
+                      alignment: AlignmentDirectional(0.0, 0.0),
+                      child: wrapWithModel(
+                        model: _model.colourButtonModel1,
+                        updateCallback: () => setState(() {}),
+                        child: ColourButtonWidget(
+                          buttonColour: FlutterFlowTheme.of(context).secondary,
+                          text: 'Cancel',
+                        ),
                       ),
                     ),
-                  ),
+                    Align(
+                      alignment: AlignmentDirectional(0.0, 0.0),
+                      child: wrapWithModel(
+                        model: _model.colourButtonModel2,
+                        updateCallback: () => setState(() {}),
+                        child: ColourButtonWidget(
+                          buttonColour: valueOrDefault<Color>(
+                            widget.confirmColour,
+                            FlutterFlowTheme.of(context).accent1,
+                          ),
+                          text: valueOrDefault<String>(
+                            widget.confirmText,
+                            '[Confirm]',
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),

@@ -9,12 +9,13 @@ export 'tag_weight_slider_model.dart';
 class TagWeightSliderWidget extends StatefulWidget {
   const TagWeightSliderWidget({
     Key? key,
-    this.tagName,
+    String? tagName,
     Color? tagColour,
-  })  : this.tagColour = tagColour ?? const Color(0xFFD9D9D9),
+  })  : this.tagName = tagName ?? 'tagName',
+        this.tagColour = tagColour ?? const Color(0xFFD9D9D9),
         super(key: key);
 
-  final String? tagName;
+  final String tagName;
   final Color tagColour;
 
   @override
@@ -45,6 +46,8 @@ class _TagWeightSliderWidgetState extends State<TagWeightSliderWidget> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return Align(
       alignment: AlignmentDirectional(0.0, -1.0),
       child: Container(
@@ -75,7 +78,7 @@ class _TagWeightSliderWidgetState extends State<TagWeightSliderWidget> {
                           padding: EdgeInsetsDirectional.fromSTEB(
                               0.0, 5.0, 0.0, 0.0),
                           child: Text(
-                            widget.tagName!,
+                            widget.tagName,
                             textAlign: TextAlign.justify,
                             style: FlutterFlowTheme.of(context)
                                 .titleLarge

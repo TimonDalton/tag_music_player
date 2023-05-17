@@ -1,8 +1,8 @@
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
-import '/project/components/buttons/default_button/default_button_widget.dart';
-import '/project/components/other/bottom_options_bar_widget/bottom_options_bar_widget_widget.dart';
+import '/project/components/bottom_bars/bottom_options_bar_widget/bottom_options_bar_widget_widget.dart';
+import '/project/components/buttons/filter_button/filter_button_widget.dart';
 import '/project/components/song_widgets/defualt_song/defualt_song_widget.dart';
 import '/project/components/text_widgets/heading_text/heading_text_widget.dart';
 import 'package:flutter/material.dart';
@@ -40,6 +40,8 @@ class _TrimQueuePageWidgetState extends State<TrimQueuePageWidget> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).requestFocus(_unfocusNode),
       child: Scaffold(
@@ -63,7 +65,7 @@ class _TrimQueuePageWidgetState extends State<TrimQueuePageWidget> {
             },
           ),
           title: Align(
-            alignment: AlignmentDirectional(-0.35, 0.0),
+            alignment: AlignmentDirectional(-0.25, 0.0),
             child: Text(
               'Trim Queue',
               style: FlutterFlowTheme.of(context).displaySmall.override(
@@ -82,113 +84,66 @@ class _TrimQueuePageWidgetState extends State<TrimQueuePageWidget> {
             children: [
               Align(
                 alignment: AlignmentDirectional(0.0, 0.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.85,
-                      height: 100.0,
-                      decoration: BoxDecoration(
-                        color: Color(0x00FFFFFF),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Column(
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  height: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Color(0x00FFFFFF),
+                  ),
+                  child: Align(
+                    alignment: AlignmentDirectional(0.0, -1.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        wrapWithModel(
+                          model: _model.headingTextModel1,
+                          updateCallback: () => setState(() {}),
+                          child: HeadingTextWidget(
+                            text: 'Select Songs to Remove',
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(
+                              0.0, 10.0, 0.0, 0.0),
+                          child: Row(
                             mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Align(
-                                alignment: AlignmentDirectional(0.0, 0.0),
-                                child: wrapWithModel(
-                                  model: _model.headingTextModel1,
-                                  updateCallback: () => setState(() {}),
-                                  child: HeadingTextWidget(
-                                    text: 'Select Songs to Remove',
-                                  ),
-                                ),
-                              ),
-                              Align(
-                                alignment: AlignmentDirectional(-1.0, 0.0),
+                              Expanded(
                                 child: wrapWithModel(
                                   model: _model.headingTextModel2,
                                   updateCallback: () => setState(() {}),
                                   child: HeadingTextWidget(
-                                    text: '[x] Songs Selected',
+                                    text: '[x] Selected',
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
-                          wrapWithModel(
-                            model: _model.defaultButtonModel,
-                            updateCallback: () => setState(() {}),
-                            child: DefaultButtonWidget(
-                              text: 'Filter',
-                              icon: Icon(
-                                Icons.arrow_drop_down,
-                                color: FlutterFlowTheme.of(context).primaryText,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    ListView(
-                      padding: EdgeInsets.zero,
-                      shrinkWrap: true,
-                      scrollDirection: Axis.vertical,
-                      children: [
-                        Container(
-                          width: 100.0,
-                          height: 100.0,
-                          decoration: BoxDecoration(
-                            color: Color(0x00FFFFFF),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.max,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Align(
-                                alignment: AlignmentDirectional(0.0, 0.2),
-                                child: Padding(
-                                  padding: EdgeInsetsDirectional.fromSTEB(
-                                      10.0, 0.0, 10.0, 0.0),
-                                  child: Container(
-                                    width: 40.0,
-                                    height: 40.0,
-                                    decoration: BoxDecoration(
-                                      color: Color(0xFFE85536),
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    alignment: AlignmentDirectional(0.0, 0.0),
-                                    child: Text(
-                                      '-',
-                                      textAlign: TextAlign.center,
-                                      style: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .override(
-                                            fontFamily: 'Roboto Condensed',
-                                            color: FlutterFlowTheme.of(context)
-                                                .primary,
-                                            fontSize: 28.0,
-                                          ),
-                                    ),
-                                  ),
+                              Expanded(
+                                child: wrapWithModel(
+                                  model: _model.filterButtonModel,
+                                  updateCallback: () => setState(() {}),
+                                  child: FilterButtonWidget(),
                                 ),
-                              ),
-                              wrapWithModel(
-                                model: _model.defualtSongModel,
-                                updateCallback: () => setState(() {}),
-                                child: DefualtSongWidget(),
                               ),
                             ],
                           ),
                         ),
+                        ListView(
+                          padding: EdgeInsets.zero,
+                          shrinkWrap: true,
+                          scrollDirection: Axis.vertical,
+                          children: [
+                            wrapWithModel(
+                              model: _model.defualtSongModel,
+                              updateCallback: () => setState(() {}),
+                              child: DefualtSongWidget(),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
-                  ],
+                  ),
                 ),
               ),
               Align(
@@ -197,7 +152,7 @@ class _TrimQueuePageWidgetState extends State<TrimQueuePageWidget> {
                   model: _model.bottomOptionsBarWidgetModel,
                   updateCallback: () => setState(() {}),
                   child: BottomOptionsBarWidgetWidget(
-                    confirmText: 'Remove\nSongs',
+                    confirmText: 'Remove',
                     confirmColour: Color(0xFFE85536),
                   ),
                 ),

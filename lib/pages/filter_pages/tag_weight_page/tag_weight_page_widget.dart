@@ -1,7 +1,7 @@
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
-import '/project/components/other/bottom_options_bar_widget/bottom_options_bar_widget_widget.dart';
+import '/project/components/bottom_bars/bottom_options_bar_widget/bottom_options_bar_widget_widget.dart';
 import '/project/components/other/tag_weight_slider/tag_weight_slider_widget.dart';
 import '/project/components/text_widgets/heading_text/heading_text_widget.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +39,8 @@ class _TagWeightPageWidgetState extends State<TagWeightPageWidget> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).requestFocus(_unfocusNode),
       child: Scaffold(
@@ -109,7 +111,9 @@ class _TagWeightPageWidgetState extends State<TagWeightPageWidget> {
                             wrapWithModel(
                               model: _model.tagWeightSliderModel,
                               updateCallback: () => setState(() {}),
-                              child: TagWeightSliderWidget(),
+                              child: TagWeightSliderWidget(
+                                tagName: '[tagName]',
+                              ),
                             ),
                           ],
                         ),

@@ -1,5 +1,7 @@
+import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
+import '/project/components/bottom_bars/bottom_nav_bar_widget/bottom_nav_bar_widget_widget.dart';
 import '/project/components/buttons/default_button/default_button_widget.dart';
 import '/project/components/display_filter/display_filter/display_filter_widget.dart';
 import '/project/components/other/search_bar_widget/search_bar_widget_widget.dart';
@@ -29,6 +31,8 @@ class FiltersPageModel extends FlutterFlowModel {
   late DefaultButtonModel defaultButtonModel1;
   // Model for Default_Button component.
   late DefaultButtonModel defaultButtonModel2;
+  // Model for bottom_nav_bar_widget component.
+  late BottomNavBarWidgetModel bottomNavBarWidgetModel;
 
   /// Initialization and disposal methods.
 
@@ -42,6 +46,8 @@ class FiltersPageModel extends FlutterFlowModel {
     displayFilterModel4 = createModel(context, () => DisplayFilterModel());
     defaultButtonModel1 = createModel(context, () => DefaultButtonModel());
     defaultButtonModel2 = createModel(context, () => DefaultButtonModel());
+    bottomNavBarWidgetModel =
+        createModel(context, () => BottomNavBarWidgetModel());
   }
 
   void dispose() {
@@ -54,6 +60,7 @@ class FiltersPageModel extends FlutterFlowModel {
     displayFilterModel4.dispose();
     defaultButtonModel1.dispose();
     defaultButtonModel2.dispose();
+    bottomNavBarWidgetModel.dispose();
   }
 
   /// Additional helper methods are added here.

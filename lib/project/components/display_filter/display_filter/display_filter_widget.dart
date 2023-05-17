@@ -43,6 +43,8 @@ class _DisplayFilterWidgetState extends State<DisplayFilterWidget> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return Container(
       width: MediaQuery.of(context).size.width * 0.4,
       height: 160.0,

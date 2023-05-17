@@ -72,16 +72,6 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           builder: (context, params) => QueueSongHoldPopupWidget(),
         ),
         FFRoute(
-          name: 'trim_queue_page',
-          path: '/trimQueuePage',
-          builder: (context, params) => TrimQueuePageWidget(),
-        ),
-        FFRoute(
-          name: 'add_queue_page',
-          path: '/addQueuePage',
-          builder: (context, params) => AddQueuePageWidget(),
-        ),
-        FFRoute(
           name: 'queue_edit_filter_page',
           path: '/queueEditFilterPage',
           builder: (context, params) => QueueEditFilterPageWidget(),
@@ -145,6 +135,31 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: 'change_songs_tags_by_group_page',
           path: '/changeSongsTagsByGroupPage',
           builder: (context, params) => ChangeSongsTagsByGroupPageWidget(),
+        ),
+        FFRoute(
+          name: 'choose_tag_to_delete_popup',
+          path: '/chooseTagToDeletePopup',
+          builder: (context, params) => ChooseTagToDeletePopupWidget(),
+        ),
+        FFRoute(
+          name: 'add_to_queue_page',
+          path: '/addToQueuePage',
+          builder: (context, params) => AddToQueuePageWidget(),
+        ),
+        FFRoute(
+          name: 'trim_queue_page',
+          path: '/trimQueuePage',
+          builder: (context, params) => TrimQueuePageWidget(),
+        ),
+        FFRoute(
+          name: 'control_main_page',
+          path: '/controlMainPage',
+          builder: (context, params) => ControlMainPageWidget(),
+        ),
+        FFRoute(
+          name: 'control_spotify_account',
+          path: '/controlSpotifyAccount',
+          builder: (context, params) => ControlSpotifyAccountWidget(),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
       urlPathStrategy: UrlPathStrategy.path,

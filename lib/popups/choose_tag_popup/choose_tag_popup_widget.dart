@@ -40,6 +40,8 @@ class _ChooseTagPopupWidgetState extends State<ChooseTagPopupWidget> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).requestFocus(_unfocusNode),
       child: Scaffold(
@@ -63,9 +65,9 @@ class _ChooseTagPopupWidgetState extends State<ChooseTagPopupWidget> {
             },
           ),
           title: Align(
-            alignment: AlignmentDirectional(-0.3, 0.0),
+            alignment: AlignmentDirectional(-0.7, 0.0),
             child: Text(
-              'Choose Tag',
+              'Choose Tags to Edit',
               style: FlutterFlowTheme.of(context).displaySmall.override(
                     fontFamily: 'Roboto Condensed',
                     fontSize: 30.0,
@@ -113,12 +115,21 @@ class _ChooseTagPopupWidgetState extends State<ChooseTagPopupWidget> {
                   ),
                   Align(
                     alignment: AlignmentDirectional(1.0, 0.0),
-                    child: wrapWithModel(
-                      model: _model.colourButtonModel,
-                      updateCallback: () => setState(() {}),
-                      child: ColourButtonWidget(
-                        buttonColour: Color(0xFF0095FF),
-                        text: 'Next',
+                    child: InkWell(
+                      splashColor: Colors.transparent,
+                      focusColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      onTap: () async {
+                        context.pushNamed('create_tag_page');
+                      },
+                      child: wrapWithModel(
+                        model: _model.colourButtonModel,
+                        updateCallback: () => setState(() {}),
+                        child: ColourButtonWidget(
+                          buttonColour: Color(0xFF0095FF),
+                          text: 'Next',
+                        ),
                       ),
                     ),
                   ),

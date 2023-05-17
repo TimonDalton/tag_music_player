@@ -48,6 +48,8 @@ class _DefaultTagWidgetState extends State<DefaultTagWidget> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(5.0, 2.0, 5.0, 2.0),
       child: Container(

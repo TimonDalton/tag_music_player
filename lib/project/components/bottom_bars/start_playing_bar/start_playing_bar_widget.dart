@@ -38,6 +38,8 @@ class _StartPlayingBarWidgetState extends State<StartPlayingBarWidget> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return Container(
       width: double.infinity,
       height: 100.0,

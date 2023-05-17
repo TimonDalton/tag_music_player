@@ -1,8 +1,8 @@
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
+import '/project/components/bottom_bars/bottom_options_bar_widget/bottom_options_bar_widget_widget.dart';
 import '/project/components/buttons/filter_button/filter_button_widget.dart';
-import '/project/components/other/bottom_options_bar_widget/bottom_options_bar_widget_widget.dart';
 import '/project/components/other/colour_toggle_bubble_widget/colour_toggle_bubble_widget_widget.dart';
 import '/project/components/song_widgets/song_artist_and_name_widget/song_artist_and_name_widget_widget.dart';
 import '/project/components/tag_widgets/default_tag/default_tag_widget.dart';
@@ -44,6 +44,8 @@ class _ChangeSongTagsIndividuallyPageWidgetState
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).requestFocus(_unfocusNode),
       child: Scaffold(
@@ -126,56 +128,68 @@ class _ChangeSongTagsIndividuallyPageWidgetState
                                 child: Padding(
                                   padding: EdgeInsetsDirectional.fromSTEB(
                                       13.0, 0.0, 0.0, 0.0),
-                                  child: Container(
-                                    width: 130.0,
-                                    height: 50.0,
-                                    decoration: BoxDecoration(
-                                      color:
-                                          FlutterFlowTheme.of(context).accent1,
-                                      borderRadius: BorderRadius.circular(5.0),
-                                    ),
-                                    child: Align(
-                                      alignment: AlignmentDirectional(0.0, 0.0),
-                                      child: Wrap(
-                                        spacing: 0.0,
-                                        runSpacing: 0.0,
-                                        alignment: WrapAlignment.start,
-                                        crossAxisAlignment:
-                                            WrapCrossAlignment.start,
-                                        direction: Axis.horizontal,
-                                        runAlignment: WrapAlignment.start,
-                                        verticalDirection:
-                                            VerticalDirection.down,
-                                        clipBehavior: Clip.none,
-                                        children: [
-                                          wrapWithModel(
-                                            model: _model.defaultTagModel1,
-                                            updateCallback: () =>
-                                                setState(() {}),
-                                            child: DefaultTagWidget(
-                                              name: 'Rock',
-                                              colour: Color(0xFF5AA849),
+                                  child: InkWell(
+                                    splashColor: Colors.transparent,
+                                    focusColor: Colors.transparent,
+                                    hoverColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    onTap: () async {
+                                      context.pushNamed(
+                                          'select_editable_song_tags_popup');
+                                    },
+                                    child: Container(
+                                      width: 130.0,
+                                      height: 50.0,
+                                      decoration: BoxDecoration(
+                                        color: FlutterFlowTheme.of(context)
+                                            .accent1,
+                                        borderRadius:
+                                            BorderRadius.circular(5.0),
+                                      ),
+                                      child: Align(
+                                        alignment:
+                                            AlignmentDirectional(0.0, 0.0),
+                                        child: Wrap(
+                                          spacing: 0.0,
+                                          runSpacing: 0.0,
+                                          alignment: WrapAlignment.start,
+                                          crossAxisAlignment:
+                                              WrapCrossAlignment.start,
+                                          direction: Axis.horizontal,
+                                          runAlignment: WrapAlignment.start,
+                                          verticalDirection:
+                                              VerticalDirection.down,
+                                          clipBehavior: Clip.none,
+                                          children: [
+                                            wrapWithModel(
+                                              model: _model.defaultTagModel1,
+                                              updateCallback: () =>
+                                                  setState(() {}),
+                                              child: DefaultTagWidget(
+                                                name: 'Rock',
+                                                colour: Color(0xFF5AA849),
+                                              ),
                                             ),
-                                          ),
-                                          wrapWithModel(
-                                            model: _model.defaultTagModel2,
-                                            updateCallback: () =>
-                                                setState(() {}),
-                                            child: DefaultTagWidget(
-                                              name: 'Oldies',
-                                              colour: Color(0xFFE85536),
+                                            wrapWithModel(
+                                              model: _model.defaultTagModel2,
+                                              updateCallback: () =>
+                                                  setState(() {}),
+                                              child: DefaultTagWidget(
+                                                name: 'Oldies',
+                                                colour: Color(0xFFE85536),
+                                              ),
                                             ),
-                                          ),
-                                          wrapWithModel(
-                                            model: _model.defaultTagModel3,
-                                            updateCallback: () =>
-                                                setState(() {}),
-                                            child: DefaultTagWidget(
-                                              name: 'Vibe',
-                                              colour: Color(0xFF8F0095),
+                                            wrapWithModel(
+                                              model: _model.defaultTagModel3,
+                                              updateCallback: () =>
+                                                  setState(() {}),
+                                              child: DefaultTagWidget(
+                                                name: 'Vibe',
+                                                colour: Color(0xFF8F0095),
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),

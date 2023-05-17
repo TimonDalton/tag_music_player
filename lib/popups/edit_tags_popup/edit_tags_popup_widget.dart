@@ -37,6 +37,8 @@ class _EditTagsPopupWidgetState extends State<EditTagsPopupWidget> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).requestFocus(_unfocusNode),
       child: Scaffold(
@@ -80,11 +82,20 @@ class _EditTagsPopupWidgetState extends State<EditTagsPopupWidget> {
             children: [
               Align(
                 alignment: AlignmentDirectional(-0.75, 0.0),
-                child: wrapWithModel(
-                  model: _model.defaultTextButtonModel1,
-                  updateCallback: () => setState(() {}),
-                  child: DefaultTextButtonWidget(
-                    text: 'Create Tag',
+                child: InkWell(
+                  splashColor: Colors.transparent,
+                  focusColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  onTap: () async {
+                    context.pushNamed('create_tag_page');
+                  },
+                  child: wrapWithModel(
+                    model: _model.defaultTextButtonModel1,
+                    updateCallback: () => setState(() {}),
+                    child: DefaultTextButtonWidget(
+                      text: 'Create Tag',
+                    ),
                   ),
                 ),
               ),

@@ -37,6 +37,8 @@ class _FilterButtonWidgetState extends State<FilterButtonWidget> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return Container(
       width: 150.0,
       height: 60.0,

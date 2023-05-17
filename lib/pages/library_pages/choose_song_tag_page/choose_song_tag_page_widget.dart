@@ -1,9 +1,9 @@
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
+import '/project/components/bottom_bars/bottom_options_bar_widget/bottom_options_bar_widget_widget.dart';
 import '/project/components/bottom_bars/now_playing_bar/now_playing_bar_widget.dart';
 import '/project/components/buttons/filter_button/filter_button_widget.dart';
-import '/project/components/other/bottom_options_bar_widget/bottom_options_bar_widget_widget.dart';
 import '/project/components/other/search_bar_widget/search_bar_widget_widget.dart';
 import '/project/components/song_widgets/tagless_song_widget/tagless_song_widget_widget.dart';
 import '/project/components/tag_group_widgets/included_excluded_tag_group/included_excluded_tag_group_widget.dart';
@@ -45,6 +45,8 @@ class _ChooseSongTagPageWidgetState extends State<ChooseSongTagPageWidget> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).requestFocus(_unfocusNode),
       child: Scaffold(

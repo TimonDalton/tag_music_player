@@ -45,6 +45,8 @@ class _ColourToggleBubbleWidgetWidgetState
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return Container(
       width: 36.0,
       height: 30.0,

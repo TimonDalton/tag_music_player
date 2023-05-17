@@ -38,10 +38,12 @@ class _EditableTagGroupWidgetState extends State<EditableTagGroupWidget> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 12.0, 0.0, 12.0),
       child: Container(
-        height: 150.0,
+        height: 174.0,
         decoration: BoxDecoration(
           color: FlutterFlowTheme.of(context).primary,
           borderRadius: BorderRadius.circular(0.0),
@@ -51,7 +53,7 @@ class _EditableTagGroupWidgetState extends State<EditableTagGroupWidget> {
           alignment: AlignmentDirectional(0.0, 0.0),
           child: Container(
             width: MediaQuery.of(context).size.width * 0.9,
-            height: 200.0,
+            height: 150.0,
             decoration: BoxDecoration(
               color: FlutterFlowTheme.of(context).accent1,
               borderRadius: BorderRadius.circular(5.0),

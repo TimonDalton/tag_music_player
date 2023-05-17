@@ -1,5 +1,7 @@
+import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
+import '/project/components/bottom_bars/bottom_nav_bar_widget/bottom_nav_bar_widget_widget.dart';
 import '/project/components/buttons/default_button/default_button_widget.dart';
 import '/project/components/display_filter/display_filter/display_filter_widget.dart';
 import '/project/components/other/search_bar_widget/search_bar_widget_widget.dart';
@@ -39,6 +41,8 @@ class _FiltersPageWidgetState extends State<FiltersPageWidget> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).requestFocus(_unfocusNode),
       child: Scaffold(
@@ -48,7 +52,7 @@ class _FiltersPageWidgetState extends State<FiltersPageWidget> {
           backgroundColor: FlutterFlowTheme.of(context).primary,
           automaticallyImplyLeading: false,
           title: Align(
-            alignment: AlignmentDirectional(0.0, 0.0),
+            alignment: AlignmentDirectional(0.25, 0.0),
             child: Text(
               'Filters',
               style: FlutterFlowTheme.of(context).displaySmall.override(
@@ -57,7 +61,22 @@ class _FiltersPageWidgetState extends State<FiltersPageWidget> {
                   ),
             ),
           ),
-          actions: [],
+          actions: [
+            FlutterFlowIconButton(
+              borderColor: Colors.transparent,
+              borderRadius: 30.0,
+              borderWidth: 1.0,
+              buttonSize: 60.0,
+              icon: Icon(
+                Icons.settings_rounded,
+                color: FlutterFlowTheme.of(context).primaryText,
+                size: 30.0,
+              ),
+              onPressed: () {
+                print('IconButton pressed ...');
+              },
+            ),
+          ],
           centerTitle: false,
           elevation: 2.0,
         ),
@@ -129,37 +148,81 @@ class _FiltersPageWidgetState extends State<FiltersPageWidget> {
                                 Padding(
                                   padding: EdgeInsetsDirectional.fromSTEB(
                                       0.0, 8.0, 8.0, 8.0),
-                                  child: wrapWithModel(
-                                    model: _model.displayFilterModel1,
-                                    updateCallback: () => setState(() {}),
-                                    child: DisplayFilterWidget(),
+                                  child: InkWell(
+                                    splashColor: Colors.transparent,
+                                    focusColor: Colors.transparent,
+                                    hoverColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    onTap: () async {
+                                      context.pushNamed('view_filter');
+                                    },
+                                    child: wrapWithModel(
+                                      model: _model.displayFilterModel1,
+                                      updateCallback: () => setState(() {}),
+                                      child: DisplayFilterWidget(
+                                        filterName: 'Banjo not not strings',
+                                      ),
+                                    ),
                                   ),
                                 ),
                                 Padding(
                                   padding: EdgeInsetsDirectional.fromSTEB(
                                       8.0, 8.0, 0.0, 8.0),
-                                  child: wrapWithModel(
-                                    model: _model.displayFilterModel2,
-                                    updateCallback: () => setState(() {}),
-                                    child: DisplayFilterWidget(),
+                                  child: InkWell(
+                                    splashColor: Colors.transparent,
+                                    focusColor: Colors.transparent,
+                                    hoverColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    onTap: () async {
+                                      context.pushNamed('view_filter');
+                                    },
+                                    child: wrapWithModel(
+                                      model: _model.displayFilterModel2,
+                                      updateCallback: () => setState(() {}),
+                                      child: DisplayFilterWidget(
+                                        filterName: 'Groovy tunes pl',
+                                      ),
+                                    ),
                                   ),
                                 ),
                                 Padding(
                                   padding: EdgeInsetsDirectional.fromSTEB(
                                       0.0, 8.0, 8.0, 8.0),
-                                  child: wrapWithModel(
-                                    model: _model.displayFilterModel3,
-                                    updateCallback: () => setState(() {}),
-                                    child: DisplayFilterWidget(),
+                                  child: InkWell(
+                                    splashColor: Colors.transparent,
+                                    focusColor: Colors.transparent,
+                                    hoverColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    onTap: () async {
+                                      context.pushNamed('view_filter');
+                                    },
+                                    child: wrapWithModel(
+                                      model: _model.displayFilterModel3,
+                                      updateCallback: () => setState(() {}),
+                                      child: DisplayFilterWidget(
+                                        filterName: 'Naruto vibe',
+                                      ),
+                                    ),
                                   ),
                                 ),
                                 Padding(
                                   padding: EdgeInsetsDirectional.fromSTEB(
                                       8.0, 8.0, 0.0, 8.0),
-                                  child: wrapWithModel(
-                                    model: _model.displayFilterModel4,
-                                    updateCallback: () => setState(() {}),
-                                    child: DisplayFilterWidget(),
+                                  child: InkWell(
+                                    splashColor: Colors.transparent,
+                                    focusColor: Colors.transparent,
+                                    hoverColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    onTap: () async {
+                                      context.pushNamed('view_filter');
+                                    },
+                                    child: wrapWithModel(
+                                      model: _model.displayFilterModel4,
+                                      updateCallback: () => setState(() {}),
+                                      child: DisplayFilterWidget(
+                                        filterName: 'Jeffry jeffereson',
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -183,14 +246,25 @@ class _FiltersPageWidgetState extends State<FiltersPageWidget> {
                     Expanded(
                       child: Align(
                         alignment: AlignmentDirectional(0.0, 0.0),
-                        child: wrapWithModel(
-                          model: _model.defaultButtonModel1,
-                          updateCallback: () => setState(() {}),
-                          child: DefaultButtonWidget(
-                            text: 'Edit Tags',
-                            icon: Icon(
-                              Icons.edit,
-                              color: FlutterFlowTheme.of(context).primaryText,
+                        child: InkWell(
+                          splashColor: Colors.transparent,
+                          focusColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onTap: () async {
+                            context.pushNamed('edit_tags_popup');
+                          },
+                          child: wrapWithModel(
+                            model: _model.defaultButtonModel1,
+                            updateCallback: () => setState(() {}),
+                            child: DefaultButtonWidget(
+                              text: 'Edit Tags',
+                              icon: Icon(
+                                Icons.edit,
+                                color: FlutterFlowTheme.of(context).primaryText,
+                              ),
+                              width: 125.0,
+                              height: 60.0,
                             ),
                           ),
                         ),
@@ -199,14 +273,25 @@ class _FiltersPageWidgetState extends State<FiltersPageWidget> {
                     Expanded(
                       child: Align(
                         alignment: AlignmentDirectional(0.0, 0.0),
-                        child: wrapWithModel(
-                          model: _model.defaultButtonModel2,
-                          updateCallback: () => setState(() {}),
-                          child: DefaultButtonWidget(
-                            text: 'New Filter',
-                            icon: Icon(
-                              Icons.add,
-                              color: FlutterFlowTheme.of(context).primaryText,
+                        child: InkWell(
+                          splashColor: Colors.transparent,
+                          focusColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onTap: () async {
+                            context.pushNamed('define_filter_page');
+                          },
+                          child: wrapWithModel(
+                            model: _model.defaultButtonModel2,
+                            updateCallback: () => setState(() {}),
+                            child: DefaultButtonWidget(
+                              text: 'New Filter',
+                              icon: Icon(
+                                Icons.add,
+                                color: FlutterFlowTheme.of(context).primaryText,
+                              ),
+                              width: 125.0,
+                              height: 60.0,
                             ),
                           ),
                         ),
@@ -214,6 +299,11 @@ class _FiltersPageWidgetState extends State<FiltersPageWidget> {
                     ),
                   ],
                 ),
+              ),
+              wrapWithModel(
+                model: _model.bottomNavBarWidgetModel,
+                updateCallback: () => setState(() {}),
+                child: BottomNavBarWidgetWidget(),
               ),
             ],
           ),
