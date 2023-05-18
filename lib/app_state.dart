@@ -11,18 +11,12 @@ class FFAppState extends ChangeNotifier {
 
   FFAppState._internal();
 
-  Future initializePersistedState() async {
-    prefs = await SharedPreferences.getInstance();
-    _spotifyAccountStatus =
-        prefs.getInt('ff_spotifyAccountStatus') ?? _spotifyAccountStatus;
-  }
+  Future initializePersistedState() async {}
 
   void update(VoidCallback callback) {
     callback();
     notifyListeners();
   }
-
-  late SharedPreferences prefs;
 
   int _basePage = 0;
   int get basePage => _basePage;
@@ -30,11 +24,10 @@ class FFAppState extends ChangeNotifier {
     _basePage = _value;
   }
 
-  int _spotifyAccountStatus = 0;
-  int get spotifyAccountStatus => _spotifyAccountStatus;
-  set spotifyAccountStatus(int _value) {
-    _spotifyAccountStatus = _value;
-    prefs.setInt('ff_spotifyAccountStatus', _value);
+  String _spotifyConnectionStatus = '';
+  String get spotifyConnectionStatus => _spotifyConnectionStatus;
+  set spotifyConnectionStatus(String _value) {
+    _spotifyConnectionStatus = _value;
   }
 }
 

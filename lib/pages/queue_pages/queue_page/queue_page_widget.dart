@@ -75,8 +75,8 @@ class _QueuePageWidgetState extends State<QueuePageWidget> {
                 color: FlutterFlowTheme.of(context).primaryText,
                 size: 30.0,
               ),
-              onPressed: () {
-                print('IconButton pressed ...');
+              onPressed: () async {
+                context.pushNamed('control_main_page');
               },
             ),
           ],

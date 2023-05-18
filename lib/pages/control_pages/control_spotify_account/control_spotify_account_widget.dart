@@ -3,7 +3,8 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/project/components/buttons/default_button/default_button_widget.dart';
 import '/project/components/text_widgets/heading_text/heading_text_widget.dart';
-import '/project/components/text_widgets/textfield_widget/textfield_widget_widget.dart';
+
+import 'package:tag_music_player/timoncode/control_spotify/connect.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -92,51 +93,33 @@ class _ControlSpotifyAccountWidgetState
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
+                  Padding(
+                    padding:
+                        EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
+                    child: wrapWithModel(
+                      model: _model.defaultButtonModel,
+                      updateCallback: () => setState(() {}),
+                      child: InkWell(
+                        onTap: () async => connectToSpotifyRemote(),
+                        child: DefaultButtonWidget(
+                          text: 'Connect',
+                          icon: Icon(
+                            Icons.settings_remote_outlined,
+                            color: FlutterFlowTheme.of(context).lineColor,
+                          ),
+                          width: 240.0,
+                          height: 60.0,
+                        ),
+                      ),
+                    ),
+                  ),
                   Align(
                     alignment: AlignmentDirectional(-1.0, 0.0),
                     child: wrapWithModel(
                       model: _model.headingTextModel,
                       updateCallback: () => setState(() {}),
                       child: HeadingTextWidget(
-                        text: 'Login',
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(0.0, 5.0, 0.0, 0.0),
-                    child: wrapWithModel(
-                      model: _model.textfieldWidgetModel1,
-                      updateCallback: () => setState(() {}),
-                      child: TextfieldWidgetWidget(
-                        hintText: 'Username or email',
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 0.0),
-                    child: wrapWithModel(
-                      model: _model.textfieldWidgetModel2,
-                      updateCallback: () => setState(() {}),
-                      child: TextfieldWidgetWidget(
-                        hintText: 'Password',
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        EdgeInsetsDirectional.fromSTEB(0.0, 18.0, 0.0, 0.0),
-                    child: wrapWithModel(
-                      model: _model.defaultButtonModel,
-                      updateCallback: () => setState(() {}),
-                      child: DefaultButtonWidget(
-                        text: 'Login',
-                        icon: Icon(
-                          Icons.account_circle,
-                          color: FlutterFlowTheme.of(context).primaryText,
-                        ),
-                        width: 200.0,
-                        height: 60.0,
-                        colour: FlutterFlowTheme.of(context).primaryText,
+                        text: FFAppState().spotifyConnectionStatus,
                       ),
                     ),
                   ),
