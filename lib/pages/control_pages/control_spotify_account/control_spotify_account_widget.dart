@@ -3,11 +3,13 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/project/components/buttons/default_button/default_button_widget.dart';
 import '/project/components/text_widgets/heading_text/heading_text_widget.dart';
-
-import 'package:tag_music_player/timoncode/control_spotify/connect.dart';
 import 'package:flutter/material.dart';
+import 'package:spotify_sdk/spotify_sdk.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:tag_music_player/timoncode/showSnackbar/showMessageSnackbar.dart';
 import 'control_spotify_account_model.dart';
 export 'control_spotify_account_model.dart';
 
@@ -96,11 +98,31 @@ class _ControlSpotifyAccountWidgetState
                   Padding(
                     padding:
                         EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
-                    child: wrapWithModel(
-                      model: _model.defaultButtonModel,
-                      updateCallback: () => setState(() {}),
-                      child: InkWell(
-                        onTap: () async => connectToSpotifyRemote(),
+                    child: InkWell(
+                      splashColor: Colors.transparent,
+                      focusColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      onTap: () async {
+                            try {
+                              var result = await SpotifySdk.connectToSpotifyRemote(
+                                  clientId: dotenv.env['CLIENT_ID'].toString(),
+                                  redirectUrl: dotenv.env['REDIRECT_URL'].toString());
+                              print('connected');
+                              setState(() {
+                                FFAppState().spotifyConnectionStatus = 'Connected';
+                                showMessageSnackbar('Connected to Spotify',context);
+                              });
+                            } catch (e) {
+                              print('connection error:');
+                              print(e);
+                              FFAppState().spotifyConnectionStatus = 'Not Connected';
+                              showMessageSnackbar('Error connecting to Spotify. Check to see if Spotify is open',context);
+                            }
+                      },
+                      child: wrapWithModel(
+                        model: _model.defaultButtonModel,
+                        updateCallback: () => setState(() {}),
                         child: DefaultButtonWidget(
                           text: 'Connect',
                           icon: Icon(
@@ -119,7 +141,10 @@ class _ControlSpotifyAccountWidgetState
                       model: _model.headingTextModel,
                       updateCallback: () => setState(() {}),
                       child: HeadingTextWidget(
-                        text: FFAppState().spotifyConnectionStatus,
+                        text: valueOrDefault<String>(
+                          FFAppState().spotifyConnectionStatus,
+                          'Not Connected',
+                        ),
                       ),
                     ),
                   ),

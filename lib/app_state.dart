@@ -29,6 +29,7 @@ class FFAppState extends ChangeNotifier {
   set spotifyConnectionStatus(String _value) {
     _spotifyConnectionStatus = _value;
   }
+
 }
 
 LatLng? _latLngFromString(String? val) {
