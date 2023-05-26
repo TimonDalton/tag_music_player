@@ -79,6 +79,7 @@ class _CreateTagPageWidgetState extends State<CreateTagPageWidget> {
           elevation: 2.0,
         ),
         body: SafeArea(
+          top: true,
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [

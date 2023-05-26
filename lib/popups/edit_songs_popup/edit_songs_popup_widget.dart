@@ -78,6 +78,7 @@ class _EditSongsPopupWidgetState extends State<EditSongsPopupWidget> {
           elevation: 2.0,
         ),
         body: SafeArea(
+          top: true,
           child: Align(
             alignment: AlignmentDirectional(0.0, -1.0),
             child: Container(

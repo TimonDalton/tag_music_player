@@ -11,12 +11,18 @@ class FFAppState extends ChangeNotifier {
 
   FFAppState._internal();
 
-  Future initializePersistedState() async {}
+  Future initializePersistedState() async {
+    prefs = await SharedPreferences.getInstance();
+    _spotifyAuthToken =
+        prefs.getString('ff_spotifyAuthToken') ?? _spotifyAuthToken;
+  }
 
   void update(VoidCallback callback) {
     callback();
     notifyListeners();
   }
+
+  late SharedPreferences prefs;
 
   int _basePage = 0;
   int get basePage => _basePage;
@@ -30,6 +36,24 @@ class FFAppState extends ChangeNotifier {
     _spotifyConnectionStatus = _value;
   }
 
+  String _spotifyAuthToken = '';
+  String get spotifyAuthToken => _spotifyAuthToken;
+  set spotifyAuthToken(String _value) {
+    _spotifyAuthToken = _value;
+    prefs.setString('ff_spotifyAuthToken', _value);
+  }
+
+  bool _hasAuthToken = false;
+  bool get hasAuthToken => _hasAuthToken;
+  set hasAuthToken(bool _value) {
+    _hasAuthToken = _value;
+  }
+
+  bool _spotifySdkConnected = false;
+  bool get spotifySdkConnected => _spotifySdkConnected;
+  set spotifySdkConnected(bool _value) {
+    _spotifySdkConnected = _value;
+  }
 }
 
 LatLng? _latLngFromString(String? val) {

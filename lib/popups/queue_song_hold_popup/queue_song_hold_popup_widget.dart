@@ -78,6 +78,7 @@ class _QueueSongHoldPopupWidgetState extends State<QueueSongHoldPopupWidget> {
           elevation: 2.0,
         ),
         body: SafeArea(
+          top: true,
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [

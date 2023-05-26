@@ -80,6 +80,7 @@ class _DeleteSongsPageWidgetState extends State<DeleteSongsPageWidget> {
           elevation: 2.0,
         ),
         body: SafeArea(
+          top: true,
           child: Stack(
             children: [
               Align(

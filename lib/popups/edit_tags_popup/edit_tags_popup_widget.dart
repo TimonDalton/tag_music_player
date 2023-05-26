@@ -77,6 +77,7 @@ class _EditTagsPopupWidgetState extends State<EditTagsPopupWidget> {
           elevation: 2.0,
         ),
         body: SafeArea(
+          top: true,
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [

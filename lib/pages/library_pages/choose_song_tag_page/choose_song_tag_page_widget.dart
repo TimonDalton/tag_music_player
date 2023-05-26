@@ -85,6 +85,7 @@ class _ChooseSongTagPageWidgetState extends State<ChooseSongTagPageWidget> {
           elevation: 2.0,
         ),
         body: SafeArea(
+          top: true,
           child: Stack(
             children: [
               Align(

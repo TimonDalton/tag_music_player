@@ -84,6 +84,7 @@ class _QueuePageWidgetState extends State<QueuePageWidget> {
           elevation: 2.0,
         ),
         body: SafeArea(
+          top: true,
           child: Stack(
             children: [
               Container(

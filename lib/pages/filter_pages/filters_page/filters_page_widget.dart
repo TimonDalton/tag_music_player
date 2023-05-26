@@ -81,6 +81,7 @@ class _FiltersPageWidgetState extends State<FiltersPageWidget> {
           elevation: 2.0,
         ),
         body: SafeArea(
+          top: true,
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [

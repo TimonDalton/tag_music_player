@@ -80,6 +80,7 @@ class _TrimQueuePageWidgetState extends State<TrimQueuePageWidget> {
           elevation: 2.0,
         ),
         body: SafeArea(
+          top: true,
           child: Stack(
             children: [
               Align(

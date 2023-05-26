@@ -80,6 +80,7 @@ class _AddToQueuePageWidgetState extends State<AddToQueuePageWidget> {
           elevation: 2.0,
         ),
         body: SafeArea(
+          top: true,
           child: Stack(
             children: [
               Align(

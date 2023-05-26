@@ -81,6 +81,7 @@ class _SongLibraryPageWidgetState extends State<SongLibraryPageWidget> {
           elevation: 2.0,
         ),
         body: SafeArea(
+          top: true,
           child: Padding(
             padding: EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 0.0),
             child: Column(

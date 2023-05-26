@@ -84,6 +84,7 @@ class _ChangeSongTagsIndividuallyPageWidgetState
           elevation: 2.0,
         ),
         body: SafeArea(
+          top: true,
           child: Stack(
             children: [
               Align(

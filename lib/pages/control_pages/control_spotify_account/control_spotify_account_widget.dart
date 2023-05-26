@@ -4,14 +4,15 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/project/components/buttons/default_button/default_button_widget.dart';
 import '/project/components/text_widgets/heading_text/heading_text_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:spotify_sdk/spotify_sdk.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:tag_music_player/timoncode/showSnackbar/showMessageSnackbar.dart';
 import 'control_spotify_account_model.dart';
 export 'control_spotify_account_model.dart';
+import 'package:tag_music_player/timoncode/showSnackbar/showMessageSnackbar.dart';
+import 'package:tag_music_player/timoncode/control_spotify/api_calls.dart';
+import 'package:tag_music_player/timoncode/control_spotify/getAccessToken.dart';
+import 'package:spotify_sdk/spotify_sdk.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ControlSpotifyAccountWidget extends StatefulWidget {
   const ControlSpotifyAccountWidget({Key? key}) : super(key: key);
@@ -84,6 +85,7 @@ class _ControlSpotifyAccountWidgetState
           elevation: 2.0,
         ),
         body: SafeArea(
+          top: true,
           child: Align(
             alignment: AlignmentDirectional(0.0, 0.0),
             child: Container(
@@ -104,27 +106,31 @@ class _ControlSpotifyAccountWidgetState
                       hoverColor: Colors.transparent,
                       highlightColor: Colors.transparent,
                       onTap: () async {
-                            try {
-                              var result = await SpotifySdk.connectToSpotifyRemote(
-                                  clientId: dotenv.env['CLIENT_ID'].toString(),
-                                  redirectUrl: dotenv.env['REDIRECT_URL'].toString());
-                              print('connected');
-                              setState(() {
-                                FFAppState().spotifyConnectionStatus = 'Connected';
-                                showMessageSnackbar('Connected to Spotify',context);
-                              });
-                            } catch (e) {
-                              print('connection error:');
-                              print(e);
-                              FFAppState().spotifyConnectionStatus = 'Not Connected';
-                              showMessageSnackbar('Error connecting to Spotify. Check to see if Spotify is open',context);
-                            }
+                        try {
+                          var token = await getAccessToken();
+                          print('connected token = ${token}');
+                          if (token == '')throw '';
+                          // setState(() {
+                          //   FFAppState().spotifyConnectionStatus = 'Connected';
+                          // });
+                          showMessageSnackbar('Connected to Spotify', context);
+                        } catch (e) {
+                          print('connection error:');
+                          print(e);
+                          setState(() {
+                            FFAppState().spotifyConnectionStatus =
+                                'Not Connected';
+                          });
+                          showMessageSnackbar(
+                              'Error connecting to Spotify. Check to see if Spotify is open',
+                              context);
+                        }
                       },
                       child: wrapWithModel(
-                        model: _model.defaultButtonModel,
+                        model: _model.defaultButtonModel1,
                         updateCallback: () => setState(() {}),
                         child: DefaultButtonWidget(
-                          text: 'Connect',
+                          text: 'Connect to Spotify App',
                           icon: Icon(
                             Icons.settings_remote_outlined,
                             color: FlutterFlowTheme.of(context).lineColor,
@@ -135,15 +141,138 @@ class _ControlSpotifyAccountWidgetState
                       ),
                     ),
                   ),
-                  Align(
-                    alignment: AlignmentDirectional(-1.0, 0.0),
-                    child: wrapWithModel(
-                      model: _model.headingTextModel,
-                      updateCallback: () => setState(() {}),
-                      child: HeadingTextWidget(
-                        text: valueOrDefault<String>(
-                          FFAppState().spotifyConnectionStatus,
-                          'Not Connected',
+                  Padding(
+                    padding:
+                        EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
+                    child: InkWell(
+                      splashColor: Colors.transparent,
+                      focusColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      onTap: () async {
+                        try {
+                          String authenticationToken = await getAccessToken();
+
+                          setState(() {
+                          FFAppState().spotifyAuthToken = authenticationToken;
+                          FFAppState().hasAuthToken = true;
+                          });
+                          ;
+                        } catch (e) {
+                          print('error getting Auth Token:');
+                          print(e);
+                          setState(() {
+                          FFAppState().hasAuthToken = false;
+                          });
+                          showMessageSnackbar(
+                              'Error connecting Auth Token', context);
+                        }
+                      },
+                      child: wrapWithModel(
+                        model: _model.defaultButtonModel2,
+                        updateCallback: () => setState(() {}),
+                        child: DefaultButtonWidget(
+                          text: 'Connect to \nSpotify Account',
+                          icon: Icon(
+                            Icons.account_circle,
+                            color: FlutterFlowTheme.of(context).lineColor,
+                          ),
+                          width: 240.0,
+                          height: 60.0,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Align(
+                        alignment: AlignmentDirectional(-1.0, 0.0),
+                        child: wrapWithModel(
+                          model: _model.headingTextModel1,
+                          updateCallback: () => setState(() {}),
+                          child: HeadingTextWidget(
+                            text: 'Spotify App Connection:',
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: AlignmentDirectional(-1.0, 0.0),
+                        child: wrapWithModel(
+                          model: _model.headingTextModel2,
+                          updateCallback: () => setState(() {}),
+                          child: HeadingTextWidget(
+                            text: valueOrDefault<String>(
+                              FFAppState().spotifyConnectionStatus,
+                              'Not Connected',
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Align(
+                        alignment: AlignmentDirectional(-1.0, 0.0),
+                        child: wrapWithModel(
+                          model: _model.headingTextModel3,
+                          updateCallback: () => setState(() {}),
+                          child: HeadingTextWidget(
+                            text: 'Spotify Account Connection:',
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Align(
+                          alignment: AlignmentDirectional(-1.0, 0.0),
+                          child: wrapWithModel(
+                            model: _model.headingTextModel4,
+                            updateCallback: () => setState(() {}),
+                            child: HeadingTextWidget(
+                              text: valueOrDefault<String>(
+                                FFAppState().spotifyConnectionStatus,
+                                'Not Connected',
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding:
+                        EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
+                    child: InkWell(
+                      splashColor: Colors.transparent,
+                      focusColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      onTap: () async {
+                        try {
+                          await getUserId();                          
+                        } catch (e) {
+                          print(e);
+                        }
+                        try {
+                          await getUserPlaylists();                          
+                        } catch (e) {
+                          print(e);
+                        }
+                        
+                      },
+                      child: wrapWithModel(
+                        model: _model.defaultButtonModel2,
+                        updateCallback: () => setState(() {}),
+                        child: DefaultButtonWidget(
+                          text: 'Connect to \nSpotify Account',
+                          icon: Icon(
+                            Icons.account_circle,
+                            color: FlutterFlowTheme.of(context).lineColor,
+                          ),
+                          width: 240.0,
+                          height: 60.0,
                         ),
                       ),
                     ),

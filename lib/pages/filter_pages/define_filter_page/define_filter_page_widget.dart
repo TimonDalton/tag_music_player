@@ -84,6 +84,7 @@ class _DefineFilterPageWidgetState extends State<DefineFilterPageWidget> {
           elevation: 2.0,
         ),
         body: SafeArea(
+          top: true,
           child: Stack(
             children: [
               Align(

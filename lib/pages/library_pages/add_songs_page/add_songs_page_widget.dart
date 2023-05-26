@@ -79,6 +79,7 @@ class _AddSongsPageWidgetState extends State<AddSongsPageWidget> {
           elevation: 2.0,
         ),
         body: SafeArea(
+          top: true,
           child: Align(
             alignment: AlignmentDirectional(0.0, 0.0),
             child: Container(
