@@ -42,6 +42,7 @@ class _ColourPickerDropDownState extends State<ColourPickerDropDown> {
           width: 100,
           height: 30,
           decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
             color: Tag.colours[colorId],
           ),
         );

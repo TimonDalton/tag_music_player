@@ -138,6 +138,10 @@ class _CreateTagPageWidgetState extends State<CreateTagPageWidget> {
                                 updateCallback: () => setState(() {}),
                                 child: TextField(
                                   controller: nameTEC,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
                             ),
@@ -157,18 +161,25 @@ class _CreateTagPageWidgetState extends State<CreateTagPageWidget> {
                               child: Row(
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
+                                  ColourPickerDropDown(
+                                      selectIndex: setColourId,
+                                      selectedId: colourId),
                                   Expanded(
-                                    flex: 13,
-                                    child: ColourPickerDropDown(selectIndex: setColourId,selectedId: colourId),
-                                  ),
-                                  Expanded(
-                                    flex: 7,
                                     child: Padding(
                                       padding: EdgeInsetsDirectional.fromSTEB(
                                           20.0, 0.0, 0.0, 0.0),
                                       child: Container(
                                         width: double.infinity,
                                         height: 50.0,
+                                        child: Center(
+                                          child: Text(
+                                            nameTEC.text,
+                                            style: TextStyle(
+                                              fontSize: 25,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
                                         decoration: BoxDecoration(
                                           color: Tag.colours[colourId],
                                           borderRadius:
@@ -196,9 +207,10 @@ class _CreateTagPageWidgetState extends State<CreateTagPageWidget> {
                           userDefined: true);
                       objectBox.saveTag(tag);
                       navBase(context);
-                      showMessageSnackbar('Tag Saved',context);
+                      showMessageSnackbar('Tag Saved', context);
                     } else {
-                      showSnackbar(context, '${nameTEC.text} is not a valid tag name');
+                      showSnackbar(
+                          context, '${nameTEC.text} is not a valid tag name');
                     }
                   },
                   confirmColour: Colors.lightBlue,
