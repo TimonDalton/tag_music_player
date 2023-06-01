@@ -1,3 +1,5 @@
+import 'package:tag_music_player/timoncode/functions/nav/navBase.dart';
+
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -7,17 +9,33 @@ import '/project/components/text_widgets/textfield_widget/textfield_widget_widge
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:tag_music_player/timoncode/widgets/bottom_bars/bottom_options_bar.dart';
+import 'package:tag_music_player/timoncode/widgets/misc/colourPickerDropdown.dart';
+import 'package:tag_music_player/timoncode/showSnackbar/showMessageSnackbar.dart';
+import 'package:tag_music_player/timoncode/objectbox.dart';
+import 'package:tag_music_player/timoncode/models/tag.dart';
 import 'create_tag_page_model.dart';
 export 'create_tag_page_model.dart';
 
 class CreateTagPageWidget extends StatefulWidget {
-  const CreateTagPageWidget({Key? key}) : super(key: key);
+  CreateTagPageWidget({Key? key}) : super(key: key);
 
   @override
   _CreateTagPageWidgetState createState() => _CreateTagPageWidgetState();
 }
 
 class _CreateTagPageWidgetState extends State<CreateTagPageWidget> {
+  TextEditingController nameTEC = TextEditingController();
+  int colourId = 0;
+  void setColourId(int newId) {
+    if (newId >= Tag.colours.length) {
+      throw '${newId} is not a valid colour id';
+    }
+    setState(() {
+      colourId = newId;
+    });
+  }
+
   late CreateTagPageModel _model;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -118,8 +136,8 @@ class _CreateTagPageWidgetState extends State<CreateTagPageWidget> {
                               child: wrapWithModel(
                                 model: _model.textfieldWidgetModel,
                                 updateCallback: () => setState(() {}),
-                                child: TextfieldWidgetWidget(
-                                  hintText: 'Enter filter name here',
+                                child: TextField(
+                                  controller: nameTEC,
                                 ),
                               ),
                             ),
@@ -141,11 +159,7 @@ class _CreateTagPageWidgetState extends State<CreateTagPageWidget> {
                                 children: [
                                   Expanded(
                                     flex: 13,
-                                    child: wrapWithModel(
-                                      model: _model.dropdownTextWidgetModel,
-                                      updateCallback: () => setState(() {}),
-                                      child: DropdownTextWidgetWidget(),
-                                    ),
+                                    child: ColourPickerDropDown(selectIndex: setColourId,selectedId: colourId),
                                   ),
                                   Expanded(
                                     flex: 7,
@@ -156,8 +170,7 @@ class _CreateTagPageWidgetState extends State<CreateTagPageWidget> {
                                         width: double.infinity,
                                         height: 50.0,
                                         decoration: BoxDecoration(
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryBackground,
+                                          color: Tag.colours[colourId],
                                           borderRadius:
                                               BorderRadius.circular(20.0),
                                         ),
@@ -174,6 +187,22 @@ class _CreateTagPageWidgetState extends State<CreateTagPageWidget> {
                   ),
                 ),
               ),
+              BottomOptionsBar(
+                  confirmTap: () {
+                    if (nameTEC.text != '') {
+                      Tag tag = Tag(
+                          name: nameTEC.text,
+                          colourId: colourId,
+                          userDefined: true);
+                      objectBox.saveTag(tag);
+                      navBase(context);
+                      showMessageSnackbar('Tag Saved',context);
+                    } else {
+                      showSnackbar(context, '${nameTEC.text} is not a valid tag name');
+                    }
+                  },
+                  confirmColour: Colors.lightBlue,
+                  confirmText: 'Save Tag'),
             ],
           ),
         ),

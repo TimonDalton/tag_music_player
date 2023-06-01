@@ -7,8 +7,15 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tag_music_player/timoncode/functions/nav/navBase.dart';
 
-class BottomOptionsBarWidgetWidget extends StatefulWidget {
-  const BottomOptionsBarWidgetWidget({
+class TestWidget extends StatelessWidget{
+  @override
+  Widget build(BuildContext context){
+    return Container(child:Text('Yes I exist'));
+  }
+}
+
+class BottomOptionsBar extends StatefulWidget {
+  BottomOptionsBar({
     Key? key,
     this.confirmText,
     Color? confirmColour,
@@ -21,12 +28,12 @@ class BottomOptionsBarWidgetWidget extends StatefulWidget {
   final Function confirmTap;
 
   @override
-  _BottomOptionsBarWidgetWidgetState createState() =>
-      _BottomOptionsBarWidgetWidgetState();
+  _BottomOptionsBarState createState() =>
+      _BottomOptionsBarState();
 }
 
-class _BottomOptionsBarWidgetWidgetState
-    extends State<BottomOptionsBarWidgetWidget> {
+class _BottomOptionsBarState
+    extends State<BottomOptionsBar> {
   @override
   Widget build(BuildContext context) {
     context.watch<FFAppState>();
