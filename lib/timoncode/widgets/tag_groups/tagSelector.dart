@@ -32,7 +32,7 @@ class _TapableTagState extends State<TapableTag> {
           height: widget.height,
           margin: EdgeInsets.all(widget.height/8),
           decoration: BoxDecoration(
-            color: widget.tag.colour,
+            color: widget.tag.colour(),
             borderRadius: BorderRadius.circular(
                 borderRadiusFromSides(widget.width, widget.height)),
           ),

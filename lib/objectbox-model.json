@@ -1,0 +1,84 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:9010798967777340560",
+      "lastPropertyId": "4:614895528964824454",
+      "name": "Song",
+      "properties": [
+        {
+          "id": "1:7159351169199739191",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:3115723590380257770",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "3:8594253787416493472",
+          "name": "artist",
+          "type": 9
+        },
+        {
+          "id": "4:614895528964824454",
+          "name": "spotifyId",
+          "type": 9
+        }
+      ],
+      "relations": [
+        {
+          "id": "1:2933435051223473136",
+          "name": "tags",
+          "targetId": "2:3379074201238304732"
+        }
+      ]
+    },
+    {
+      "id": "2:3379074201238304732",
+      "lastPropertyId": "5:8200168161526390469",
+      "name": "Tag",
+      "properties": [
+        {
+          "id": "2:190164107148731585",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "3:4695901502359810162",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "4:1302384689009912107",
+          "name": "colourId",
+          "type": 6
+        },
+        {
+          "id": "5:8200168161526390469",
+          "name": "userDefined",
+          "type": 1
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "2:3379074201238304732",
+  "lastIndexId": "0:0",
+  "lastRelationId": "1:2933435051223473136",
+  "lastSequenceId": "0:0",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [
+    5489380764927646302
+  ],
+  "retiredRelationUids": [],
+  "version": 1
+}

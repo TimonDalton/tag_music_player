@@ -8,9 +8,12 @@ import 'flutter_flow/flutter_flow_util.dart';
 import 'flutter_flow/internationalization.dart';
 import 'flutter_flow/nav/nav.dart';
 import 'index.dart';
+import 'package:tag_music_player/timoncode/functions/appInit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await onStartup();
 
   await FlutterFlowTheme.initialize();
 

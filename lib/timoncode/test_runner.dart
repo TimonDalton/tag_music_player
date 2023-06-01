@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flex_list/flex_list.dart';
 import 'package:tag_music_player/timoncode/functions/roundedCorners.dart';
 import 'package:tag_music_player/timoncode/widgets/tagSelector.dart';
+import 'package:tag_music_player/timoncode/widgets/filterTagsSelector.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,16 +36,16 @@ class MyApp extends StatelessWidget {
 }
 
 class Home extends StatelessWidget {
-  const Home();
+  Home();
 
-  final List<Tag> tags = const [
-    const Tag(name: 'Banjo', colour: Colors.brown, id: 0),
-    const Tag(name: 'Loud', colour: Colors.red, id: 1),
-    const Tag(name: 'Vibes', colour: Colors.blueGrey, id: 2),
-    const Tag(name: 'Yeet', colour: Colors.deepOrangeAccent, id: 3),
-    const Tag(name: 'Yoo', colour: Colors.green, id: 4),
-    const Tag(name: 'Skroo', colour: Colors.blue, id: 5),
-    const Tag(name: 'Skra', colour: Colors.purple, id: 6),
+  List<Tag> tags = [
+    Tag(name: 'Banjo', colourId: 0, id: 0),
+    Tag(name: 'Loud', colourId: 1, id: 1),
+    Tag(name: 'Vibes', colourId: 2, id: 2),
+    Tag(name: 'Yeet', colourId: 3, id: 3),
+    Tag(name: 'Yoo', colourId: 4, id: 4),
+    Tag(name: 'Skroo', colourId: 5, id: 5),
+    Tag(name: 'Skra', colourId: 6, id: 6),
   ];
 
   @override
@@ -54,7 +55,7 @@ class Home extends StatelessWidget {
         width: MediaQuery.of(context).size.width * 0.9,
         height: MediaQuery.of(context).size.height,
         child: Center(
-          child: TagSelector(tags: tags,),
+          child: FilterTagSelector(availableTags: tags,),
         ),
       ),
     );
