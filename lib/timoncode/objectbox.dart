@@ -115,6 +115,8 @@ class ObjectBox {
     return _tagBox.query(Tag_.name.contains(search)).build().find();
   }
 
+  bool isTagNameUnique(String s) => _tagBox.query(Tag_.name.equals(s)).build().find().length == 0;
+
 
   // Stream<List<Song>> getSongs() {
   //   // Query for all songs, sorted by their date.

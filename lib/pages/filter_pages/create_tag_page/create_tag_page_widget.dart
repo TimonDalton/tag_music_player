@@ -201,13 +201,19 @@ class _CreateTagPageWidgetState extends State<CreateTagPageWidget> {
               BottomOptionsBar(
                   confirmTap: () {
                     if (nameTEC.text != '') {
-                      Tag tag = Tag(
-                          name: nameTEC.text,
-                          colourId: colourId,
-                          userDefined: true);
-                      objectBox.saveTag(tag);
-                      navBase(context);
-                      showMessageSnackbar('Tag Saved', context);
+                      if (objectBox.isTagNameUnique(nameTEC.text)) {
+                        Tag tag = Tag(
+                            name: nameTEC.text,
+                            colourId: colourId,
+                            userDefined: true);
+                        objectBox.saveTag(tag);
+                        navBase(context);
+                        showMessageSnackbar('Tag Saved', context);
+                      } else {
+                        showMessageSnackbar(
+                            'Tag named ${nameTEC.text} already exists.',
+                            context);
+                      }
                     } else {
                       showSnackbar(
                           context, '${nameTEC.text} is not a valid tag name');

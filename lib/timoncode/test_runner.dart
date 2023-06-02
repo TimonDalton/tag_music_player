@@ -3,8 +3,8 @@ import 'package:tag_music_player/timoncode/models/tag.dart';
 import 'dart:math';
 import 'package:flex_list/flex_list.dart';
 import 'package:tag_music_player/timoncode/functions/roundedCorners.dart';
-import 'package:tag_music_player/timoncode/widgets/tagSelector.dart';
-import 'package:tag_music_player/timoncode/widgets/filterTagsSelector.dart';
+import 'package:tag_music_player/timoncode/widgets/tag_groups/tagSelector.dart';
+import 'package:tag_music_player/timoncode/widgets/tag_groups/filterTagsSelector.dart';
 
 void main() {
   runApp(const MyApp());

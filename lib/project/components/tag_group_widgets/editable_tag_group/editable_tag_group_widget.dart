@@ -130,7 +130,7 @@ class _EditableTagGroupWidgetState extends State<EditableTagGroupWidget> {
                               5.0, 0.0, 5.0, 0.0),
                           child: Container(
                             width: 5.0,
-                            height: 100.0,
+                            height: 98,
                             decoration: BoxDecoration(
                               color: FlutterFlowTheme.of(context).secondary,
                               borderRadius: BorderRadius.circular(2.0),

@@ -84,7 +84,6 @@ class _BottomOptionsBarState
                       child: InkWell(
                         onTap: () {
                           widget.confirmTap();
-                          navBase(context);
                         },
                         child: ColourButtonWidget(
                           buttonColour: valueOrDefault<Color>(

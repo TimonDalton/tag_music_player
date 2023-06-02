@@ -6,6 +6,8 @@ import '/project/components/other/search_bar_widget/search_bar_widget_widget.dar
 import '/project/components/text_widgets/heading_text/heading_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tag_music_player/timoncode/widgets/libraryPage/playlistWidget.dart';
+import 'package:tag_music_player/timoncode/control_spotify/api_calls.dart';
 import 'package:provider/provider.dart';
 import 'add_songs_page_model.dart';
 export 'add_songs_page_model.dart';
@@ -139,50 +141,40 @@ class _AddSongsPageWidgetState extends State<AddSongsPageWidget> {
                     child: Padding(
                       padding:
                           EdgeInsetsDirectional.fromSTEB(0.0, 15.0, 0.0, 0.0),
-                      child: Wrap(
-                        spacing: 30.0,
-                        runSpacing: 0.0,
-                        alignment: WrapAlignment.start,
-                        crossAxisAlignment: WrapCrossAlignment.start,
-                        direction: Axis.horizontal,
-                        runAlignment: WrapAlignment.start,
-                        verticalDirection: VerticalDirection.down,
-                        clipBehavior: Clip.none,
-                        children: [
-                          Container(
-                            height: 160.0,
-                            decoration: BoxDecoration(),
-                            child: wrapWithModel(
-                              model: _model.libraryPlaylistWidgetModel1,
-                              updateCallback: () => setState(() {}),
-                              child: LibraryPlaylistWidgetWidget(
-                                playlistName: 'Airbender\'s Jam',
-                              ),
-                            ),
-                          ),
-                          Container(
-                            height: 160.0,
-                            decoration: BoxDecoration(),
-                            child: wrapWithModel(
-                              model: _model.libraryPlaylistWidgetModel2,
-                              updateCallback: () => setState(() {}),
-                              child: LibraryPlaylistWidgetWidget(
-                                playlistName: 'Only Iroh',
-                              ),
-                            ),
-                          ),
-                          Container(
-                            height: 160.0,
-                            decoration: BoxDecoration(),
-                            child: wrapWithModel(
-                              model: _model.libraryPlaylistWidgetModel3,
-                              updateCallback: () => setState(() {}),
-                              child: LibraryPlaylistWidgetWidget(
-                                playlistName: 'Zuko\'s Khata',
-                              ),
-                            ),
-                          ),
-                        ],
+                      child: FutureBuilder(
+                        future: getUserPlaylists(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState !=
+                              ConnectionState.done) {
+                            return Icon(Icons.refresh);
+                          }
+                          List<dynamic> playlists =
+                              snapshot.data as List<dynamic>;
+                          List<Widget> children = [];
+                          // print('Images length:');
+                          for (int i = 0; i < playlists.length; i++) {
+                            children.add(PlaylistWidget(
+                                playlistName: playlists[i]['name'],
+                                imageUrl: playlists[i]['images'][0]['url'],
+                                onTap: () {
+                                  // Navigator.of(context).push('That Page');
+                                  print('to ${playlists[i]['name']}');
+                                }));
+                          }
+                          return SingleChildScrollView(
+                              scrollDirection: Axis.vertical,
+                              child: Wrap(
+                                spacing: 30.0,
+                                runSpacing: 0.0,
+                                alignment: WrapAlignment.start,
+                                crossAxisAlignment: WrapCrossAlignment.start,
+                                direction: Axis.horizontal,
+                                runAlignment: WrapAlignment.start,
+                                verticalDirection: VerticalDirection.down,
+                                clipBehavior: Clip.none,
+                                children: children,
+                              ));
+                        },
                       ),
                     ),
                   ),
