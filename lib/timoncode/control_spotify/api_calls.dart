@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:tag_music_player/timoncode/control_spotify/getAccessToken.dart';
 import 'package:tag_music_player/timoncode/globals.dart';
+import 'package:tag_music_player/timoncode/models/song.dart';
 
 import '/flutter_flow/flutter_flow_util.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
@@ -61,6 +62,39 @@ Future<List<dynamic>> getUserPlaylists() async {
     return playlists;
   } catch (e) {
     print('error getting User Playlists:');
+    throw (e);
+  }
+}
+
+Future<List<Song>> getPlaylistSongs(String playlistId) async {
+  try {
+    await ensureRequestAvailable();
+    int total = 50;
+    int offset = 0;
+    var items = [];
+    List<Song> songs = [];
+    var res;
+    while (total == 50) {
+      res = await http.get(
+          Uri.parse(
+              'https://api.spotify.com/v1/playlists/${playlistId}/tracks?offset=${offset}&limit=50'),
+          headers: {'Authorization': 'Bearer ${await getAccessToken()}'});
+      // print('res::: for playlistId: ${playlistId}');
+      // print(res.body);
+      offset += 50;
+      items = json.decode(res.body)['items'];
+      total = items.length;
+      songs.addAll(List<Song>.generate(items.length, (index) => Song.fromJsonObj(items[index]['track'])));
+    }
+    // print('All ${playlists.length} Playlists:');
+    // for (var i = 0; i < playlists.length; i++) {
+    //   print(playlists[i]['name']);
+    // }
+    
+    return songs;
+  } catch (e) {
+    print('error getting User Playlists:');
+    print(e);
     throw (e);
   }
 }

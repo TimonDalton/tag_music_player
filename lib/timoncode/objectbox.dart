@@ -61,20 +61,47 @@ class ObjectBox {
     }
   }
 
-  void saveSongs(List<Song> songs) {
+  void saveSongsWithTags(List<Song> songs, List<Tag> tags) {
     try {
+      for (int i = 0; i < songs.length; i++) {
+        songs[i].tags.addAll(tags);
+      }
       _songBox.putMany(songs);
     } catch (e) {
       throw e;
     }
   }
 
-  void saveSongsWithTags(List<Song> songs, List<Tag> tags) {
-    try {
-      for (int i = 0; i < tags.length; i++) {
-        songs[i].tags.addAll(tags);
+  void protectedSaveTagWithSongs(Tag tag, List<Song> songs) {
+    Tag? existingTag =
+        _tagBox.query(Tag_.name.equals(tag.name)).build().findFirst();
+    if (existingTag != null) {
+      tag = existingTag;
+    }
+    for (int i = 0; i < songs.length; i++) {
+      Song? existingSong = _songBox
+          .query(Song_.spotifyId.equals(songs[i].spotifyId)).build().findFirst();
+      if (existingSong != null) {
+        songs[i] = existingSong;
       }
-      _songBox.putMany(songs);
+    }
+    tag.songs.addAll(songs);
+    _tagBox.put(tag);
+  }
+
+  List<bool> checkWhichSongsAreNotUnique(List<Song> songs) {
+    try {
+      List<Song> allMatchingSongs = _songBox
+          .query(Song_.spotifyId.oneOf(List<String>.generate(
+              songs.length, (index) => songs[index].spotifyId)))
+          .build()
+          .find();
+      List<String> matchingDbSpotifyIds = List<String>.generate(
+          allMatchingSongs.length,
+          (index) => allMatchingSongs[index].spotifyId);
+      List<bool> ret = List<bool>.generate(songs.length,
+          (index) => matchingDbSpotifyIds.contains(songs[index].spotifyId));
+      return ret;
     } catch (e) {
       throw e;
     }
@@ -99,24 +126,30 @@ class ObjectBox {
     // queryBuilder.backlinkMany(Tag.,)
     queryBuilder.linkMany(
         Song_.tags,
-        Tag_.id.oneOf(
-          List<int>.generate(included.length, (index) => included[index].id))
-        .and(Tag_.id.notOneOf(
-          List<int>.generate(excluded.length, (index) => excluded[index].id))
-          ));
+        Tag_.id
+            .oneOf(List<int>.generate(
+                included.length, (index) => included[index].id))
+            .and(Tag_.id.notOneOf(List<int>.generate(
+                excluded.length, (index) => excluded[index].id))));
     return queryBuilder.build().find();
   }
 
-  List<Song> getSongsMatchingSearch(String search){
+  List<Song> getSongsMatchingSearch(String search) {
     return _songBox.query(Song_.name.contains(search)).build().find();
   }
-  
-  List<Tag> getTagsMatchingSearch(String search){
+
+  List<Tag> getTagsMatchingSearch(String search) {
     return _tagBox.query(Tag_.name.contains(search)).build().find();
   }
 
-  bool isTagNameUnique(String s) => _tagBox.query(Tag_.name.equals(s)).build().find().length == 0;
+  List<String> getGeneratedTagsOfType(String tagType) {
+    List<Tag> tags =  _tagBox.query(Tag_.name.contains(tagType).and(Tag_.userDefined.equals(false))).build().find();
+    List<String> ret = List<String>.generate(tags.length, (index) => tags[index].name.substring(tagType.length));
+    return ret;
+  }
 
+  bool isTagNameUnique(String s) =>
+      _tagBox.query(Tag_.name.equals(s)).build().find().length == 0;
 
   // Stream<List<Song>> getSongs() {
   //   // Query for all songs, sorted by their date.

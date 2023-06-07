@@ -1,3 +1,5 @@
+import 'package:tag_music_player/timoncode/objectbox.dart';
+
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -9,6 +11,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tag_music_player/timoncode/widgets/libraryPage/playlistWidget.dart';
 import 'package:tag_music_player/timoncode/control_spotify/api_calls.dart';
 import 'package:provider/provider.dart';
+import 'package:tag_music_player/timoncode/widgets/misc/confirmation_popup.dart';
+import 'package:tag_music_player/timoncode/models/song.dart';
+import 'package:tag_music_player/timoncode/models/tag.dart';
+import 'package:tag_music_player/timoncode/page_logic/library_pages/add_songs_page.dart';
 import 'add_songs_page_model.dart';
 export 'add_songs_page_model.dart';
 
@@ -26,7 +32,7 @@ class _AddSongsPageWidgetState extends State<AddSongsPageWidget> {
   final _unfocusNode = FocusNode();
 
   @override
-  void initState() {
+  void initState() {   
     super.initState();
     _model = createModel(context, () => AddSongsPageModel());
   }
@@ -141,41 +147,7 @@ class _AddSongsPageWidgetState extends State<AddSongsPageWidget> {
                     child: Padding(
                       padding:
                           EdgeInsetsDirectional.fromSTEB(0.0, 15.0, 0.0, 0.0),
-                      child: FutureBuilder(
-                        future: getUserPlaylists(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState !=
-                              ConnectionState.done) {
-                            return Icon(Icons.refresh);
-                          }
-                          List<dynamic> playlists =
-                              snapshot.data as List<dynamic>;
-                          List<Widget> children = [];
-                          // print('Images length:');
-                          for (int i = 0; i < playlists.length; i++) {
-                            children.add(PlaylistWidget(
-                                playlistName: playlists[i]['name'],
-                                imageUrl: playlists[i]['images'][0]['url'],
-                                onTap: () {
-                                  // Navigator.of(context).push('That Page');
-                                  print('to ${playlists[i]['name']}');
-                                }));
-                          }
-                          return SingleChildScrollView(
-                              scrollDirection: Axis.vertical,
-                              child: Wrap(
-                                spacing: 30.0,
-                                runSpacing: 0.0,
-                                alignment: WrapAlignment.start,
-                                crossAxisAlignment: WrapCrossAlignment.start,
-                                direction: Axis.horizontal,
-                                runAlignment: WrapAlignment.start,
-                                verticalDirection: VerticalDirection.down,
-                                clipBehavior: Clip.none,
-                                children: children,
-                              ));
-                        },
-                      ),
+                      child: showUserPlaylists(context),
                     ),
                   ),
                 ],

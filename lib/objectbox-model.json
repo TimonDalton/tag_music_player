@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:9010798967777340560",
-      "lastPropertyId": "4:614895528964824454",
+      "lastPropertyId": "7:4633956051513000642",
       "name": "Song",
       "properties": [
         {
@@ -27,7 +27,24 @@
         {
           "id": "4:614895528964824454",
           "name": "spotifyId",
-          "type": 9
+          "type": 9,
+          "flags": 2080,
+          "indexId": "1:3324877264777455464"
+        },
+        {
+          "id": "5:347302859567081836",
+          "name": "duration",
+          "type": 6
+        },
+        {
+          "id": "6:2913082945644414994",
+          "name": "dateAdded",
+          "type": 10
+        },
+        {
+          "id": "7:4633956051513000642",
+          "name": "releaseDate",
+          "type": 10
         }
       ],
       "relations": [
@@ -69,7 +86,7 @@
     }
   ],
   "lastEntityId": "2:3379074201238304732",
-  "lastIndexId": "0:0",
+  "lastIndexId": "1:3324877264777455464",
   "lastRelationId": "1:2933435051223473136",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

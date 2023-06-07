@@ -23,7 +23,7 @@ final _entities = <ModelEntity>[
   ModelEntity(
       id: const IdUid(1, 9010798967777340560),
       name: 'Song',
-      lastPropertyId: const IdUid(4, 614895528964824454),
+      lastPropertyId: const IdUid(7, 4633956051513000642),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
@@ -45,6 +45,22 @@ final _entities = <ModelEntity>[
             id: const IdUid(4, 614895528964824454),
             name: 'spotifyId',
             type: 9,
+            flags: 2080,
+            indexId: const IdUid(1, 3324877264777455464)),
+        ModelProperty(
+            id: const IdUid(5, 347302859567081836),
+            name: 'duration',
+            type: 6,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(6, 2913082945644414994),
+            name: 'dateAdded',
+            type: 10,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(7, 4633956051513000642),
+            name: 'releaseDate',
+            type: 10,
             flags: 0)
       ],
       relations: <ModelRelation>[
@@ -108,7 +124,7 @@ ModelDefinition getObjectBoxModel() {
   final model = ModelInfo(
       entities: _entities,
       lastEntityId: const IdUid(2, 3379074201238304732),
-      lastIndexId: const IdUid(0, 0),
+      lastIndexId: const IdUid(1, 3324877264777455464),
       lastRelationId: const IdUid(1, 2933435051223473136),
       lastSequenceId: const IdUid(0, 0),
       retiredEntityUids: const [],
@@ -133,11 +149,14 @@ ModelDefinition getObjectBoxModel() {
           final nameOffset = fbb.writeString(object.name);
           final artistOffset = fbb.writeString(object.artist);
           final spotifyIdOffset = fbb.writeString(object.spotifyId);
-          fbb.startTable(5);
+          fbb.startTable(8);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, nameOffset);
           fbb.addOffset(2, artistOffset);
           fbb.addOffset(3, spotifyIdOffset);
+          fbb.addInt64(4, object.duration);
+          fbb.addInt64(5, object.dateAdded.millisecondsSinceEpoch);
+          fbb.addInt64(6, object.releaseDate.millisecondsSinceEpoch);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -152,7 +171,13 @@ ModelDefinition getObjectBoxModel() {
               artist: const fb.StringReader(asciiOptimization: true)
                   .vTableGet(buffer, rootOffset, 8, ''),
               spotifyId: const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 10, ''));
+                  .vTableGet(buffer, rootOffset, 10, ''),
+              duration:
+                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0))
+            ..dateAdded = DateTime.fromMillisecondsSinceEpoch(
+                const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0))
+            ..releaseDate = DateTime.fromMillisecondsSinceEpoch(
+                const fb.Int64Reader().vTableGet(buffer, rootOffset, 16, 0));
           InternalToManyAccess.setRelInfo<Song>(
               object.tags, store, RelInfo<Song>.toMany(1, object.id));
           return object;
@@ -211,6 +236,18 @@ class Song_ {
   /// see [Song.spotifyId]
   static final spotifyId =
       QueryStringProperty<Song>(_entities[0].properties[3]);
+
+  /// see [Song.duration]
+  static final duration =
+      QueryIntegerProperty<Song>(_entities[0].properties[4]);
+
+  /// see [Song.dateAdded]
+  static final dateAdded =
+      QueryIntegerProperty<Song>(_entities[0].properties[5]);
+
+  /// see [Song.releaseDate]
+  static final releaseDate =
+      QueryIntegerProperty<Song>(_entities[0].properties[6]);
 
   /// see [Song.tags]
   static final tags = QueryRelationToMany<Song, Tag>(_entities[0].relations[0]);
