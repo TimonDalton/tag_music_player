@@ -1,3 +1,5 @@
+import 'package:tag_music_player/timoncode/widgets/common/songWidget.dart';
+
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -12,25 +14,30 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tag_music_player/timoncode/models/songFilter.dart';
+import 'package:tag_music_player/timoncode/models/song.dart';
+import 'package:tag_music_player/timoncode/widgets/common/songWidget.dart';
 
-class ChangeSongsTagsByGroupPageWidget extends StatefulWidget {
-  const ChangeSongsTagsByGroupPageWidget({Key? key}) : super(key: key);
-  SongFilter filter;
-  
+class ChangeSongsTagsByGroupPage extends StatefulWidget {
+  ChangeSongsTagsByGroupPage({Key? key,required this.filter}) : super(key: key);
+
+  SongFilter filter; 
 
   @override
-  _ChangeSongsTagsByGroupPageWidgetState createState() =>
-      _ChangeSongsTagsByGroupPageWidgetState();
+  _ChangeSongsTagsByGroupPageState createState() =>
+      _ChangeSongsTagsByGroupPageState();
 }
 
-class _ChangeSongsTagsByGroupPageWidgetState
-    extends State<ChangeSongsTagsByGroupPageWidget> {
+class _ChangeSongsTagsByGroupPageState
+    extends State<ChangeSongsTagsByGroupPage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final _unfocusNode = FocusNode();
 
   Widget buildSongs(BuildContext context){
-    return ListView.builder(itemBuilder: (context, index) {
-
+    List<Song> songs = widget.filter.getQueryBuilder().build().find();
+    return ListView.builder(
+      itemCount: songs.length,
+      itemBuilder: (context, index) {
+      return SongWidget(song: songs[index],index: index,);
     },);
   }
 
@@ -259,15 +266,7 @@ class _ChangeSongsTagsByGroupPageWidgetState
                         Padding(
                           padding: EdgeInsetsDirectional.fromSTEB(
                               0.0, 20.0, 0.0, 0.0),
-                          child: ListView(
-                            padding: EdgeInsets.zero,
-                            shrinkWrap: true,
-                            scrollDirection: Axis.vertical,
-                            children: [
-                              DefualtSongWidget(),
-                              DefualtSongWidget(),
-                            ],
-                          ),
+                          child: buildSongs(context),
                         ),
                       ],
                     ),

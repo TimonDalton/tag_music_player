@@ -1,3 +1,5 @@
+import 'package:tag_music_player/timoncode/models/songFilter.dart';
+
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -14,6 +16,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:tag_music_player/timoncode/objectbox.dart';
+import 'package:tag_music_player/timoncode/widgets/change_tags/changeSongTagByGroupPage.dart';
 
 import 'package:tag_music_player/timoncode/widgets/libraryPage/playlistWidget.dart';
 import 'package:tag_music_player/timoncode/control_spotify/api_calls.dart';
@@ -67,8 +70,17 @@ FutureBuilder showUserPlaylists(context) => FutureBuilder(
                         name: 'playlist: ${playlists[i]['name']}',
                         userDefined: false);
                     objectBox.protectedSaveTagWithSongs(tag, songs);
-                    print('saved playlist. adding tags');
-
+                    print(
+                        'saved playlist. adding tags. navigating to change song tags by group');
+                    context.goNamed('change_songs_tags_by_group_page',
+                        extra: {'filter':SongFilter(unprocessedConditions: [
+                          TagNameFilterCondition(
+                              type: FilterType.name,
+                              include: true,
+                              active: true,
+                              tagName: tag.name)
+                        ])}
+                        );
                   });
             }));
       }

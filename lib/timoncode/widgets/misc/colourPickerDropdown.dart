@@ -5,7 +5,7 @@ class ColourPickerDropDown extends StatefulWidget {
   int selectedId;
   late Color selectedColour;
   Function(int) selectIndex;
-  ColourPickerDropDown({required this.selectIndex,this.selectedId = 0}) {
+  ColourPickerDropDown({required this.selectIndex, this.selectedId = 0}) {
     selectedColour = Tag.colours[selectedId];
   }
 
@@ -25,35 +25,36 @@ class _ColourPickerDropDownState extends State<ColourPickerDropDown> {
     });
   }
 
-  List<DropdownMenuItem<int>> buildItems(BuildContext context,Function(int) onTap) {
+  List<DropdownMenuItem<int>> buildItems(
+      BuildContext context, Function(int) onTap) {
     List<DropdownMenuItem<int>> ret = [];
     for (int i = 0; i < Tag.colours.length; i++) {
       ret.add(DropdownMenuItem<int>(
-        onTap: ()=> onTap(i),
-        child: buildItem(context,i),
+        onTap: () => onTap(i),
+        child: buildItem(context, i),
         value: i,
       ));
     }
     return ret;
   }
 
-  Widget buildItem(BuildContext context, int colorId){
+  Widget buildItem(BuildContext context, int colorId) {
     return Container(
-          width: 100,
-          height: 30,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-            color: Tag.colours[colorId],
-          ),
-        );
+      width: 100,
+      height: 30,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+        color: Tag.colours[colorId],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> items = buildItems(context,onSelectCallback);
+    List<Widget> items = buildItems(context, onSelectCallback);
     return DropdownButton(
       value: widget.selectedId,
-      items: buildItems(context,onSelectCallback),
+      items: buildItems(context, onSelectCallback),
       onChanged: (value) => onSelectCallback(value as int),
       // selectedItemBuilder: ,
     );

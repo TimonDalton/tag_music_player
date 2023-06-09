@@ -155,7 +155,7 @@ ModelDefinition getObjectBoxModel() {
           fbb.addOffset(2, artistOffset);
           fbb.addOffset(3, spotifyIdOffset);
           fbb.addInt64(4, object.duration);
-          fbb.addInt64(5, object.dateAdded.millisecondsSinceEpoch);
+          fbb.addInt64(5, object.dateAdded?.millisecondsSinceEpoch);
           fbb.addInt64(6, object.releaseDate.millisecondsSinceEpoch);
           fbb.finish(fbb.endTable());
           return object.id;
@@ -163,7 +163,8 @@ ModelDefinition getObjectBoxModel() {
         objectFromFB: (Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
-
+          final dateAddedValue =
+              const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 14);
           final object = Song(
               id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
               name: const fb.StringReader(asciiOptimization: true)
@@ -172,12 +173,13 @@ ModelDefinition getObjectBoxModel() {
                   .vTableGet(buffer, rootOffset, 8, ''),
               spotifyId: const fb.StringReader(asciiOptimization: true)
                   .vTableGet(buffer, rootOffset, 10, ''),
+              dateAdded: dateAddedValue == null
+                  ? null
+                  : DateTime.fromMillisecondsSinceEpoch(dateAddedValue),
+              releaseDate: DateTime.fromMillisecondsSinceEpoch(
+                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 16, 0)),
               duration:
-                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0))
-            ..dateAdded = DateTime.fromMillisecondsSinceEpoch(
-                const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0))
-            ..releaseDate = DateTime.fromMillisecondsSinceEpoch(
-                const fb.Int64Reader().vTableGet(buffer, rootOffset, 16, 0));
+                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0));
           InternalToManyAccess.setRelInfo<Song>(
               object.tags, store, RelInfo<Song>.toMany(1, object.id));
           return object;

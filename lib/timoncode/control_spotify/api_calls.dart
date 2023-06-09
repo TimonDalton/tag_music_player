@@ -84,7 +84,7 @@ Future<List<Song>> getPlaylistSongs(String playlistId) async {
       offset += 50;
       items = json.decode(res.body)['items'];
       total = items.length;
-      songs.addAll(List<Song>.generate(items.length, (index) => Song.fromJsonObj(items[index]['track'])));
+      songs.addAll(List<Song>.generate(items.length, (index) => Song.fromJsonObj(items[index])));
     }
     // print('All ${playlists.length} Playlists:');
     // for (var i = 0; i < playlists.length; i++) {

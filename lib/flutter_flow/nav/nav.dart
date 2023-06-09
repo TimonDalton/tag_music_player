@@ -3,7 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:tag_music_player/timoncode/models/songFilter.dart';
 import '../flutter_flow_theme.dart';
+import 'package:tag_music_player/timoncode/widgets/change_tags/changeSongTagByGroupPage.dart';
+import 'package:tag_music_player/timoncode/models/songFilter.dart';
 
 import '../../index.dart';
 import '../../main.dart';
@@ -132,10 +135,17 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           builder: (context, params) => DeleteSongsPageWidget(),
         ),
         FFRoute(
-          name: 'change_songs_tags_by_group_page',
-          path: '/changeSongsTagsByGroupPage',
-          builder: (context, params) => ChangeSongsTagsByGroupPageWidget(),
-        ),
+            name: 'change_songs_tags_by_group_page',
+            path: '/changeSongsTagsByGroupPage',
+            builder: (context, params) {
+              var map = params.state.extra as Map<String,SongFilter>;
+              SongFilter filter = map['filter']!;
+              print('extra: ');
+              print(filter.unprocessedConditions.length);
+              return ChangeSongsTagsByGroupPage(
+                filter: filter,
+              );
+            }),
         FFRoute(
           name: 'choose_tag_to_delete_popup',
           path: '/chooseTagToDeletePopup',
@@ -258,11 +268,13 @@ class FFRoute {
     required this.name,
     required this.path,
     required this.builder,
+    this.pageParams,
     this.requireAuth = false,
     this.asyncParams = const {},
     this.routes = const [],
   });
 
+  final dynamic pageParams;
   final String name;
   final String path;
   final bool requireAuth;
