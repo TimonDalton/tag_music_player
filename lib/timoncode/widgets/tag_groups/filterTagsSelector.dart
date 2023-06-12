@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:tag_music_player/timoncode/models/tag.dart';
 
-class FilterTagSelector extends StatefulWidget {
+class FilterTagSelecter extends StatefulWidget {
   final List<Tag> availableTags;
   List<int> availableTagIdBin = [];
   List<int> includedTagIds;
   List<int> excludedTagIds;
-  FilterTagSelector({
+  FilterTagSelecter({
     required this.availableTags,
     this.includedTagIds = const [],
     this.excludedTagIds = const [],
@@ -20,10 +20,10 @@ class FilterTagSelector extends StatefulWidget {
   }
 
   @override
-  State<FilterTagSelector> createState() => _FilterTagSelectorState();
+  State<FilterTagSelecter> createState() => _FilterTagSelecterState();
 }
 
-class _FilterTagSelectorState extends State<FilterTagSelector> {
+class _FilterTagSelecterState extends State<FilterTagSelecter> {
   int highlightedIndex = 1;
   List<DragTargetBox> boxes = List.filled(3, DragTargetBox(typeId: -1,tags: [],));
   void boxTap(DragTargetBox box) {

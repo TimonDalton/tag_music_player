@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:tag_music_player/timoncode/models/tag.dart';
 import 'package:tag_music_player/timoncode/functions/roundedCorners.dart';
@@ -50,17 +52,27 @@ class _TagWidgetState extends State<TagWidget> {
       ),
       child: Center(
           child: Text(widget.tag.name,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(fontSize: widget.height * textSizeMultipier,fontWeight: FontWeight.normal))),
     );
   }
-}
+} 
 
 class TagGroup extends StatefulWidget {
-  TagGroup({this.tags = const []});
+  TagGroup({this.tags = const []}){
+    this.displayTags = [];
+    for(int i =0;i<tags.length;i++){
+      if(tags[i].userDefined){
+        this.displayTags.add(tags[i]);
+      }
+    }
+  }
+  
   List<Tag> tags;
+  late List<Tag> displayTags;
   @override
   State<TagGroup> createState() => _TagGroupState();
-}
+} 
 
 class _TagGroupState extends State<TagGroup> {
   void callback(int index) {
@@ -77,7 +89,7 @@ class _TagGroupState extends State<TagGroup> {
       child: new LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
         const double widthToHeight = 3.5;
-        int itemCount = widget.tags.length;
+        int itemCount = widget.displayTags.length;
         double area = constraints.maxHeight * constraints.maxWidth;
         double itemArea = area / itemCount;
         double maxColWidth = itemArea * (widthToHeight / (widthToHeight + 1));
@@ -101,11 +113,14 @@ class _TagGroupState extends State<TagGroup> {
         }
         List<Widget> children = [];
         for (int i = 0; i < itemCount; i++) {
+          if(widget.displayTags[i].colourId == -1){
+            print(jsonEncode(widget.displayTags[i]));
+          }
           children.add(TagWidget(
-              tag: widget.tags[i],
+              tag: widget.displayTags[i],
               selected: false,
               index: i,
-              callback: callback,
+              callback: (){},
               height: itemHeight,
               width: itemWidth));
         }
@@ -115,4 +130,4 @@ class _TagGroupState extends State<TagGroup> {
       }),
     );
   }
-}
+} 

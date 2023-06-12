@@ -218,6 +218,9 @@ class ObjectBox {
   Tag getFirstTag() => _tagBox.query().build().findFirst()!;
 
   List<Tag> getAllTags() => _tagBox.getAll();
+  List<Tag> getAllUserDefTags() {
+    return _tagBox.query(Tag_.userDefined.equals(true)).build().find();
+  }
 
   Future<List<Tag>> getAllTagsAsync() => _tagBox.getAllAsync();
 }

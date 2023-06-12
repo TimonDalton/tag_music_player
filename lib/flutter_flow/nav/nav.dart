@@ -140,8 +140,6 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
             builder: (context, params) {
               var map = params.state.extra as Map<String,SongFilter>;
               SongFilter filter = map['filter']!;
-              print('extra: ');
-              print(filter.unprocessedConditions.length);
               return ChangeSongsTagsByGroupPage(
                 filter: filter,
               );

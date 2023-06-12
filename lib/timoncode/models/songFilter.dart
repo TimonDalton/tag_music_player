@@ -2,6 +2,13 @@ import 'package:tag_music_player/timoncode/objectbox.dart';
 import 'package:tag_music_player/timoncode/models/song.dart';
 import 'package:tag_music_player/objectbox.g.dart';
 
+const bool printBuildProcess = true;
+void printD(String s){
+  if (printBuildProcess){
+    print(s);
+  }
+}
+
 enum FilterType {
   none,
   name,
@@ -15,15 +22,14 @@ class FilterCondition {
   FilterType type;
   SongFilter? parentPointer;
   bool active;
-  FilterCondition(
-      {required this.type, this.parentPointer, this.active = true});
+  FilterCondition({required this.type, this.parentPointer, this.active = true});
 }
 
 class TagNameFilterCondition extends FilterCondition {
   String tagName;
   bool include;
   void changeTagName(String s) {
-    if(this.parentPointer!= null){
+    if (this.parentPointer != null) {
       this.parentPointer!.markChange();
     }
     this.tagName = s;
@@ -39,7 +45,7 @@ class TagNameFilterCondition extends FilterCondition {
     required super.type,
     super.parentPointer,
     super.active = true,
-  }){
+  }) {
     super.type = FilterType.name;
   }
 }
@@ -53,7 +59,7 @@ class DateCreatedFilterCondition extends FilterCondition {
     required super.type,
     super.parentPointer,
     super.active = true,
-  }){
+  }) {
     super.type = FilterType.dateCreated;
   }
 }
@@ -67,7 +73,7 @@ class DateAddedFilterCondition extends FilterCondition {
     required super.type,
     super.parentPointer,
     super.active = true,
-  }){
+  }) {
     super.type = FilterType.dateAdded;
   }
 }
@@ -81,7 +87,7 @@ class SongDurationFilterCondition extends FilterCondition {
     required super.type,
     super.parentPointer,
     super.active = true,
-  }){
+  }) {
     super.type = FilterType.songDuration;
   }
 }
@@ -95,7 +101,7 @@ class ArtistFilterCondition extends FilterCondition {
     required super.type,
     super.parentPointer,
     super.active = true,
-  }){
+  }) {
     super.type = FilterType.artist;
   }
 }
@@ -128,9 +134,8 @@ class SongFilter {
     unprocessedConditions.addAll(f);
   }
 
-  void clear() {
+  void clearProcessed() {
     queryIsSet = false;
-    unprocessedConditions = [];
 
     _tnFilters = [];
     _dcFilters = [];
@@ -177,13 +182,15 @@ class SongFilter {
     List<String> includeStrings = [];
     Condition<Song> conditionStack = Song_.spotifyId.notNull();
 
-    clear();
+    clearProcessed();
 
+    printD('Unprocessed Filters: length = ${unprocessedConditions.length}, filters:');
     //split filters into types
     for (int i = 0; i < unprocessedConditions.length; i++) {
       if (!unprocessedConditions[i].active) {
         continue;
       }
+      printD(unprocessedConditions[i].type.toString());
       switch (unprocessedConditions[i].type) {
         case FilterType.name:
           _tnFilters.add(unprocessedConditions[i] as TagNameFilterCondition);
@@ -217,17 +224,25 @@ class SongFilter {
     conditionStack = handleSdFilters(conditionStack, _sdFilters);
 
     //Handles Artist Filters
-    //it's one line so it doesn't get a function compared to the average 30 lines
-    conditionStack.and(Song_.artist.oneOf(List<String>.generate(
-        _aFilters.length, (index) => _aFilters[index].artist)));
+    //it's only a few lines so it doesn't get a function compared to the average 30 lines of the others
+    if(printBuildProcess){
+      print('artists');
+      print(_aFilters.toList().toString());
+    }
+    if (_aFilters.length > 0) {
+      conditionStack.and(Song_.artist.oneOf(List<String>.generate(
+          _aFilters.length, (index) => _aFilters[index].artist)));
+    }
 
     //final condition entered. All after can only be of the format "oneOf"
     QueryBuilder<Song> qb = objectBox.getSongBox.query(conditionStack);
 
-    includeStrings = handleTagNamesFilters(_tnFilters);
+    includeStrings = handleTnFilters(_tnFilters);
 
     //handle tag name strings
-    qb.linkMany(Song_.tags, Tag_.name.oneOf(includeStrings));
+    if (includeStrings.length > 0) {
+      qb.linkMany(Song_.tags, Tag_.name.oneOf(includeStrings));
+    }
 
     queryB = qb;
     queryIsSet = true;
@@ -257,6 +272,17 @@ Condition<Song> handleDcFilters(Condition<Song> conditionStack,
           latestAfter = _dcFilters[i].dateCreated!;
         }
       }
+    }
+  }
+  if (printBuildProcess) {
+    print('Date Created Filters: ');
+    if (earliestBefore != null) {
+      print('Earliest Before: ');
+      print(earliestBefore.microsecondsSinceEpoch);
+    }
+    if (latestAfter != null) {
+      print('Latest After: ');
+      print(latestAfter.microsecondsSinceEpoch);
     }
   }
   if (earliestBefore != null) {
@@ -293,6 +319,17 @@ Condition<Song> handleDaFilters(
       }
     }
   }
+  if (printBuildProcess) {
+    print('Date Added Filters: ');
+    if (earliestBefore != null) {
+      print('Earliest Before: ');
+      print(earliestBefore.microsecondsSinceEpoch);
+    }
+    if (latestAfter != null) {
+      print('Latest After: ');
+      print(latestAfter.microsecondsSinceEpoch);
+    }
+  }
   if (earliestBefore != null) {
     conditionStack = conditionStack.and(Song_.dateAdded.lessThan(earliestBefore
         .microsecondsSinceEpoch)); //TODO figure out how objectBox compares dates
@@ -327,6 +364,17 @@ Condition<Song> handleSdFilters(Condition<Song> conditionStack,
       }
     }
   }
+  if (printBuildProcess) {
+    print('Song Duration Filters: ');
+    if (shortestShorterThan != null) {
+      print('Shortest Shorter Than: ');
+      print(shortestShorterThan);
+    }
+    if (longestLongerThan != null) {
+      print('Longest Longer Than: ');
+      print(longestLongerThan);
+    }
+  }
   if (shortestShorterThan != null) {
     conditionStack = conditionStack.and(Song_.duration.lessThan(
         shortestShorterThan)); //TODO figure out how objectBox compares dates
@@ -338,19 +386,25 @@ Condition<Song> handleSdFilters(Condition<Song> conditionStack,
   return conditionStack;
 }
 
-List<String> handleTagNamesFilters(List<TagNameFilterCondition> _tnFilters) {
+List<String> handleTnFilters(List<TagNameFilterCondition> _tnFilters) {
   List<String> exclude = [];
   List<int> includeIndexes = [];
   List<String> include = [];
   for (int i = 0; i < _tnFilters.length; i++) {
     if (!_tnFilters[i].include) {
-      exclude.add(_tnFilters[i].tagName);
+      // exclude.add(_tnFilters[i].tagName);
     } else {
       includeIndexes.add(i);
     }
   }
+  printD('Include Filters:');
   for (int i = 0; i < includeIndexes.length; i++) {
     include.add(_tnFilters[includeIndexes[i]].tagName);
+    printD(_tnFilters[includeIndexes[i]].tagName);
+  }
+  if (printBuildProcess) {
+    print('Song Tag Included Filters');
+    print(include);
   }
   return include;
 }

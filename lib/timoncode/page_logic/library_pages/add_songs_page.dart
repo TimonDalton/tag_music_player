@@ -72,15 +72,17 @@ FutureBuilder showUserPlaylists(context) => FutureBuilder(
                     objectBox.protectedSaveTagWithSongs(tag, songs);
                     print(
                         'saved playlist. adding tags. navigating to change song tags by group');
+                    SongFilter filter = SongFilter(unprocessedConditions: [
+                      TagNameFilterCondition(
+                          type: FilterType.name,
+                          include: true,
+                          active: true,
+                          tagName: tag.name)
+                    ]);
+                    print('unprocessed conditions: ');
+                    print(filter.unprocessedConditions.toString() + ', length:${filter.unprocessedConditions.length}');
                     context.goNamed('change_songs_tags_by_group_page',
-                        extra: {'filter':SongFilter(unprocessedConditions: [
-                          TagNameFilterCondition(
-                              type: FilterType.name,
-                              include: true,
-                              active: true,
-                              tagName: tag.name)
-                        ])}
-                        );
+                        extra: {'filter': filter});
                   });
             }));
       }

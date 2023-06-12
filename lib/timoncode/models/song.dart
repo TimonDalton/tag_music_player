@@ -56,9 +56,11 @@ class Song {
   }
 
   static String durationToString(int duration){
+    duration ~/= 1000;
     int minutes = duration~/60;
     int seconds = duration - minutes*60;
-    return minutes.toString()+ ":"+seconds.toString();
+    String secondsStr = (seconds>=10)?seconds.toString():'0'+seconds.toString();
+    return minutes.toString()+ ":"+secondsStr;
   }
 }
 
