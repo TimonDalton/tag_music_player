@@ -31,8 +31,11 @@ class _SongWidgetState extends State<SongWidget> {
   Widget build(BuildContext context) {
     context.watch<FFAppState>();
 
-    List<Tag> tags = widget.song.tags.toList();
-    tags.addAll(widget.extraExcludedTags);
+    List<Tag> tags = [];
+    tags = widget.song.tags.toList();
+    widget.extraIncludedTags.removeWhere((element) => tags.contains(element));
+    tags.addAll(widget.extraIncludedTags);
+    print(List<String>.generate);
     tags.removeWhere((element) => widget.extraExcludedTags.contains(element));
 
     return Padding(

@@ -9,15 +9,18 @@ import 'bottom_options_bar_widget_model.dart';
 export 'bottom_options_bar_widget_model.dart';
 
 class BottomOptionsBarWidgetWidget extends StatefulWidget {
-  const BottomOptionsBarWidgetWidget({
+  BottomOptionsBarWidgetWidget({
     Key? key,
     this.confirmText,
     Color? confirmColour,
+    this.onConfirmCallBack,
   })  : this.confirmColour = confirmColour ?? const Color(0xFF0094ED),
+    
         super(key: key);
 
   final String? confirmText;
   final Color confirmColour;
+  Function? onConfirmCallBack;
 
   @override
   _BottomOptionsBarWidgetWidgetState createState() =>
@@ -90,7 +93,7 @@ class _BottomOptionsBarWidgetWidgetState
                             if (FFAppState().basePage == 1) {
                               context.pushNamed('Filters_Page');
                             } else {
-                              context.pushNamed('song_library_page');
+                              context.pushNamed('song_library_page'); 
                             }
                           }
                         },
@@ -105,22 +108,25 @@ class _BottomOptionsBarWidgetWidgetState
                         ),
                       ),
                     ),
-                    Align(
-                      alignment: AlignmentDirectional(0.0, 0.0),
-                      child: wrapWithModel(
-                        model: _model.colourButtonModel2,
-                        updateCallback: () => setState(() {}),
-                        child: ColourButtonWidget(
-                          buttonColour: valueOrDefault<Color>(
-                            widget.confirmColour,
-                            FlutterFlowTheme.of(context).accent1,
+                    InkWell(
+                      onTap: () => widget.onConfirmCallBack!(),
+                      child: Align(
+                        alignment: AlignmentDirectional(0.0, 0.0),
+                        child: wrapWithModel(
+                          model: _model.colourButtonModel2,
+                          updateCallback: () => setState(() {}),
+                          child: ColourButtonWidget(
+                            buttonColour: valueOrDefault<Color>(
+                              widget.confirmColour,
+                              FlutterFlowTheme.of(context).accent1,
+                            ),
+                            text: valueOrDefault<String>(
+                              widget.confirmText,
+                              '[Confirm]',
+                            ),
                           ),
-                          text: valueOrDefault<String>(
-                            widget.confirmText,
-                            '[Confirm]',
-                          ),
-                        ),
                       ),
+                        ),
                     ),
                   ],
                 ),

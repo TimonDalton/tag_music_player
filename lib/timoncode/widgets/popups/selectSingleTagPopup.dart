@@ -9,7 +9,8 @@ Future<void> showSelectSingleTagPopup(BuildContext context, Function(Tag?) callb
   print(List<String>.generate(tags.length, (index) => tags[index].name));
   TagSelector tagSelector = TagSelector(
             maxSelectable: 1,
-            tags: tags,            
+            tags: tags,         
+            overflowMax: true,   
           );  
   return showDialog<void>(
     context: context,

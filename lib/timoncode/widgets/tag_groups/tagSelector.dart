@@ -46,13 +46,14 @@ class _TapableTagState extends State<TapableTag> {
 }
 
 class TagSelector extends StatefulWidget {
-  TagSelector({this.tags = const [],this.maxSelectable = null}){
+  TagSelector({this.tags = const [],this.maxSelectable = null,this.overflowMax = false}){
     if (maxSelectable == null){
       maxSelectable = 1<<63;//max int size
     }
   }
   List<Tag> tags;
   int? maxSelectable;
+  bool overflowMax;
   List<int> selectedIndicies = [];
   List<int> getSelectedTagIds(){
     List<int> ret = [];
@@ -78,8 +79,12 @@ class _TagSelectorState extends State<TagSelector> {
       if(widget.selectedIndicies.contains(index)){
         widget.selectedIndicies.remove(index);
       }else{
-        if(widget.selectedIndicies.length < widget.maxSelectable!)
-        widget.selectedIndicies.add(index);
+        if(widget.selectedIndicies.length < widget.maxSelectable!){
+          widget.selectedIndicies.add(index);
+        }else if (widget.overflowMax == true){
+          widget.selectedIndicies.removeAt(0);
+          widget.selectedIndicies.add(index);
+        }
       }
     });
   }
