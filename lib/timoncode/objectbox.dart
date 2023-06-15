@@ -63,8 +63,9 @@ class ObjectBox {
 
   void saveSongsWithTags(List<Song> songs, List<Tag> tags) {
     try {
+      List<int> tagIdList = List<int>.generate(tags.length, (index) => tags[index].id);
       for (int i = 0; i < songs.length; i++) {
-        songs[i].tags.addAll(tags);
+        songs[i].tags.addAll(tags);//does its own check for duplicates
       }
       _songBox.putMany(songs);
     } catch (e) {

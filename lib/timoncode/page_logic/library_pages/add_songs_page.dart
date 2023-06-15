@@ -1,3 +1,4 @@
+import 'package:tag_music_player/objectbox.g.dart';
 import 'package:tag_music_player/timoncode/models/songFilter.dart';
 
 import '/flutter_flow/flutter_flow_icon_button.dart';
@@ -20,7 +21,7 @@ import 'package:tag_music_player/timoncode/widgets/change_tags/changeSongTagByGr
 
 import 'package:tag_music_player/timoncode/widgets/libraryPage/playlistWidget.dart';
 import 'package:tag_music_player/timoncode/control_spotify/api_calls.dart';
-import 'package:tag_music_player/timoncode/widgets/misc/confirmation_popup.dart';
+import 'package:tag_music_player/timoncode/widgets/popups/confirmation_popup.dart';
 import 'package:tag_music_player/timoncode/models/song.dart';
 import 'package:tag_music_player/timoncode/models/tag.dart';
 
@@ -70,14 +71,21 @@ FutureBuilder showUserPlaylists(context) => FutureBuilder(
                         name: 'playlist: ${playlists[i]['name']}',
                         userDefined: false);
                     objectBox.protectedSaveTagWithSongs(tag, songs);
+                    int tagId = -1;
+                    try{
+                      tagId = objectBox.getTagBox.query(Tag_.name.equals('playlist: ${playlists[i]['name']}')).build().find().first.id;
+                    }catch(e){
+                      print(e);
+                      throw "Getting with name playlist: ${playlists[i]['name']} didn't work ";
+                    }
                     print(
                         'saved playlist. adding tags. navigating to change song tags by group');
                     SongFilter filter = SongFilter(unprocessedConditions: [
-                      TagNameFilterCondition(
-                          type: FilterType.name,
+                      TagFilterCondition(
+                          type: FilterType.tag,
                           include: true,
                           active: true,
-                          tagName: tag.name)
+                          tagId: tagId)
                     ]);
                     print('unprocessed conditions: ');
                     print(filter.unprocessedConditions.toString() + ', length:${filter.unprocessedConditions.length}');

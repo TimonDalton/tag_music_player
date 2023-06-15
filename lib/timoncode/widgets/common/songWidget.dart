@@ -35,8 +35,8 @@ class _SongWidgetState extends State<SongWidget> {
     tags = widget.song.tags.toList();
     widget.extraIncludedTags.removeWhere((element) => tags.contains(element));
     tags.addAll(widget.extraIncludedTags);
-    print(List<String>.generate);
-    tags.removeWhere((element) => widget.extraExcludedTags.contains(element));
+    List<int> excludeGenerate = List<int>.generate(widget.extraExcludedTags.length,(index) => widget.extraExcludedTags[index].id,);
+    tags.removeWhere((element) => excludeGenerate.contains(element.id)   );
 
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 5.0, 0.0, 0.0),

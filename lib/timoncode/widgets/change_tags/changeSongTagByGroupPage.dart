@@ -27,25 +27,24 @@ class TagAction {
   bool add;
   bool remove;
 
-  Tag? addedTag;
-  Tag? removedTag;
+  Tag? involvedTag;
 
-  TagAction({this.primaryAdd = true, this.add = false, this.addedTag, this.remove = false, this.removedTag});
+  TagAction({this.primaryAdd = true, this.add = false, this.remove = false, this.involvedTag});
 
   void revert(List<Tag> addList, List<Tag> removeList) {
     if (primaryAdd) {
       if (add) {
-        addList.remove(addedTag!);
+        addList.removeLast();
       }
       if (remove) {
-        removeList.add(removedTag!);
+        removeList.add(involvedTag!);
       }
     } else {
       if (add) {
-        addList.add(addedTag!);
+        addList.add(involvedTag!);
       }
       if (remove) {
-        removeList.remove(removedTag!);
+        removeList.removeLast();
       }
     }
   }
@@ -175,24 +174,27 @@ class _ChangeSongsTagsByGroupPageState extends State<ChangeSongsTagsByGroupPage>
                                   color: FlutterFlowTheme.of(context).accent1,
                                   borderRadius: BorderRadius.circular(5.0),
                                 ),
-                                child: Padding(
-                                  padding: EdgeInsetsDirectional.fromSTEB(5.0, 10.0, 5.0, 0.0),
-                                  child: RichText(
-                                    text: TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text: 'Artist: Twentyone Pilots',
-                                          style: TextStyle(),
-                                        ),
-                                        TextSpan(
-                                          text: '\nSource: Playlist2',
-                                          style: TextStyle(),
-                                        )
-                                      ],
-                                      style: FlutterFlowTheme.of(context).bodyMedium.override(
-                                            fontFamily: 'Roboto Condensed',
-                                            fontSize: 18.0,
+                                child: InkWell(
+                                  onTap: (){},
+                                  child: Padding(
+                                    padding: EdgeInsetsDirectional.fromSTEB(5.0, 10.0, 5.0, 0.0),
+                                    child: RichText(
+                                      text: TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: 'Artist: Twentyone Pilots',
+                                            style: TextStyle(),
                                           ),
+                                          TextSpan(
+                                            text: '\nSource: Playlist2',
+                                            style: TextStyle(),
+                                          )
+                                        ],
+                                        style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                              fontFamily: 'Roboto Condensed',
+                                              fontSize: 18.0,
+                                            ),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -266,11 +268,10 @@ class _ChangeSongsTagsByGroupPageState extends State<ChangeSongsTagsByGroupPage>
                                   if (!widget.addedTags.contains(widget.displayedTag!)) {
                                     setState(() {
                                       widget.addedTags.add(widget.displayedTag!);
-                                      widget.previousActions.add(TagAction(primaryAdd: true, add: true, addedTag: widget.displayedTag!)); //true means that last something was added
+                                      widget.previousActions.add(TagAction(primaryAdd: true, add: true, involvedTag: widget.displayedTag!)); //true means that last something was added
                                       if (widget.removedTags.contains(widget.displayedTag!)) {
                                         widget.removedTags.remove(widget.displayedTag!);
                                         widget.previousActions.last.remove = true;
-                                        widget.previousActions.last.removedTag = widget.displayedTag!;
                                       }
                                     });
                                   }
@@ -292,11 +293,10 @@ class _ChangeSongsTagsByGroupPageState extends State<ChangeSongsTagsByGroupPage>
                                   if (!widget.removedTags.contains(widget.displayedTag!)) {
                                     setState(() {
                                       widget.removedTags.add(widget.displayedTag!);
-                                      widget.previousActions.add(TagAction(primaryAdd: false, remove: true, removedTag: widget.displayedTag!)); //true means tha
+                                      widget.previousActions.add(TagAction(primaryAdd: false, remove: true, involvedTag: widget.displayedTag!)); //true means tha
                                       if (widget.addedTags.contains(widget.displayedTag!)) {
                                         widget.addedTags.remove(widget.displayedTag!);
                                         widget.previousActions.last.add = true;
-                                        widget.previousActions.last.addedTag = widget.displayedTag!;
                                       }
                                     });
                                   }
@@ -337,9 +337,12 @@ class _ChangeSongsTagsByGroupPageState extends State<ChangeSongsTagsByGroupPage>
                 confirmText: 'Save',
                 confirmColour: Color(0xFF0094ED),
                 onConfirmCallBack: () {
-                  widget.songs.removeWhere((song) => widget.removedTags.contains(song));
-                  objectBox.saveSongsWithTags(widget.songs, widget.addedTags);
+                  List<int> removeIds = List<int>.generate(widget.removedTags.length, (index) => widget.removedTags[index].id);
+                  for (int i = 0; i < widget.songs.length; i++) {
+                    widget.songs[i].tags.removeWhere((tag) => removeIds.contains(tag.id));
+                  }
                   context.pop();
+                  objectBox.saveSongsWithTags(widget.songs, widget.addedTags);
                 },
               ),
             ),
