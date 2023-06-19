@@ -39,13 +39,13 @@ class Home extends StatelessWidget {
   Home();
 
   List<Tag> tags = [
-    Tag(name: 'Banjo', colourId: 0, id: 0),
-    Tag(name: 'Loud', colourId: 1, id: 1),
-    Tag(name: 'Vibes', colourId: 2, id: 2),
-    Tag(name: 'Yeet', colourId: 3, id: 3),
-    Tag(name: 'Yoo', colourId: 4, id: 4),
-    Tag(name: 'Skroo', colourId: 5, id: 5),
-    Tag(name: 'Skra', colourId: 6, id: 6),
+    Tag(name: 'Banjo', colourIndex: 0, id: 0),
+    Tag(name: 'Loud', colourIndex: 1, id: 1),
+    Tag(name: 'Vibes', colourIndex: 2, id: 2),
+    Tag(name: 'Yeet', colourIndex: 3, id: 3),
+    Tag(name: 'Yoo', colourIndex: 4, id: 4),
+    Tag(name: 'Skroo', colourIndex: 5, id: 5),
+    Tag(name: 'Skra', colourIndex: 6, id: 6),
   ];
 
   @override

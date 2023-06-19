@@ -1,31 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:tag_music_player/timoncode/models/tag.dart';
 
-class FilterTagSelecter extends StatefulWidget {
+class FilterTagSelector extends StatefulWidget {
   final List<Tag> availableTags;
   List<int> availableTagIdBin = [];
   List<int> includedTagIds;
   List<int> excludedTagIds;
-  FilterTagSelecter({
+  FilterTagSelector({
     required this.availableTags,
     this.includedTagIds = const [],
     this.excludedTagIds = const [],
   }) {
     for (int i = 0; i < availableTags.length; i++) {
-      if (!((includedTagIds.contains(availableTags[i].id)) ||
-          (excludedTagIds.contains(availableTags[i].id)))) {
+      if (!((includedTagIds.contains(availableTags[i].id)) || (excludedTagIds.contains(availableTags[i].id)))) {
         availableTagIdBin.add(availableTags[i].id);
       }
     }
   }
 
   @override
-  State<FilterTagSelecter> createState() => _FilterTagSelecterState();
+  State<FilterTagSelector> createState() => _FilterTagSelectorState();
 }
 
-class _FilterTagSelecterState extends State<FilterTagSelecter> {
+class _FilterTagSelectorState extends State<FilterTagSelector> {
   int highlightedIndex = 1;
-  List<DragTargetBox> boxes = List.filled(3, DragTargetBox(typeId: -1,tags: [],));
+  List<DragTargetBox> boxes = List.filled(
+      3,
+      DragTargetBox(
+        typeId: -1,
+        tags: [],
+      ));
   void boxTap(DragTargetBox box) {
     if (!box.highLighted) {
       setState(() {
@@ -43,12 +47,16 @@ class _FilterTagSelecterState extends State<FilterTagSelecter> {
     }
   }
 
-  Widget buildAllBoxes(
-      BuildContext context, int highlightIndex, List<DragTargetBox> tagBoxes) {
+  Widget buildAllBoxes(BuildContext context, int highlightIndex, List<DragTargetBox> tagBoxes, {double parentWidth = 360}) {
+    double padding = parentWidth * 0.01;
+    double usableWidth = (parentWidth - padding * 4) / 2;
     tagBoxes[0] = DragTargetBox(
       tagIds: widget.availableTagIdBin,
       typeId: 0,
       itemOnTap: itemTap,
+      width: usableWidth,
+      height: usableWidth,
+      padding: padding,
       tags: widget.availableTags,
     );
     tagBoxes[1] = DragTargetBox(
@@ -56,14 +64,21 @@ class _FilterTagSelecterState extends State<FilterTagSelecter> {
       highLighted: highlightIndex == 1,
       boxOnTap: boxTap,
       typeId: 1,
+      width: usableWidth,
+      height: usableWidth,
+      padding: padding,
       tags: widget.availableTags,
     );
     tagBoxes[2] = DragTargetBox(
-        tagIds: widget.excludedTagIds,
-        highLighted: highlightIndex == 2,
-        boxOnTap: boxTap,
-        tags: widget.availableTags,
-        typeId: 2);
+      tagIds: widget.excludedTagIds,
+      highLighted: highlightIndex == 2,
+      boxOnTap: boxTap,
+      typeId: 2,
+      width: usableWidth,
+      height: usableWidth,
+      padding: padding,
+      tags: widget.availableTags,
+    );
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -80,9 +95,9 @@ class _FilterTagSelecterState extends State<FilterTagSelecter> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: buildAllBoxes(context, highlightedIndex, boxes),
-    );
+    return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
+      return buildAllBoxes(context, highlightedIndex, boxes, parentWidth: constraints.maxWidth);
+    });
   }
 }
 
@@ -94,6 +109,9 @@ class DragTargetBox extends StatefulWidget {
     this.itemOnTap,
     required this.typeId,
     this.highLighted = false,
+    this.height = 170,
+    this.width = 170,
+    this.padding = 10,
   });
   final List<Tag> tags;
   List<int> tagIds;
@@ -101,6 +119,9 @@ class DragTargetBox extends StatefulWidget {
   Function? boxOnTap;
   final int typeId;
   bool highLighted;
+  double height;
+  double width;
+  double padding;
 
   @override
   State<DragTargetBox> createState() => _DragTargetBoxState();
@@ -128,9 +149,9 @@ class _DragTargetBoxState extends State<DragTargetBox> {
         highlightColor: Colors.transparent,
         onTap: () => widget.boxOnTap != null ? widget.boxOnTap!(widget) : '',
         child: Container(
-          margin: EdgeInsets.all(10),
-          width: 170,
-          height: 170,
+          margin: EdgeInsets.all(widget.padding),
+          width: widget.width,
+          height: widget.height,
           color: widget.highLighted ? Colors.lightBlue : Colors.grey,
           child: DragTarget(onAccept: (data) {
             DragTag sender = data as DragTag;
@@ -146,7 +167,7 @@ class _DragTargetBoxState extends State<DragTargetBox> {
                 tagId: widget.tagIds[i],
                 onRemove: removeTag,
                 onTap: widget.itemOnTap,
-                tag: widget.tags[widget.tagIds[i]],
+                tag: widget.tags.firstWhere((tag) => tag.id == widget.tagIds[i]),
                 // onTap: ,
                 containerTypeId: widget.typeId,
               ));
@@ -165,12 +186,7 @@ class DragTag extends StatelessWidget {
   final Function? onTap;
   late Tag? tag;
   int containerTypeId;
-  DragTag(
-      {required this.tagId,
-      required this.onRemove,
-      this.onTap,
-      this.tag,
-      this.containerTypeId = -1});
+  DragTag({required this.tagId, required this.onRemove, this.onTap, this.tag, this.containerTypeId = -1});
 
   @override
   Widget build(BuildContext context) {

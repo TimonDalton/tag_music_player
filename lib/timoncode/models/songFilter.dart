@@ -80,7 +80,7 @@ class DateAddedFilterCondition extends FilterCondition {
 }
 
 class SongDurationFilterCondition extends FilterCondition {
-  int duration;
+  Duration duration;
   bool minimum;
   SongDurationFilterCondition({
     required this.duration,
@@ -160,8 +160,8 @@ class SongFilter {
     latestAfDC = DateCreatedFilterCondition(type: FilterType.dateCreated,active: false, before: false);
     earliestBefDA = DateAddedFilterCondition(type: FilterType.dateAdded, active: false, before: true);
     latestAfDA = DateAddedFilterCondition(type: FilterType.dateAdded, active: false, before: false);
-    shortestShorterSD = SongDurationFilterCondition(type: FilterType.songDuration, active: false, minimum: false,duration: -1);
-    longestLongerSD = SongDurationFilterCondition(type: FilterType.songDuration, active: false, minimum: true,duration: -1);;
+    shortestShorterSD = SongDurationFilterCondition(type: FilterType.songDuration, active: false, minimum: false,duration: Duration.zero);
+    longestLongerSD = SongDurationFilterCondition(type: FilterType.songDuration, active: false, minimum: true,duration: Duration.zero);;
     allowedArtists = [];
   }
 
@@ -370,8 +370,8 @@ Condition<Song> handleDaFilters(Condition<Song> conditionStack, List<DateAddedFi
 }
 
 Condition<Song> handleSdFilters(Condition<Song> conditionStack, List<SongDurationFilterCondition> _sdFilters, SongDurationFilterCondition shortestShorterThanFC,SongDurationFilterCondition longestLongerThanFC) {
-  int? shortestShorterThan;
-  int? longestLongerThan;
+  Duration? shortestShorterThan;
+  Duration? longestLongerThan;
   for (int i = 0; i < _sdFilters.length; i++) {
     if (_sdFilters[i].duration != null) {
       if (shortestShorterThan == null) {
@@ -403,12 +403,12 @@ Condition<Song> handleSdFilters(Condition<Song> conditionStack, List<SongDuratio
     }
   }
   if (shortestShorterThan != null) {
-    conditionStack = conditionStack.and(Song_.duration.lessThan(shortestShorterThan)); //TODO figure out how objectBox compares dates
+    conditionStack = conditionStack.and(Song_.duration.lessThan(shortestShorterThan.inMilliseconds)); //TODO figure out how objectBox compares dates
     shortestShorterThanFC.active = true;
     shortestShorterThanFC.duration = shortestShorterThan;
   }
   if (longestLongerThan != null) {
-    conditionStack = conditionStack.and(Song_.duration.greaterThan(longestLongerThan)); //TODO figure out how objectBox compares dates
+    conditionStack = conditionStack.and(Song_.duration.greaterThan(longestLongerThan.inMilliseconds)); //TODO figure out how objectBox compares dates
     longestLongerThanFC.active = true;
     longestLongerThanFC.duration = longestLongerThan;
   }

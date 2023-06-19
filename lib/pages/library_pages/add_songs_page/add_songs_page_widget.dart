@@ -11,7 +11,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tag_music_player/timoncode/widgets/libraryPage/playlistWidget.dart';
 import 'package:tag_music_player/timoncode/control_spotify/api_calls.dart';
 import 'package:provider/provider.dart';
-import 'package:tag_music_player/timoncode/widgets/misc/confirmation_popup.dart';
+import 'package:tag_music_player/timoncode/widgets/popups/confirmation_popup.dart';
 import 'package:tag_music_player/timoncode/models/song.dart';
 import 'package:tag_music_player/timoncode/models/tag.dart';
 import 'package:tag_music_player/timoncode/page_logic/library_pages/add_songs_page.dart';

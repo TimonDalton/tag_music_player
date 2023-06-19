@@ -47,9 +47,7 @@ class ObjectBox {
   /// Create an instance of ObjectBox to use throughout the app.
   static Future<ObjectBox> init() async {
     // Future<Store> openStore() {...} is defined in the generated objectbox.g.dart
-    final store = await openStore(
-        directory:
-            p.join((await getApplicationDocumentsDirectory()).path, "obx"));
+    final store = await openStore(directory: p.join((await getApplicationDocumentsDirectory()).path, "obx"));
     return ObjectBox._create(store);
   }
 
@@ -65,7 +63,7 @@ class ObjectBox {
     try {
       List<int> tagIdList = List<int>.generate(tags.length, (index) => tags[index].id);
       for (int i = 0; i < songs.length; i++) {
-        songs[i].tags.addAll(tags);//does its own check for duplicates
+        songs[i].tags.addAll(tags); //does its own check for duplicates
       }
       _songBox.putMany(songs);
     } catch (e) {
@@ -74,14 +72,12 @@ class ObjectBox {
   }
 
   void protectedSaveTagWithSongs(Tag tag, List<Song> songs) {
-    Tag? existingTag =
-        _tagBox.query(Tag_.name.equals(tag.name)).build().findFirst();
+    Tag? existingTag = _tagBox.query(Tag_.name.equals(tag.name)).build().findFirst();
     if (existingTag != null) {
       tag = existingTag;
     }
     for (int i = 0; i < songs.length; i++) {
-      Song? existingSong = _songBox
-          .query(Song_.spotifyId.equals(songs[i].spotifyId)).build().findFirst();
+      Song? existingSong = _songBox.query(Song_.spotifyId.equals(songs[i].spotifyId)).build().findFirst();
       if (existingSong != null) {
         songs[i] = existingSong;
       }
@@ -92,16 +88,9 @@ class ObjectBox {
 
   List<bool> checkWhichSongsAreNotUnique(List<Song> songs) {
     try {
-      List<Song> allMatchingSongs = _songBox
-          .query(Song_.spotifyId.oneOf(List<String>.generate(
-              songs.length, (index) => songs[index].spotifyId)))
-          .build()
-          .find();
-      List<String> matchingDbSpotifyIds = List<String>.generate(
-          allMatchingSongs.length,
-          (index) => allMatchingSongs[index].spotifyId);
-      List<bool> ret = List<bool>.generate(songs.length,
-          (index) => matchingDbSpotifyIds.contains(songs[index].spotifyId));
+      List<Song> allMatchingSongs = _songBox.query(Song_.spotifyId.oneOf(List<String>.generate(songs.length, (index) => songs[index].spotifyId))).build().find();
+      List<String> matchingDbSpotifyIds = List<String>.generate(allMatchingSongs.length, (index) => allMatchingSongs[index].spotifyId);
+      List<bool> ret = List<bool>.generate(songs.length, (index) => matchingDbSpotifyIds.contains(songs[index].spotifyId));
       return ret;
     } catch (e) {
       throw e;
@@ -128,10 +117,8 @@ class ObjectBox {
     queryBuilder.linkMany(
         Song_.tags,
         Tag_.id
-            .oneOf(List<int>.generate(
-                included.length, (index) => included[index].id))
-            .and(Tag_.id.notOneOf(List<int>.generate(
-                excluded.length, (index) => excluded[index].id))));
+            .oneOf(List<int>.generate(included.length, (index) => included[index].id))
+            .and(Tag_.id.notOneOf(List<int>.generate(excluded.length, (index) => excluded[index].id))));
     return queryBuilder.build().find();
   }
 
@@ -144,13 +131,12 @@ class ObjectBox {
   }
 
   List<String> getGeneratedTagsOfType(String tagType) {
-    List<Tag> tags =  _tagBox.query(Tag_.name.contains(tagType).and(Tag_.userDefined.equals(false))).build().find();
+    List<Tag> tags = _tagBox.query(Tag_.name.contains(tagType).and(Tag_.userDefined.equals(false))).build().find();
     List<String> ret = List<String>.generate(tags.length, (index) => tags[index].name.substring(tagType.length));
     return ret;
   }
 
-  bool isTagNameUnique(String s) =>
-      _tagBox.query(Tag_.name.equals(s)).build().find().length == 0;
+  bool isTagNameUnique(String s) => _tagBox.query(Tag_.name.equals(s)).build().find().length == 0;
 
   // Stream<List<Song>> getSongs() {
   //   // Query for all songs, sorted by their date.
@@ -221,6 +207,13 @@ class ObjectBox {
   List<Tag> getAllTags() => _tagBox.getAll();
   List<Tag> getAllUserDefTags() {
     return _tagBox.query(Tag_.userDefined.equals(true)).build().find();
+  }
+
+  List<Tag> getAllPlaylistTags() {
+    return _tagBox.query(Tag_.userDefined.equals(false).and(Tag_.name.contains('playlist: '))).build().find();
+  }
+  List<Tag> getAllGenreTags() {
+    return _tagBox.query(Tag_.userDefined.equals(false).and(Tag_.name.contains('genre: '))).build().find();
   }
 
   Future<List<Tag>> getAllTagsAsync() => _tagBox.getAllAsync();

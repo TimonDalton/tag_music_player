@@ -113,7 +113,7 @@ class _TagGroupState extends State<TagGroup> {
         }
         List<Widget> children = [];
         for (int i = 0; i < itemCount; i++) {
-          if(widget.displayTags[i].colourId == -1){
+          if(widget.displayTags[i].colourIndex == -1){
             print(jsonEncode(widget.displayTags[i]));
           }
           children.add(TagWidget(

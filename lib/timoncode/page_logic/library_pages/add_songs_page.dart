@@ -58,7 +58,7 @@ FutureBuilder showUserPlaylists(context) => FutureBuilder(
                   cancelName: 'Cancel',
                   onConfirm: () {
                     Tag tag = Tag(
-                        colourId: -1,
+                        colourIndex: -1,
                         name: 'playlist: ${playlists[i]['name']}',
                         userDefined: false);
                     objectBox.protectedSaveTagWithSongs(tag, songs);
@@ -67,7 +67,7 @@ FutureBuilder showUserPlaylists(context) => FutureBuilder(
                   thirdOptionName: 'Save and choose tags',
                   thirdOptionFunc: () {
                     Tag tag = Tag(
-                        colourId: -1,
+                        colourIndex: -1,
                         name: 'playlist: ${playlists[i]['name']}',
                         userDefined: false);
                     objectBox.protectedSaveTagWithSongs(tag, songs);

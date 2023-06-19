@@ -18,6 +18,7 @@ import 'package:tag_music_player/timoncode/models/song.dart';
 import 'package:tag_music_player/timoncode/widgets/common/songWidget.dart';
 import 'package:tag_music_player/timoncode/widgets/popups/selectSingleTagPopup.dart';
 import 'package:tag_music_player/timoncode/widgets/tag_groups/tagGroup.dart';
+import 'package:tag_music_player/timoncode/widgets/popups/defineFilter.dart';
 import 'package:tag_music_player/timoncode/objectbox.dart';
 import 'package:tag_music_player/timoncode/models/tag.dart';
 
@@ -175,7 +176,12 @@ class _ChangeSongsTagsByGroupPageState extends State<ChangeSongsTagsByGroupPage>
                                   borderRadius: BorderRadius.circular(5.0),
                                 ),
                                 child: InkWell(
-                                  onTap: (){},
+                                  onTap: (){
+                                    showDefineFilterPopup(context,widget.filter,(newFilter) {
+                                      print('song filter setter called');
+                                      // widget.filter = newFilter;
+                                    },);
+                                  },
                                   child: Padding(
                                     padding: EdgeInsetsDirectional.fromSTEB(5.0, 10.0, 5.0, 0.0),
                                     child: RichText(

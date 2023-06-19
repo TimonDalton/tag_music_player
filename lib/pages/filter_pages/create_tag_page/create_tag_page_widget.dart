@@ -26,13 +26,13 @@ class CreateTagPageWidget extends StatefulWidget {
 
 class _CreateTagPageWidgetState extends State<CreateTagPageWidget> {
   TextEditingController nameTEC = TextEditingController();
-  int colourId = 0;
-  void setColourId(int newId) {
+  int colourIndex = 0;
+  void setcolourIndex(int newId) {
     if (newId >= Tag.colours.length) {
       throw '${newId} is not a valid colour id';
     }
     setState(() {
-      colourId = newId;
+      colourIndex = newId;
     });
   }
 
@@ -162,8 +162,8 @@ class _CreateTagPageWidgetState extends State<CreateTagPageWidget> {
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
                                   ColourPickerDropDown(
-                                      selectIndex: setColourId,
-                                      selectedId: colourId),
+                                      selectIndex: setcolourIndex,
+                                      selectedId: colourIndex),
                                   Expanded(
                                     child: Padding(
                                       padding: EdgeInsetsDirectional.fromSTEB(
@@ -181,7 +181,7 @@ class _CreateTagPageWidgetState extends State<CreateTagPageWidget> {
                                           ),
                                         ),
                                         decoration: BoxDecoration(
-                                          color: Tag.colours[colourId],
+                                          color: Tag.colours[colourIndex],
                                           borderRadius:
                                               BorderRadius.circular(20.0),
                                         ),
@@ -204,7 +204,7 @@ class _CreateTagPageWidgetState extends State<CreateTagPageWidget> {
                       if (objectBox.isTagNameUnique(nameTEC.text)) {
                         Tag tag = Tag(
                             name: nameTEC.text,
-                            colourId: colourId,
+                            colourIndex: colourIndex,
                             userDefined: true);
                         objectBox.saveTag(tag);
                         navBase(context);

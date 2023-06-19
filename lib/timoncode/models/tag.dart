@@ -7,17 +7,17 @@ class Tag{
   @Id()
   int id;
   final String name;
-  final int colourId;
+  final int colourIndex;
   final bool userDefined;
 
   @Backlink()
   final songs = ToMany<Song>();
-  Tag({required this.name,required this.colourId,this.id = 0,this.userDefined = false}){
-    if (colourId >= colours.length){throw 'colourId ${colourId} out of range for colours list. Tag Name: ${name}';}
+  Tag({required this.name,required this.colourIndex,this.id = 0,this.userDefined = false}){
+    if (colourIndex >= colours.length){throw 'colourIndex ${colourIndex} out of range for colours list. Tag Name: ${name}';}
   }
 
   Color colour(){
-    return colours[colourId];
+    return colours[colourIndex];
   }
   static const List<Color> colours = const[
     Colors.indigo,

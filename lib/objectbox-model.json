@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:9010798967777340560",
-      "lastPropertyId": "7:4633956051513000642",
+      "lastPropertyId": "8:5867635433896042515",
       "name": "Song",
       "properties": [
         {
@@ -32,11 +32,6 @@
           "indexId": "1:3324877264777455464"
         },
         {
-          "id": "5:347302859567081836",
-          "name": "duration",
-          "type": 6
-        },
-        {
           "id": "6:2913082945644414994",
           "name": "dateAdded",
           "type": 10
@@ -45,6 +40,11 @@
           "id": "7:4633956051513000642",
           "name": "releaseDate",
           "type": 10
+        },
+        {
+          "id": "8:5867635433896042515",
+          "name": "duration",
+          "type": 6
         }
       ],
       "relations": [
@@ -73,7 +73,7 @@
         },
         {
           "id": "4:1302384689009912107",
-          "name": "colourId",
+          "name": "colourIndex",
           "type": 6
         },
         {
@@ -94,7 +94,8 @@
   "retiredEntityUids": [],
   "retiredIndexUids": [],
   "retiredPropertyUids": [
-    5489380764927646302
+    5489380764927646302,
+    347302859567081836
   ],
   "retiredRelationUids": [],
   "version": 1
