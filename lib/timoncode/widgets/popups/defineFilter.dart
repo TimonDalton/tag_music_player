@@ -14,12 +14,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 
-Future<void> showDefineFilterPopup(BuildContext context, SongFilter currentFilter, Function(SongFilter) setterCallback) async {
+Future<void> showDefineFilterPopup(BuildContext context, SongFilter currentFilter, Function(SongFilter) filterSetterCallback) async {
   SongFilter tempFilter = currentFilter;
 
   return showDialog<void>(
       context: context,
       builder: (BuildContext context) {
+        print('Showdialog built. Filter:');
+        print(tempFilter.toMultilineString());
         return Container(
             child: AlertDialog(
           backgroundColor: FlutterFlowTheme.of(context).primary,
@@ -30,13 +32,13 @@ Future<void> showDefineFilterPopup(BuildContext context, SongFilter currentFilte
             ),
             TextButton(
               onPressed: () {
-                setterCallback(tempFilter);
+                filterSetterCallback(tempFilter);
                 Navigator.pop(context);
               },
               child: Text('Save'),
             ),
           ],
-          content: DefineFilterWidget(tempFilter: tempFilter, setterCallback: setterCallback),
+          content: DefineFilterWidget(filter: tempFilter),
         ));
       });
 }
@@ -67,41 +69,20 @@ void showSongDurationPicker(BuildContext context, Function(Duration) setterCallb
   ).showDialog(context);
 }
 
-void showDatePicker(BuildContext context, Function(DateTime) setterCallback) {
-  Picker(
-    adapter: NumberPickerAdapter(data: <NumberPickerColumn>[
-      NumberPickerColumn(begin: 1900, end: DateTime.now().year, initValue: DateTime.now().year, suffix: Text(' year')),
-      const NumberPickerColumn(begin: 1, end: 12, suffix: Text(' month')),
-      const NumberPickerColumn(begin: 1, end: 31, suffix: Text(' day')),
-    ]),
-    delimiter: <PickerDelimiter>[
-      PickerDelimiter(
-        child: Container(
-          width: 30.0,
-          alignment: Alignment.center,
-          child: Icon(Icons.more_vert),
-        ),
-      )
-    ],
-    hideHeader: true,
-    confirmText: 'OK',
-    confirmTextStyle: TextStyle(inherit: false, color: Colors.red, fontSize: 22),
-    title: const Text('Select date'),
-    selectedTextStyle: TextStyle(color: Colors.blue),
-    onConfirm: (Picker picker, List<int> value) {
-      setterCallback(DateTime(
-        picker.getSelectedValues()[0],
-        picker.getSelectedValues()[1],
-        picker.getSelectedValues()[2],
-      ));
-    },
-  ).showDialog(context);
+Future<DateTime?> chooseDate(BuildContext context) async {
+  return showDatePicker(
+    context: context,
+    initialDate: DateTime.now(),
+    firstDate: DateTime(1900),
+    lastDate: DateTime.now(),
+  );
 }
 
 class SelectableDropdownItem extends StatefulWidget {
-  SelectableDropdownItem({super.key, required this.child, this.selected = false});
+  SelectableDropdownItem({super.key, required this.child, this.selected = false, this.onTapCallback});
   Widget child;
   bool selected;
+  Function? onTapCallback;
 
   @override
   State<SelectableDropdownItem> createState() => _SelectableDropdownItemState();
@@ -112,11 +93,15 @@ class _SelectableDropdownItemState extends State<SelectableDropdownItem> {
   Widget build(BuildContext context) {
     return Container(
       child: Row(
+        mainAxisSize: MainAxisSize.max,
         children: [
           Container(
             margin: EdgeInsets.fromLTRB(0, 0, 10, 0),
             child: InkWell(
               onTap: () {
+                if (widget.onTapCallback != null){
+                  widget.onTapCallback!(widget.selected);
+                }
                 setState(() {
                   widget.selected = !widget.selected;
                 });
@@ -132,10 +117,9 @@ class _SelectableDropdownItemState extends State<SelectableDropdownItem> {
 }
 
 class DefineFilterWidget extends StatefulWidget {
-  DefineFilterWidget({required this.tempFilter, required this.setterCallback});
+  DefineFilterWidget({required this.filter});
 
-  SongFilter tempFilter;
-  Function(SongFilter) setterCallback;
+  SongFilter filter;
 
   @override
   State<DefineFilterWidget> createState() => _DefineFilterWidgetState();
@@ -144,135 +128,173 @@ class DefineFilterWidget extends StatefulWidget {
 class _DefineFilterWidgetState extends State<DefineFilterWidget> {
   @override
   Widget build(BuildContext context) {
-    if (!widget.tempFilter.queryIsSet) {
-      widget.tempFilter.generateQuery();
+    if (!widget.filter.queryIsSet) {
+      widget.filter.generateQuery();
     }
     List<Tag> tags = objectBox.getAllUserDefTags();
 
+
+
     Widget filterSelector = FilterTagSelector(
       availableTags: tags,
-      includedTagIds: widget.tempFilter.includedTagIds,
-      excludedTagIds: widget.tempFilter.excludedTagIds,
+      includedTagIds:  widget.filter.includedTagIds, 
+      excludedTagIds: widget.filter.excludedTagIds,
     );
 
     List<Tag> playlistTags = objectBox.getAllPlaylistTags();
-    List<Widget> playlistDropDowns =
-        List<Widget>.generate(playlistTags.length, (index) => SelectableDropdownItem(child: Text(playlistTags[index].name.replaceFirst(RegExp(r'playlist: '), ''))));
+
+    List<Widget> playlistDropDowns = List<Widget>.generate(
+        playlistTags.length,
+        (index) => SelectableDropdownItem(
+              child: Text(playlistTags[index].name.replaceFirst(RegExp(r'playlist: '), ''),maxLines: 2,overflow: TextOverflow.ellipsis,),
+              selected: widget.filter.includedTagIds.contains(playlistTags[index].id),
+              onTapCallback: (bool selected){
+                if(selected){
+                  widget.filter.includedTagIds.remove(playlistTags[index].id);
+                }else{
+                  widget.filter.includedTagIds.add(playlistTags[index].id);
+                }
+              },
+            ));
     List<Tag> genreTags = objectBox.getAllGenreTags();
     List<Widget> genreDropDowns =
         List<Widget>.generate(genreTags.length, (index) => SelectableDropdownItem(child: Text(genreTags[index].name.replaceFirst(RegExp(r'genre: '), ''))));
 
     Widget minSongDuration = Row(children: [
       InkWell(
-          child: widget.tempFilter.shortestShorterSD.active ? Text('Shorter than ${widget.tempFilter.shortestShorterSD.duration.toString()}') : Text('Not Active'),
+          child: Text(widget.filter.shortestShorterSD.active ? 'Shorter than ${widget.filter.shortestShorterSD.duration.toString()}' : 'Max Duration Inactive'),
           onTap: () => showSongDurationPicker(context, (newDuration) {
                 setState(() {
-                  widget.tempFilter.shortestShorterSD.duration = newDuration;
-                  widget.tempFilter.shortestShorterSD.active = true;
+                  widget.filter.shortestShorterSD.duration = newDuration;
+                  widget.filter.shortestShorterSD.active = true;
                 });
               })),
       InkWell(
-        child: Icon(Icons.refresh),
+        child: widget.filter.shortestShorterSD.active ? Icon(Icons.refresh) : Container(),
         onTap: () {
           setState(() {
-            widget.tempFilter.shortestShorterSD.duration = Duration.zero;
-            widget.tempFilter.shortestShorterSD.active = false;
+            widget.filter.shortestShorterSD.duration = Duration.zero;
+            widget.filter.shortestShorterSD.active = false;
           });
         },
       )
     ]);
     Widget maxSongDuration = Row(children: [
       InkWell(
-          child: widget.tempFilter.longestLongerSD.active ? Text('Longer than ${widget.tempFilter.longestLongerSD.duration.toString()}') : Text('Not Active'),
+          child: Text(widget.filter.longestLongerSD.active ? 'Longer than ${widget.filter.longestLongerSD.duration.toString()}' : 'Min Duration Inactive'),
           onTap: () => showSongDurationPicker(context, (newDuration) {
                 setState(() {
-                  widget.tempFilter.longestLongerSD.duration = newDuration;
-                  widget.tempFilter.longestLongerSD.active = true;
+                  widget.filter.longestLongerSD.duration = newDuration;
+                  widget.filter.longestLongerSD.active = true;
                 });
               })),
       InkWell(
-        child: Icon(Icons.refresh),
+        child: widget.filter.longestLongerSD.active ? Icon(Icons.refresh) : Container(),
         onTap: () {
           setState(() {
-            widget.tempFilter.longestLongerSD.duration = Duration.zero;
-            widget.tempFilter.longestLongerSD.active = false;
+            widget.filter.longestLongerSD.duration = Duration.zero;
+            widget.filter.longestLongerSD.active = false;
           });
         },
-      )
+      ),
     ]);
 
     Widget addedBefore = Row(children: [
       InkWell(
-          child: widget.tempFilter.earliestBefDA.active ? Text('Shorter than ${widget.tempFilter.earliestBefDA.dateAdded.toString()}') : Text('Not Active'),
-          onTap: () => showDatePicker(context, (newDate) {
-                setState(() {
-                  widget.tempFilter.earliestBefDA.dateAdded = newDate;
-                  widget.tempFilter.earliestBefDA.active = true;
-                });
-              })),
+          child: Text(
+            widget.filter.earliestBefDA.active ? 'Before ${widget.filter.earliestBefDA.dateAdded.toString()}' : 'Added Before Inactive',
+            overflow: TextOverflow.fade,
+          ),
+          onTap: () async {
+            DateTime? newDate = await chooseDate(context);
+            if (newDate != null) {
+              setState(() {
+                widget.filter.earliestBefDA.dateAdded = newDate;
+                widget.filter.earliestBefDA.active = true;
+              });
+            }
+          }),
       InkWell(
-        child: Icon(Icons.refresh),
+        child: widget.filter.earliestBefDA.active ? Icon(Icons.refresh) : Container(),
         onTap: () {
           setState(() {
-            widget.tempFilter.earliestBefDA.dateAdded = null;
-            widget.tempFilter.earliestBefDA.active = false;
+            widget.filter.earliestBefDA.dateAdded = null;
+            widget.filter.earliestBefDA.active = false;
           });
         },
       )
     ]);
     Widget addedAfter = Row(children: [
       InkWell(
-          child: widget.tempFilter.latestAfDA.active ? Text('Longer than ${widget.tempFilter.latestAfDA.dateAdded.toString()}') : Text('Not Active'),
-          onTap: () => showDatePicker(context, (newDate) {
-                setState(() {
-                  widget.tempFilter.latestAfDA.dateAdded = newDate;
-                  widget.tempFilter.latestAfDA.active = true;
-                });
-              })),
+          child: Text(
+            widget.filter.latestAfDA.active ? 'After ${widget.filter.latestAfDA.dateAdded.toString()}' : 'Added After Inactive',
+            overflow: TextOverflow.fade,
+          ),
+          onTap: () async {
+            DateTime? newDate = await chooseDate(context);
+            if (newDate != null) {
+              setState(() {
+                widget.filter.latestAfDA.dateAdded = newDate;
+                widget.filter.latestAfDA.active = true;
+              });
+            }
+          }),
       InkWell(
-        child: Icon(Icons.refresh),
+        child: widget.filter.latestAfDA.active ? Icon(Icons.refresh) : Container(),
         onTap: () {
           setState(() {
-            widget.tempFilter.latestAfDA.dateAdded = null;
-            widget.tempFilter.latestAfDA.active = false;
+            widget.filter.latestAfDA.dateAdded = null;
+            widget.filter.latestAfDA.active = false;
           });
         },
       )
     ]);
     Widget releasedBefore = Row(children: [
       InkWell(
-          child: widget.tempFilter.earliestBefDC.active ? Text('Shorter than ${widget.tempFilter.earliestBefDC.dateCreated.toString()}') : Text('Not Active'),
-          onTap: () => showDatePicker(context, (newDate) {
-                setState(() {
-                  widget.tempFilter.earliestBefDC.dateCreated = newDate;
-                  widget.tempFilter.earliestBefDC.active = true;
-                });
-              })),
+          child: Text(
+            widget.filter.earliestBefDC.active ? 'Before ${widget.filter.earliestBefDC.dateCreated.toString()}' : 'Released Before Inactive',
+            overflow: TextOverflow.fade,
+          ),
+          onTap: () async {
+            DateTime? newDate = await chooseDate(context);
+            if (newDate != null) {
+              setState(() {
+                widget.filter.earliestBefDC.dateCreated = newDate;
+                widget.filter.earliestBefDC.active = true;
+              });
+            }
+          }),
       InkWell(
-        child: Icon(Icons.refresh),
+        child: widget.filter.earliestBefDC.active ? Icon(Icons.refresh) : Container(),
         onTap: () {
           setState(() {
-            widget.tempFilter.earliestBefDC.dateCreated = null;
-            widget.tempFilter.earliestBefDC.active = false;
+            widget.filter.earliestBefDC.dateCreated = null;
+            widget.filter.earliestBefDC.active = false;
           });
         },
       )
     ]);
     Widget releasedAfter = Row(children: [
       InkWell(
-          child: widget.tempFilter.latestAfDC.active ? Text('Longer than ${widget.tempFilter.latestAfDC.dateCreated.toString()}') : Text('Not Active'),
-          onTap: () => showDatePicker(context, (newDate) {
-                setState(() {
-                  widget.tempFilter.latestAfDC.dateCreated = newDate;
-                  widget.tempFilter.latestAfDC.active = true;
-                });
-              })),
+          child: Text(
+            widget.filter.latestAfDC.active ? 'After ${widget.filter.latestAfDC.dateCreated.toString()}' : 'Released After Inactive',
+            overflow: TextOverflow.fade,
+          ),
+          onTap: () async {
+            DateTime? newDate = await chooseDate(context);
+            if (newDate != null) {
+              setState(() {
+                widget.filter.latestAfDC.dateCreated = newDate;
+                widget.filter.latestAfDC.active = true;
+              });
+            }
+          }),
       InkWell(
-        child: Icon(Icons.refresh),
+        child: widget.filter.latestAfDC.active ? Icon(Icons.refresh) : Container(),
         onTap: () {
           setState(() {
-            widget.tempFilter.latestAfDC.dateCreated = null;
-            widget.tempFilter.latestAfDC.active = false;
+            widget.filter.latestAfDC.dateCreated = null;
+            widget.filter.latestAfDC.active = false;
           });
         },
       )
@@ -300,10 +322,10 @@ class _DefineFilterWidgetState extends State<DefineFilterWidget> {
         ExpansionTile(
           title: Text('Song Duration', style: FlutterFlowTheme.of(context).bodyMedium),
           children: [
-            Row(
+            Wrap(
               children: [
-                minSongDuration,
                 maxSongDuration,
+                minSongDuration,
               ],
             ),
           ],
@@ -311,10 +333,10 @@ class _DefineFilterWidgetState extends State<DefineFilterWidget> {
         ExpansionTile(
           title: Text('Date Added', style: FlutterFlowTheme.of(context).bodyMedium),
           children: [
-            Row(
+            Wrap(
               children: [
-                addedBefore,
                 addedAfter,
+                addedBefore,
               ],
             ),
           ],
@@ -322,10 +344,10 @@ class _DefineFilterWidgetState extends State<DefineFilterWidget> {
         ExpansionTile(
           title: Text('Date Created', style: FlutterFlowTheme.of(context).bodyMedium),
           children: [
-            Row(
+            Wrap(
               children: [
-                releasedBefore,
                 releasedAfter,
+                releasedBefore,
               ],
             ),
           ],

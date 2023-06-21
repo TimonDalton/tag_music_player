@@ -1,6 +1,7 @@
 import 'package:tag_music_player/timoncode/objectbox.dart';
 import 'package:tag_music_player/timoncode/models/song.dart';
 import 'package:tag_music_player/timoncode/models/tag.dart';
+import 'package:collection/collection.dart';
 import 'package:tag_music_player/objectbox.g.dart';
 
 const bool printBuildProcess = true;
@@ -95,10 +96,8 @@ class SongDurationFilterCondition extends FilterCondition {
 
 class ArtistFilterCondition extends FilterCondition {
   String artist;
-  bool include;
   ArtistFilterCondition({
     required this.artist,
-    required this.include,
     required super.type,
     super.parentPointer,
     super.active = true,
@@ -146,6 +145,7 @@ class SongFilter {
   }
 
   void clearProcessed() {
+    print('clearing proccessed filters');
     queryIsSet = false;
 
     _tidFilters = [];
@@ -156,12 +156,12 @@ class SongFilter {
 
     includedTagIds = [];
     excludedTagIds = [];
-    earliestBefDC = DateCreatedFilterCondition(type: FilterType.dateCreated,active: false, before: true);
-    latestAfDC = DateCreatedFilterCondition(type: FilterType.dateCreated,active: false, before: false);
+    earliestBefDC = DateCreatedFilterCondition(type: FilterType.dateCreated, active: false, before: true);
+    latestAfDC = DateCreatedFilterCondition(type: FilterType.dateCreated, active: false, before: false);
     earliestBefDA = DateAddedFilterCondition(type: FilterType.dateAdded, active: false, before: true);
     latestAfDA = DateAddedFilterCondition(type: FilterType.dateAdded, active: false, before: false);
-    shortestShorterSD = SongDurationFilterCondition(type: FilterType.songDuration, active: false, minimum: false,duration: Duration.zero);
-    longestLongerSD = SongDurationFilterCondition(type: FilterType.songDuration, active: false, minimum: true,duration: Duration.zero);;
+    shortestShorterSD = SongDurationFilterCondition(type: FilterType.songDuration, active: false, minimum: false, duration: Duration.zero);
+    longestLongerSD = SongDurationFilterCondition(type: FilterType.songDuration, active: false, minimum: true, duration: Duration.zero);
     allowedArtists = [];
   }
 
@@ -169,25 +169,60 @@ class SongFilter {
     queryIsSet = false;
   }
 
+  List<Song> getSongs(){
+    try {
+      List<Song> songs = getQueryBuilder().build().find();
+      print('built songs from: ');
+      print(toMultilineString());
+      return songs;
+    } catch (e) {
+      print('Songs queryBuilder Error');
+      print(e);
+      print('Filter state: ');
+      print(toMultilineString());
+      return [];
+    }
+  }
+
   List<String> toMultilineString() {
-    List<String> ret = [];
-    String tagsInc = '';
-    String tagsEx = '';
-    for (int i = 0; i < _tidFilters.length; i++) {
-      if (_tidFilters[i].include) {
-        tagsInc += _tidFilters[i].tagId.toString() + ', ';
-      } else {
-        tagsEx += _tidFilters[i].tagId.toString() + ', ';
-      }
+    List<String> ret = ['Filter Config: Currently has ${unprocessedConditions.length} filters'];
+    String tagsInc = 'Included Tags: ';
+    List<Tag> tags = objectBox.getAllTags();
+    for (int i = 0; i < includedTagIds.length; i++) {
+      tagsInc += tags.firstWhere((tag) => tag.id == includedTagIds[i]).name + ', ';
     }
-    if (tagsInc.length > 0) {
+    if (includedTagIds.length > 0) {
       tagsInc = tagsInc.substring(0, tagsInc.length - 1);
+      ret.add(tagsInc);
     }
-    if (tagsEx.length > 0) {
+    String tagsEx = 'Excluded Tags: ';
+    for (int i = 0; i < excludedTagIds.length; i++) {
+      tagsEx += tags.firstWhere((tag) => tag.id == excludedTagIds[i]).name + ', ';
+    }
+    if (excludedTagIds.length > 0) {
       tagsEx = tagsEx.substring(0, tagsEx.length - 1);
+      ret.add(tagsEx);
     }
-    ret.add(tagsInc);
-    ret.add(tagsEx);
+    String allowedArtistsStr = 'Allowed Artists: ';
+    for (int i = 0; i < allowedArtists.length; i++) {
+      allowedArtistsStr += allowedArtists[i] + ', ';
+    }
+    if (allowedArtists.length > 0) {
+      allowedArtistsStr = allowedArtistsStr.substring(0, tagsEx.length - 1);
+      ret.add(allowedArtistsStr);
+    }
+    if (earliestBefDA.active) {
+      ret.add('Added before ${earliestBefDC.dateCreated.toString()}');
+    }
+    if (latestAfDC.active) {
+      ret.add('Added After ${latestAfDC.dateCreated.toString()}');
+    }
+    if (earliestBefDC.active) {
+      ret.add('Released Before ${latestAfDC.dateCreated.toString()}');
+    }
+    if (latestAfDC.active) {
+      ret.add('Released After ${latestAfDC.dateCreated.toString()}');
+    }
 
     return ret;
   }
@@ -199,8 +234,57 @@ class SongFilter {
     return queryB!;
   }
 
+  void becomeCloneOf(SongFilter newFilter) {
+    //clears all before copy
+    // clearProcessed();
+    unprocessedConditions = [];
+
+    if (newFilter.includedTagIds.length > 0) {
+      for (int i = 0; i < newFilter.includedTagIds.length; i++) {
+        unprocessedConditions.add(TagFilterCondition(tagId: newFilter.includedTagIds[i], include: true, type: FilterType.tag));
+      }
+      // includedTagIds = newFilter.includedTagIds;
+    }
+    if (newFilter.excludedTagIds.length > 0) {
+      for (int i = 0; i < newFilter.excludedTagIds.length; i++) {
+        unprocessedConditions.add(TagFilterCondition(tagId: newFilter.excludedTagIds[i], include: false, type: FilterType.tag));
+      }
+      // excludedTagIds = newFilter.excludedTagIds;
+    }
+    if (newFilter.earliestBefDC.active) {
+      unprocessedConditions.add(newFilter.earliestBefDC);
+      // earliestBefDC = newFilter.earliestBefDC;
+    }
+    if (newFilter.latestAfDC.active) {
+      unprocessedConditions.add(newFilter.latestAfDC);
+      // latestAfDC = newFilter.latestAfDC;
+    }
+    if (newFilter.earliestBefDA.active) {
+      unprocessedConditions.add(newFilter.earliestBefDA);
+      // earliestBefDA = newFilter.earliestBefDA;
+    }
+    if (newFilter.latestAfDA.active) {
+      unprocessedConditions.add(newFilter.latestAfDA);
+      // latestAfDA = newFilter.latestAfDA;
+    }
+    if (newFilter.shortestShorterSD.active) {
+      unprocessedConditions.add(newFilter.shortestShorterSD);
+      // shortestShorterSD = newFilter.shortestShorterSD;
+    }
+    if (newFilter.longestLongerSD.active) {
+      unprocessedConditions.add(newFilter.longestLongerSD);
+      // longestLongerSD = newFilter.longestLongerSD;
+    }
+    if (newFilter.allowedArtists.length > 0) {
+      for (int i = 0; i < allowedArtists.length; i++) {
+        unprocessedConditions.add(ArtistFilterCondition(artist: allowedArtists[i], type: FilterType.artist));
+      }
+      // allowedArtists = newFilter.allowedArtists;
+    }
+    generateQuery();
+  }
+
   QueryBuilder<Song> generateQuery() {
-    List<String> includeStrings = [];
     Condition<Song> conditionStack = Song_.spotifyId.notNull();
 
     clearProcessed();
@@ -243,29 +327,22 @@ class SongFilter {
     conditionStack = handleSdFilters(conditionStack, _sdFilters, shortestShorterSD, longestLongerSD);
 
     //Handles Artist Filters
-    //it's only a few lines so it doesn't get a function compared to the average 30 lines of the others
-    if (printBuildProcess) {
-      print('artists');
-      print(_aFilters.toList().toString());
-    }
     allowedArtists = List<String>.generate(_aFilters.length, (index) => _aFilters[index].artist);
-    if (_aFilters.length > 0) {
+
+    if (allowedArtists.length > 0) {
       conditionStack.and(Song_.artist.oneOf(allowedArtists));
     }
-
     //final condition entered. All after can only be of the format "oneOf"
     QueryBuilder<Song> qb = objectBox.getSongBox.query(conditionStack);
 
-    handleTidFilters(_tidFilters,includedTagIds,excludedTagIds);
-
-    //handle tag name strings
+    handleTidFilters(_tidFilters, includedTagIds, excludedTagIds);
+    //handletag name strings
     if (includedTagIds.length > 0 && excludedTagIds.length > 0) {
       qb.linkMany(Song_.tags, Tag_.id.oneOf(includedTagIds).and(Tag_.id.notOneOf(excludedTagIds)));
-    }else{
-      if(includedTagIds.length > 0){
+    } else {
+      if (includedTagIds.length > 0) {
         qb.linkMany(Song_.tags, Tag_.id.oneOf(includedTagIds));
-      }else
-      if(excludedTagIds.length > 0){
+      } else if (excludedTagIds.length > 0) {
         qb.linkMany(Song_.tags, Tag_.id.notOneOf(excludedTagIds));
       }
     }
@@ -277,7 +354,8 @@ class SongFilter {
   }
 }
 
-Condition<Song> handleDcFilters(Condition<Song> conditionStack, List<DateCreatedFilterCondition> _dcFilters,DateCreatedFilterCondition earliestBeforeFC,DateCreatedFilterCondition latestAfterFC) {
+Condition<Song> handleDcFilters(
+    Condition<Song> conditionStack, List<DateCreatedFilterCondition> _dcFilters, DateCreatedFilterCondition earliestBeforeFC, DateCreatedFilterCondition latestAfterFC) {
   DateTime? earliestBefore;
   DateTime? latestAfter;
   for (int i = 0; i < _dcFilters.length; i++) {
@@ -318,12 +396,13 @@ Condition<Song> handleDcFilters(Condition<Song> conditionStack, List<DateCreated
   if (latestAfter != null) {
     conditionStack = conditionStack.and(Song_.releaseDate.greaterThan(latestAfter.microsecondsSinceEpoch)); //TODO figure out how objectBox compares dates
     latestAfterFC.dateCreated = earliestBefore;
-    latestAfterFC.active = true;  
+    latestAfterFC.active = true;
   }
   return conditionStack;
 }
 
-Condition<Song> handleDaFilters(Condition<Song> conditionStack, List<DateAddedFilterCondition> _daFilters,DateAddedFilterCondition earliestBeforeDA,DateAddedFilterCondition latestAfterDA) {
+Condition<Song> handleDaFilters(
+    Condition<Song> conditionStack, List<DateAddedFilterCondition> _daFilters, DateAddedFilterCondition earliestBeforeDA, DateAddedFilterCondition latestAfterDA) {
   DateTime? earliestBefore;
   DateTime? latestAfter;
   for (int i = 0; i < _daFilters.length; i++) {
@@ -369,7 +448,8 @@ Condition<Song> handleDaFilters(Condition<Song> conditionStack, List<DateAddedFi
   return conditionStack;
 }
 
-Condition<Song> handleSdFilters(Condition<Song> conditionStack, List<SongDurationFilterCondition> _sdFilters, SongDurationFilterCondition shortestShorterThanFC,SongDurationFilterCondition longestLongerThanFC) {
+Condition<Song> handleSdFilters(Condition<Song> conditionStack, List<SongDurationFilterCondition> _sdFilters, SongDurationFilterCondition shortestShorterThanFC,
+    SongDurationFilterCondition longestLongerThanFC) {
   Duration? shortestShorterThan;
   Duration? longestLongerThan;
   for (int i = 0; i < _sdFilters.length; i++) {
@@ -416,8 +496,6 @@ Condition<Song> handleSdFilters(Condition<Song> conditionStack, List<SongDuratio
 }
 
 void handleTidFilters(List<TagFilterCondition> _tidFilters, List<int> include, List<int> exclude) {
-  List<int> exclude = [];
-  List<int> include = [];
   for (int i = 0; i < _tidFilters.length; i++) {
     if (_tidFilters[i].include) {
       include.add(_tidFilters[i].tagId);

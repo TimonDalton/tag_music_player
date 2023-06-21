@@ -55,7 +55,7 @@ class Home extends StatelessWidget {
         width: MediaQuery.of(context).size.width * 0.9,
         height: MediaQuery.of(context).size.height,
         child: Center(
-          child: FilterTagSelector(availableTags: tags,),
+          child: FilterTagSelector(availableTags: tags,includedTagIds:[],excludedTagIds:[]),
         ),
       ),
     );

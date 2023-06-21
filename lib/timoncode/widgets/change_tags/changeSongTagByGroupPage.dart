@@ -53,16 +53,9 @@ class TagAction {
 
 class ChangeSongsTagsByGroupPage extends StatefulWidget {
   ChangeSongsTagsByGroupPage({Key? key, required this.filter}) : super(key: key) {
-    songs = [];
-    try {
-      songs = filter.getQueryBuilder().build().find();
-    } catch (e) {
-      print('Songs queryBuilder Error');
-      print(e);
-      print('queryBuilder:');
-      print(filter.getQueryBuilder());
-    }
+    songs = filter.getSongs();
   }
+
 
   SongFilter filter;
   late List<Song> songs;
@@ -179,7 +172,11 @@ class _ChangeSongsTagsByGroupPageState extends State<ChangeSongsTagsByGroupPage>
                                   onTap: (){
                                     showDefineFilterPopup(context,widget.filter,(newFilter) {
                                       print('song filter setter called');
-                                      // widget.filter = newFilter;
+                                      setState(() {
+                                        widget.filter.becomeCloneOf(newFilter);       
+                                        // widget.filter = newFilter;
+                                        widget.songs = widget.filter.getSongs();                        
+                                      });
                                     },);
                                   },
                                   child: Padding(
