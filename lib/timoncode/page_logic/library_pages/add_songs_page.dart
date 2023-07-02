@@ -89,7 +89,7 @@ FutureBuilder showUserPlaylists(context) => FutureBuilder(
                     ]);
                     print('unprocessed conditions: ');
                     print(filter.unprocessedConditions.toString() + ', length:${filter.unprocessedConditions.length}');
-                    context.goNamed('change_songs_tags_by_group_page',
+                    context.pushNamed('change_songs_tags_by_group_page',
                         extra: {'filter': filter});
                   });
             }));

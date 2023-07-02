@@ -185,7 +185,7 @@ class SongFilter {
   }
 
   List<String> toMultilineString() {
-    List<String> ret = ['Filter Config: Currently has ${unprocessedConditions.length} filters'];
+    List<String> ret = [];//['Filter Config: Currently has ${unprocessedConditions.length} filters'];
     String tagsInc = 'Included Tags: ';
     List<Tag> tags = objectBox.getAllTags();
     for (int i = 0; i < includedTagIds.length; i++) {
@@ -378,7 +378,7 @@ Condition<Song> handleDcFilters(
     }
   }
   if (printBuildProcess) {
-    print('Date Created Filters: ');
+    printD('Date Created Filters: ');
     if (earliestBefore != null) {
       print('Earliest Before: ');
       print(earliestBefore.microsecondsSinceEpoch);
@@ -425,7 +425,7 @@ Condition<Song> handleDaFilters(
     }
   }
   if (printBuildProcess) {
-    print('Date Added Filters: ');
+    printD('Date Added Filters: ');
     if (earliestBefore != null) {
       print('Earliest Before: ');
       print(earliestBefore.microsecondsSinceEpoch);
@@ -472,7 +472,7 @@ Condition<Song> handleSdFilters(Condition<Song> conditionStack, List<SongDuratio
     }
   }
   if (printBuildProcess) {
-    print('Song Duration Filters: ');
+    printD('Song Duration Filters: ');
     if (shortestShorterThan != null) {
       print('Shortest Shorter Than: ');
       print(shortestShorterThan);

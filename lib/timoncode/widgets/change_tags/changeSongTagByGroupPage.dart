@@ -95,6 +95,7 @@ class _ChangeSongsTagsByGroupPageState extends State<ChangeSongsTagsByGroupPage>
 
   @override
   Widget build(BuildContext context) {
+  List<String> filterToStrings = widget.filter.toMultilineString();
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: FlutterFlowTheme.of(context).primary,
@@ -183,19 +184,10 @@ class _ChangeSongsTagsByGroupPageState extends State<ChangeSongsTagsByGroupPage>
                                     padding: EdgeInsetsDirectional.fromSTEB(5.0, 10.0, 5.0, 0.0),
                                     child: RichText(
                                       text: TextSpan(
-                                        children: [
-                                          TextSpan(
-                                            text: 'Artist: Twentyone Pilots',
-                                            style: TextStyle(),
-                                          ),
-                                          TextSpan(
-                                            text: '\nSource: Playlist2',
-                                            style: TextStyle(),
-                                          )
-                                        ],
+                                        children: List<TextSpan>.generate(filterToStrings.length, (index) => TextSpan(text:filterToStrings[index])),
                                         style: FlutterFlowTheme.of(context).bodyMedium.override(
                                               fontFamily: 'Roboto Condensed',
-                                              fontSize: 18.0,
+                                              fontSize: 14.0,
                                             ),
                                       ),
                                     ),
@@ -278,6 +270,9 @@ class _ChangeSongsTagsByGroupPageState extends State<ChangeSongsTagsByGroupPage>
                                       }
                                     });
                                   }
+                                  if(widget.removedTags.contains(widget.displayedTag!)){//this is here because a weird error occured where a tag would appear twice
+                                    widget.removedTags.remove(widget.displayedTag!);
+                                  }
                                 }
                               },
                               child: Padding(
@@ -302,6 +297,9 @@ class _ChangeSongsTagsByGroupPageState extends State<ChangeSongsTagsByGroupPage>
                                         widget.previousActions.last.add = true;
                                       }
                                     });
+                                  }
+                                  if(widget.addedTags.contains(widget.displayedTag!)){//this is here because a weird error occured where a tag would appear twice
+                                    widget.addedTags.remove(widget.displayedTag!);
                                   }
                                 }
                               },
