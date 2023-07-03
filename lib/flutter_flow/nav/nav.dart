@@ -6,6 +6,8 @@ import 'package:page_transition/page_transition.dart';
 import 'package:tag_music_player/timoncode/models/songFilter.dart';
 import '../flutter_flow_theme.dart';
 import 'package:tag_music_player/timoncode/widgets/change_tags/changeSongTagByGroupPage.dart';
+import 'package:tag_music_player/timoncode/widgets/change_tags/changeSongTagsIndividually.dart';
+import 'package:tag_music_player/timoncode/widgets/change_tags/selectEditableSongTagsPage.dart';
 import 'package:tag_music_player/timoncode/models/songFilter.dart';
 
 import '../../index.dart';
@@ -122,13 +124,18 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: 'select_editable_song_tags_popup',
           path: '/selectEditableSongTagsPopup',
-          builder: (context, params) => SelectEditableSongTagsPopupWidget(),
+          builder: (context, params) => SelectEditableSongTagsPage(),
         ),
         FFRoute(
-          name: 'change_song_tags_individually_page',
-          path: '/changeSongTagsIndividuallyPage',
-          builder: (context, params) => ChangeSongTagsIndividuallyPageWidget(),
-        ),
+            name: 'change_song_tags_individually_page',
+            path: '/changeSongTagsIndividuallyPage',
+            builder: (context, params) {
+              var map = params.state.extra as Map<String, List<int>>;
+              List<int> tagIds = map['tagIds']!;
+              return ChangeSongTagsIndividuallyPage(
+                tagIds: tagIds,
+              );
+            }),
         FFRoute(
           name: 'delete_songs_page',
           path: '/deleteSongsPage',
@@ -138,7 +145,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
             name: 'change_songs_tags_by_group_page',
             path: '/changeSongsTagsByGroupPage',
             builder: (context, params) {
-              var map = params.state.extra as Map<String,SongFilter>;
+              var map = params.state.extra as Map<String, SongFilter>;
               SongFilter filter = map['filter']!;
               return ChangeSongsTagsByGroupPage(
                 filter: filter,
@@ -175,9 +182,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
 
 extension NavParamExtensions on Map<String, String?> {
   Map<String, String> get withoutNulls => Map.fromEntries(
-        entries
-            .where((e) => e.value != null)
-            .map((e) => MapEntry(e.key, e.value!)),
+        entries.where((e) => e.value != null).map((e) => MapEntry(e.key, e.value!)),
       );
 }
 
@@ -194,15 +199,12 @@ extension NavigationExtensions on BuildContext {
 }
 
 extension _GoRouterStateExtensions on GoRouterState {
-  Map<String, dynamic> get extraMap =>
-      extra != null ? extra as Map<String, dynamic> : {};
+  Map<String, dynamic> get extraMap => extra != null ? extra as Map<String, dynamic> : {};
   Map<String, dynamic> get allParams => <String, dynamic>{}
     ..addAll(params)
     ..addAll(queryParams)
     ..addAll(extraMap);
-  TransitionInfo get transitionInfo => extraMap.containsKey(kTransitionInfoKey)
-      ? extraMap[kTransitionInfoKey] as TransitionInfo
-      : TransitionInfo.appDefault();
+  TransitionInfo get transitionInfo => extraMap.containsKey(kTransitionInfoKey) ? extraMap[kTransitionInfoKey] as TransitionInfo : TransitionInfo.appDefault();
 }
 
 class FFParameters {
@@ -215,18 +217,13 @@ class FFParameters {
 
   // Parameters are empty if the params map is empty or if the only parameter
   // present is the special extra parameter reserved for the transition info.
-  bool get isEmpty =>
-      state.allParams.isEmpty ||
-      (state.extraMap.length == 1 &&
-          state.extraMap.containsKey(kTransitionInfoKey));
-  bool isAsyncParam(MapEntry<String, dynamic> param) =>
-      asyncParams.containsKey(param.key) && param.value is String;
+  bool get isEmpty => state.allParams.isEmpty || (state.extraMap.length == 1 && state.extraMap.containsKey(kTransitionInfoKey));
+  bool isAsyncParam(MapEntry<String, dynamic> param) => asyncParams.containsKey(param.key) && param.value is String;
   bool get hasFutures => state.allParams.entries.any(isAsyncParam);
   Future<bool> completeFutures() => Future.wait(
         state.allParams.entries.where(isAsyncParam).map(
           (param) async {
-            final doc = await asyncParams[param.key]!(param.value)
-                .onError((_, __) => null);
+            final doc = await asyncParams[param.key]!(param.value).onError((_, __) => null);
             if (doc != null) {
               futureParamValues[param.key] = doc;
               return true;

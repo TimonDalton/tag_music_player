@@ -12,7 +12,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class ChangeSongTagsIndividuallyPage extends StatefulWidget {
-  const ChangeSongTagsIndividuallyPage({Key? key}) : super(key: key);
+  ChangeSongTagsIndividuallyPage({Key? key,required this.tagIds});
+  final List<int> tagIds; 
 
   @override
   _ChangeSongTagsIndividuallyPageWidgetState createState() => _ChangeSongTagsIndividuallyPageWidgetState();
