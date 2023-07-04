@@ -58,6 +58,13 @@ class ObjectBox {
       throw e;
     }
   }
+  void saveSongs(List<Song> songs) {
+    try {
+      _songBox.putMany(songs);
+    } catch (e) {
+      throw e;
+    }
+  }
 
   void saveSongsWithTags(List<Song> songs, List<Tag> tags) {
     try {
@@ -200,7 +207,8 @@ class ObjectBox {
   //   return newTagId;
   // }
 
-  Tag getTag(int id) => _tagBox.get(id)!;
+  Tag getTagById(int id) => _tagBox.get(id)!;
+  List<Tag> getTagsById(List<int> ids) => ids.length > 0?_tagBox.query(Tag_.id.oneOf(ids)).build().find():[];
 
   Tag getFirstTag() => _tagBox.query().build().findFirst()!;
 

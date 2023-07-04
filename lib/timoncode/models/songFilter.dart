@@ -44,12 +44,10 @@ class TagFilterCondition extends FilterCondition {
   TagFilterCondition({
     this.tagId = 0,
     this.include = false,
-    required super.type,
+    super.type = FilterType.tag,
     super.parentPointer,
     super.active = true,
-  }) {
-    super.type = FilterType.tag;
-  }
+  });
 }
 
 class DateCreatedFilterCondition extends FilterCondition {
@@ -58,12 +56,10 @@ class DateCreatedFilterCondition extends FilterCondition {
   DateCreatedFilterCondition({
     this.dateCreated,
     this.before = false,
-    required super.type,
+    super.type = FilterType.dateCreated,
     super.parentPointer,
     super.active = true,
-  }) {
-    super.type = FilterType.dateCreated;
-  }
+  });
 }
 
 class DateAddedFilterCondition extends FilterCondition {
@@ -72,12 +68,10 @@ class DateAddedFilterCondition extends FilterCondition {
   DateAddedFilterCondition({
     this.dateAdded,
     this.before = false,
-    required super.type,
+    super.type = FilterType.dateAdded,
     super.parentPointer,
     super.active = true,
-  }) {
-    super.type = FilterType.dateAdded;
-  }
+  });
 }
 
 class SongDurationFilterCondition extends FilterCondition {
@@ -86,24 +80,20 @@ class SongDurationFilterCondition extends FilterCondition {
   SongDurationFilterCondition({
     required this.duration,
     required this.minimum,
-    required super.type,
+    super.type = FilterType.songDuration,
     super.parentPointer,
     super.active = true,
-  }) {
-    super.type = FilterType.songDuration;
-  }
+  });
 }
 
 class ArtistFilterCondition extends FilterCondition {
   String artist;
   ArtistFilterCondition({
     required this.artist,
-    required super.type,
+    super.type= FilterType.artist,
     super.parentPointer,
     super.active = true,
-  }) {
-    super.type = FilterType.artist;
-  }
+  });
 }
 
 class SongFilter {
@@ -113,7 +103,9 @@ class SongFilter {
     this.unprocessedConditions = const [],
     this.queryB = null,
     this.queryIsSet = false,
-  });
+  }){
+    clearProcessed();
+  }
   QueryBuilder<Song>? queryB;
   bool queryIsSet;
 
@@ -177,8 +169,10 @@ class SongFilter {
       return songs;
     } catch (e) {
       print('Songs queryBuilder Error');
+      print(StackTrace.current.toString());
       print(e);
       print('Filter state: ');
+      print(getQueryBuilder.toString());
       print(toMultilineString());
       return [];
     }
@@ -223,7 +217,11 @@ class SongFilter {
     if (latestAfDC.active) {
       ret.add('Released After ${latestAfDC.dateCreated.toString()}');
     }
-
+    if(ret.length == 0){
+      ret.add('None');
+      print('unprocessedConditions');
+      print(unprocessedConditions);
+    }
     return ret;
   }
 
