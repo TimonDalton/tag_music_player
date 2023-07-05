@@ -185,6 +185,11 @@ class ObjectBox {
   }
 
   void removeSong(int songId) => _songBox.removeAsync(songId);
+  void removeSongs(List<Song> songs) { 
+    List<int> songIds = List<int>.generate(songs.length, (index) => songs[index].id);
+    int deletedCount = _songBox.removeMany(songIds);
+    print('Deleted ${deletedCount} songs');
+    }
 
   // Future<int> addTag(String name) async {
   //   if (name.isEmpty) {

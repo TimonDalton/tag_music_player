@@ -2,6 +2,7 @@ import 'package:tag_music_player/project/components/buttons/colour_button/colour
 import 'package:tag_music_player/timoncode/models/song.dart';
 import 'package:tag_music_player/timoncode/models/songFilter.dart';
 import 'package:tag_music_player/timoncode/widgets/common/songWidgetList.dart';
+import 'package:tag_music_player/timoncode/widgets/popups/defineFilter.dart';
 
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -106,7 +107,22 @@ class _SongLibraryPageState extends State<SongLibraryPage> {
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
                                   Expanded(
-                                    child: FilterButtonWidget(),
+                                    child: InkWell(
+                                        onTap: (){
+                                          showDefineFilterPopup(
+                                            context,
+                                            widget.filter,
+                                            (newFilter) {
+                                              print('song filter setter called');
+                                              setState(() {
+                                                widget.filter.becomeCloneOf(newFilter);
+                                                widget.songs = widget.filter.getSongs();
+                                              });
+                                            },
+                                          );
+                                        },
+                                        child:FilterButtonWidget(),
+                                      ),
                                   ),
                                   Align(
                                     alignment: AlignmentDirectional(0.05, 0.0),

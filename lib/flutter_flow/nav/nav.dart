@@ -9,6 +9,7 @@ import '../flutter_flow_theme.dart';
 import 'package:tag_music_player/timoncode/widgets/change_tags/changeSongTagByGroupPage.dart';
 import 'package:tag_music_player/timoncode/widgets/change_tags/changeSongTagsIndividually.dart';
 import 'package:tag_music_player/timoncode/widgets/change_tags/selectEditableSongTagsPage.dart';
+import 'package:tag_music_player/timoncode/widgets/libraryPage/delete_songs_page.dart';
 import 'package:tag_music_player/timoncode/models/songFilter.dart';
 
 import '../../index.dart';
@@ -140,7 +141,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: 'delete_songs_page',
           path: '/deleteSongsPage',
-          builder: (context, params) => DeleteSongsPageWidget(),
+          builder: (context, params) => DeleteSongsPage(),
         ),
         FFRoute(
             name: 'change_songs_tags_by_group_page',
