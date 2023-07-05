@@ -1,3 +1,8 @@
+import 'package:tag_music_player/project/components/buttons/colour_button/colour_button_widget.dart';
+import 'package:tag_music_player/timoncode/models/song.dart';
+import 'package:tag_music_player/timoncode/models/songFilter.dart';
+import 'package:tag_music_player/timoncode/widgets/common/songWidgetList.dart';
+
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -11,24 +16,34 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class SongLibraryPage extends StatefulWidget {
-  const SongLibraryPage({Key? key}) : super(key: key);
+  SongLibraryPage() {
+    addingToQueueState = false;
+    filter = SongFilter();
+    songs = filter.getSongs();
+    selectedSongIndexes = [];
+    songWidgets = [];
+  }
+  late bool addingToQueueState;
+  late SongFilter filter;
+  late List<Song> songs;
+  late List<int> selectedSongIndexes;
+  late List<Widget> songWidgets;
 
   @override
   _SongLibraryPageState createState() => _SongLibraryPageState();
 }
 
 class _SongLibraryPageState extends State<SongLibraryPage> {
-  final scaffoldKey = GlobalKey<ScaffoldState>();
-  final _unfocusNode = FocusNode();
-
   @override
   Widget build(BuildContext context) {
-    context.watch<FFAppState>();
-
+    if (!widget.addingToQueueState) {
+      widget.songWidgets = buildSongWidgetList(context, widget.songs);
+    } else {
+      widget.songWidgets = buildSelectableSongWidgetList(context, widget.songs, Icon(Icons.add_box_rounded, color: Colors.green), Icon(Icons.check_box_outline_blank),
+          (songIndex, selected) => selected ? widget.selectedSongIndexes.add(songIndex) : widget.selectedSongIndexes.remove(songIndex));
+    }
     return GestureDetector(
-      onTap: () => FocusScope.of(context).requestFocus(_unfocusNode),
       child: Scaffold(
-        key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primary,
         appBar: AppBar(
           backgroundColor: FlutterFlowTheme.of(context).primary,
@@ -66,32 +81,69 @@ class _SongLibraryPageState extends State<SongLibraryPage> {
           top: true,
           child: Padding(
             padding: EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 0.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Expanded(
+            child: Expanded(
+              child: Container(
+                width: MediaQuery.of(context).size.width * 1.0,
+                height: MediaQuery.of(context).size.height * 0.83,
+                decoration: BoxDecoration(
+                  color: FlutterFlowTheme.of(context).primary,
+                ),
+                child: Align(
+                  alignment: AlignmentDirectional(0.0, -1.0),
                   child: Container(
-                    width: MediaQuery.of(context).size.width * 1.0,
-                    height: MediaQuery.of(context).size.height * 0.83,
+                    width: MediaQuery.of(context).size.width * 0.85,
+                    height: MediaQuery.of(context).size.height * 1.0,
                     decoration: BoxDecoration(
                       color: FlutterFlowTheme.of(context).primary,
                     ),
-                    child: Align(
-                      alignment: AlignmentDirectional(0.0, -1.0),
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * 0.85,
-                        height: MediaQuery.of(context).size.height * 1.0,
-                        decoration: BoxDecoration(
-                          color: FlutterFlowTheme.of(context).primary,
-                        ),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Expanded(
+                          child: ListView(
                             children: [
                               Row(
                                 mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
                                 children: [
+                                  Expanded(
+                                    child: FilterButtonWidget(),
+                                  ),
+                                  Align(
+                                    alignment: AlignmentDirectional(0.05, 0.0),
+                                    child: InkWell(
+                                      splashColor: Colors.transparent,
+                                      focusColor: Colors.transparent,
+                                      hoverColor: Colors.transparent,
+                                      highlightColor: Colors.transparent,
+                                      onTap: widget.addingToQueueState
+                                          ? () {
+                                              setState(() {
+                                                widget.selectedSongIndexes = [];
+                                                widget.addingToQueueState = false;
+                                              });
+                                            }
+                                          : () {
+                                              print('clicked add to queue');
+                                              setState(() {
+                                                widget.addingToQueueState = true;
+                                              });
+                                            },
+                                      child: MiniButtonWidget(
+                                        text: widget.addingToQueueState ? 'Cancel' : 'Add to queue',
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              ...widget.songWidgets
+                            ],
+                          ),
+                        ),
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: (!widget.addingToQueueState)
+                              ? [
                                   Expanded(
                                     child: Align(
                                       alignment: AlignmentDirectional(-0.75, 0.0),
@@ -138,60 +190,43 @@ class _SongLibraryPageState extends State<SongLibraryPage> {
                                       ),
                                     ),
                                   ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
+                                ]
+                              : [
                                   Expanded(
-                                    child: FilterButtonWidget(),
-                                  ),
-                                  Align(
-                                    alignment: AlignmentDirectional(0.05, 0.0),
                                     child: InkWell(
-                                      splashColor: Colors.transparent,
-                                      focusColor: Colors.transparent,
-                                      hoverColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      onTap: () async {
-                                        context.pushNamed('add_to_queue_page');
+                                      onTap: () {
+                                        setState(() {
+                                          widget.selectedSongIndexes = [];
+                                        });
                                       },
-                                      child: MiniButtonWidget(
-                                        text: 'Add to queue',
+                                      child: ColourButtonWidget(
+                                        text: 'Deselect All',
+                                        buttonColour: Colors.grey,
                                       ),
                                     ),
                                   ),
-                                ],
-                              ),
-                              ListView(
-                                padding: EdgeInsets.zero,
-                                shrinkWrap: true,
-                                scrollDirection: Axis.vertical,
-                                children: [
-                                  InkWell(
-                                    splashColor: Colors.transparent,
-                                    focusColor: Colors.transparent,
-                                    hoverColor: Colors.transparent,
-                                    highlightColor: Colors.transparent,
-                                    onTap: () async {
-                                      context.pushNamed('choose_song_tag_page');
+                                  Expanded(
+                                      child: InkWell(
+                                    onTap: () {
+                                      //TODO acually add to queue
+                                      widget.selectedSongIndexes = [];
+                                      setState(() {
+                                        widget.addingToQueueState = false;
+                                      });
                                     },
-                                    child: DefualtSongWidget(),
-                                  ),
+                                    child: ColourButtonWidget(
+                                      text: 'Add to Queue',
+                                      buttonColour: Colors.green,
+                                    ),
+                                  ))
                                 ],
-                              ),
-                            ],
-                          ),
                         ),
-                      ),
+                        BottomNavBarWidgetWidget(),
+                      ],
                     ),
                   ),
                 ),
-                Align(
-                  alignment: AlignmentDirectional(0.0, 1.0),
-                  child: BottomNavBarWidgetWidget(),
-                ),
-              ],
+              ),
             ),
           ),
         ),

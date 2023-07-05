@@ -86,8 +86,8 @@ class _ChangeSongsTagsByGroupPageState extends State<ChangeSongsTagsByGroupPage>
       ret.add(SongWidget(
         song: widget.songs[i],
         index: i,
-        extraIncludedTags: widget.addedTags,
-        extraExcludedTags: widget.removedTags,
+        extraIncluded: widget.addedTags,
+        extraExcluded: widget.removedTags,
       ));
     }
     return ret;

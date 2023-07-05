@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:tag_music_player/timoncode/models/songFilter.dart';
+import 'package:tag_music_player/timoncode/widgets/libraryPage/song_library_page.dart';
 import '../flutter_flow_theme.dart';
 import 'package:tag_music_player/timoncode/widgets/change_tags/changeSongTagByGroupPage.dart';
 import 'package:tag_music_player/timoncode/widgets/change_tags/changeSongTagsIndividually.dart';
@@ -99,7 +100,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: 'song_library_page',
           path: '/songLibraryPage',
-          builder: (context, params) => SongLibraryPageWidget(),
+          builder: (context, params) => SongLibraryPage(),
         ),
         FFRoute(
           name: 'add_songs_page',
