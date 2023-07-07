@@ -228,6 +228,14 @@ class ObjectBox {
   List<Tag> getAllGenreTags() {
     return _tagBox.query(Tag_.userDefined.equals(false).and(Tag_.name.contains('genre: '))).build().find();
   }
+  void deleteTag(int tagId) {
+    bool didDelete = _tagBox.remove(tagId);
+    if(!didDelete){
+      print('Error: Tried to delete tag with id @${tagId}, did not work.');
+    }else{
+      print('Deleted tag with id: ${tagId}');
+    }
+  }
 
   Future<List<Tag>> getAllTagsAsync() => _tagBox.getAllAsync();
 }

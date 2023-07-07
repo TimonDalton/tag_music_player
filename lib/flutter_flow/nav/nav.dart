@@ -4,12 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:tag_music_player/timoncode/models/songFilter.dart';
+import 'package:tag_music_player/timoncode/models/tag.dart';
+import 'package:tag_music_player/timoncode/widgets/filterPages/create_tag_page.dart';
 import 'package:tag_music_player/timoncode/widgets/libraryPage/song_library_page.dart';
+import 'package:tag_music_player/timoncode/widgets/popupPages/confirm_tag_deletion_popup_page.dart';
 import '../flutter_flow_theme.dart';
 import 'package:tag_music_player/timoncode/widgets/change_tags/changeSongTagByGroupPage.dart';
 import 'package:tag_music_player/timoncode/widgets/change_tags/changeSongTagsIndividually.dart';
 import 'package:tag_music_player/timoncode/widgets/change_tags/selectEditableSongTagsPage.dart';
 import 'package:tag_music_player/timoncode/widgets/libraryPage/delete_songs_page.dart';
+import 'package:tag_music_player/timoncode/widgets/popupPages/edit_tags_popup_page.dart';
 import 'package:tag_music_player/timoncode/models/songFilter.dart';
 
 import '../../index.dart';
@@ -66,12 +70,21 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: 'edit_tags_popup',
           path: '/editTagsPopup',
-          builder: (context, params) => EditTagsPopupWidget(),
+          builder: (context, params) => EditTagsPopupPage(),
         ),
         FFRoute(
           name: 'create_tag_page',
           path: '/createTagPage',
-          builder: (context, params) => CreateTagPageWidget(),
+          builder: (context, params) {
+            if (params.state.extra == null) {
+              return CreateTagPage();
+            }
+            var map = params.state.extra as Map<String, Tag?>;
+            Tag? tag = map['tag'];
+            return CreateTagPage(
+              tag: tag,
+            );
+          },
         ),
         FFRoute(
           name: 'queue_song_hold_popup',
@@ -96,7 +109,13 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: 'confirm_tag_deletion_popup',
           path: '/confirmTagDeletionPopup',
-          builder: (context, params) => ConfirmTagDeletionPopupWidget(),
+          builder: (context, params) {
+            var map = params.state.extra as Map<String, Tag>;
+            Tag tag = map['tag']!;
+            return ConfirmTagDeletionPopupPage(
+              tag: tag,
+            );
+          },
         ),
         FFRoute(
           name: 'song_library_page',
@@ -147,10 +166,10 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
             name: 'change_songs_tags_by_group_page',
             path: '/changeSongsTagsByGroupPage',
             builder: (context, params) {
-              if(params.state.extra == null){
+              if (params.state.extra == null) {
                 return ChangeSongsTagsByGroupPage(
                   filter: SongFilter(),
-                );  
+                );
               }
               var map = params.state.extra as Map<String, SongFilter>;
               SongFilter filter = map['filter']!;

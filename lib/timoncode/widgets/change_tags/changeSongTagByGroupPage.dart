@@ -222,7 +222,7 @@ class _ChangeSongsTagsByGroupPageState extends State<ChangeSongsTagsByGroupPage>
                             ),
                             Expanded(
                               child: InkWell(
-                                onTap: () => showSelectSingleTagPopup(context, (tag) {
+                                onTap: () => showSelectSingleTagPopup(context, 'Select a tag to add or remove', (tag) {
                                   setState(() {
                                     widget.displayedTag = tag;
                                   });

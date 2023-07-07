@@ -4,7 +4,7 @@ import 'package:tag_music_player/timoncode/widgets/tag_groups/tagSelector.dart';
 import 'package:tag_music_player/timoncode/models/tag.dart';
 import 'package:tag_music_player/timoncode/objectbox.dart';
 
-Future<void> showSelectSingleTagPopup(BuildContext context, Function(Tag?) callback) async {
+Future<void> showSelectSingleTagPopup(BuildContext context,String title, Function(Tag?) callback) async {
   List<Tag> tags = objectBox.getAllUserDefTags();
   // print('Tags');
   // print(List<String>.generate(tags.length, (index) => tags[index].name));
@@ -18,7 +18,7 @@ Future<void> showSelectSingleTagPopup(BuildContext context, Function(Tag?) callb
     barrierDismissible: false, // user must tap button!
     builder: (BuildContext context) {
       return AlertDialog(
-        title: const Text('Choose a tag'),
+        title: Text(title),
         content: Container(
           color: Colors.black,
           height: MediaQuery.of(context).size.height*0.5,
