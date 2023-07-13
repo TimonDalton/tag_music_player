@@ -9,6 +9,7 @@ import 'package:tag_music_player/timoncode/models/tag.dart';
 import 'package:tag_music_player/timoncode/widgets/filterPages/create_tag_page.dart';
 import 'package:tag_music_player/timoncode/widgets/filterPages/define_filter_page.dart';
 import 'package:tag_music_player/timoncode/widgets/filterPages/filters_page.dart';
+import 'package:tag_music_player/timoncode/widgets/filterPages/view_filter_page.dart';
 import 'package:tag_music_player/timoncode/widgets/libraryPage/song_library_page.dart';
 import 'package:tag_music_player/timoncode/widgets/popupPages/confirm_tag_deletion_popup_page.dart';
 import '../flutter_flow_theme.dart';
@@ -63,7 +64,13 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: 'view_filter',
           path: '/viewFilter',
-          builder: (context, params) => ViewFilterWidget(),
+          builder: (context, params) {
+            var map = params.state.extra as Map<String, PlaybackFilter>;
+            PlaybackFilter filter = map['filter']!;
+            return ViewFilterPage(
+              filter: filter,
+            );
+          },
         ),
         FFRoute(
           name: 'tag_weight_page',

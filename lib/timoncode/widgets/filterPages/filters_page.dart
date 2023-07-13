@@ -196,7 +196,7 @@ Widget buildFilter(BuildContext context, PlaybackFilter pFilter) {
     hoverColor: Colors.transparent,
     highlightColor: Colors.transparent,
     onTap: () async {
-      context.pushNamed('view_filter');
+      context.pushNamed('view_filter',extra: {'filter':pFilter});
     },
     child: DisplayPlaybackFilter(
       filter: pFilter,

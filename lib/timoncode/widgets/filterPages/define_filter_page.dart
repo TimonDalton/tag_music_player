@@ -36,7 +36,7 @@ class DefineFilterPage extends StatefulWidget {
       } else {
         throw 'filter!.tagWeights = null';
       }
-    } 
+    }
   }
   PlaybackFilter? filter;
   List<Tag> tags = [];
@@ -49,6 +49,14 @@ class DefineFilterPage extends StatefulWidget {
 class _DefineFilterPageState extends State<DefineFilterPage> {
   TextEditingController nameTEC = TextEditingController();
   late FilterTagSelector filterTagSelector;
+
+  @override
+  void initState() {
+    if (widget.filter != null) {
+      nameTEC.text = widget.filter!.name;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,7 +81,7 @@ class _DefineFilterPageState extends State<DefineFilterPage> {
         title: Align(
           alignment: AlignmentDirectional(-0.35, 0.0),
           child: Text(
-            'Create Filter',
+            widget.filter == null ? 'Create Filter' : 'Edit ${widget.filter!.name}',
             style: FlutterFlowTheme.of(context).displaySmall.override(
                   fontFamily: 'Roboto Condensed',
                   fontSize: 30.0,
@@ -139,27 +147,24 @@ class _DefineFilterPageState extends State<DefineFilterPage> {
                 }
                 List<Tag> includedTags = filterTagSelector.getIncluded();
                 List<Tag> excludedTags = filterTagSelector.getExcluded();
-                List<int> currentExcludedTagIds = List<int>.generate(excludedTags.length,((index) => excludedTags[index].id));
+                List<int> currentExcludedTagIds = List<int>.generate(excludedTags.length, ((index) => excludedTags[index].id));
                 saveFilter.tagWeights = {};
                 saveFilter.tags.addAll(includedTags);
                 saveFilter.tags.addAll(excludedTags);
                 for (int i = 0; i < includedTags.length; i++) {
-                  var insert =  {
-                    includedTags[i].id: (originalTagIds.contains(includedTags[i].id) && !currentExcludedTagIds.contains(includedTags[i].id))
-                        ? widget.filter!.tagWeights![includedTags[i].id]!
-                        : 1.0
+                  var insert = {
+                    includedTags[i].id:
+                        (originalTagIds.contains(includedTags[i].id) && !currentExcludedTagIds.contains(includedTags[i].id)) ? widget.filter!.tagWeights![includedTags[i].id]! : 1.0
                   };
-                  saveFilter.tagWeights!.addAll(
-                  insert  
-                  );
+                  saveFilter.tagWeights!.addAll(insert);
                 }
                 for (int i = 0; i < currentExcludedTagIds.length; i++) {
                   saveFilter.tagWeights!.addAll({currentExcludedTagIds[i]: 0.0});
                 }
-                if (saveFilter.tags.toList().length != saveFilter.tagWeights!.entries.toList().length){
+                if (saveFilter.tags.toList().length != saveFilter.tagWeights!.entries.toList().length) {
                   throw 'savefilter weights and tags incompatible: tags:${saveFilter.tags.toList().length} ; weights: ${saveFilter.tagWeights} ';
                 }
-                
+
                 // dynamic jsonObj = jsonEncode(saveFilter.tagWeights);
                 // print('mapJson: ${jsonObj}');
                 objectBox.saveFilter(saveFilter);

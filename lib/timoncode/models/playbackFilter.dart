@@ -86,7 +86,7 @@ class PlaybackFilter {
     };
   }
 
-  SongFilter getSongFilter() {
+  SongFilter generateSongFilter() {
     List<Tag> includedTags = [];
     List<Tag> excludedTags = [];
     final tagList = tags.toList(growable: false);

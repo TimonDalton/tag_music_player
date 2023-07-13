@@ -1,3 +1,5 @@
+import 'package:tag_music_player/timoncode/widgets/common/songWidgetList.dart';
+
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -11,10 +13,17 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tag_music_player/timoncode/models/playbackFilter.dart';
+import 'package:tag_music_player/timoncode/models/songFilter.dart';
+import 'package:tag_music_player/timoncode/models/song.dart';
 
 class ViewFilterPage extends StatefulWidget {
-  ViewFilterPage({required this.filter});
+  ViewFilterPage({required this.filter}) {
+    songFilter = filter.generateSongFilter();
+    songs = songFilter.getSongs();
+  }
   PlaybackFilter filter;
+  late SongFilter songFilter;
+  late List<Song> songs;
 
   @override
   _ViewFilterPageState createState() => _ViewFilterPageState();
@@ -23,7 +32,6 @@ class ViewFilterPage extends StatefulWidget {
 class _ViewFilterPageState extends State<ViewFilterPage> {
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: FlutterFlowTheme.of(context).primary,
       appBar: AppBar(
@@ -94,12 +102,12 @@ class _ViewFilterPageState extends State<ViewFilterPage> {
                                   hoverColor: Colors.transparent,
                                   highlightColor: Colors.transparent,
                                   onTap: () async {
-                                    context.pushNamed('define_filter_page');
+                                    context.pushNamed('define_filter_page',extra: {'filter':widget.filter});
                                   },
                                   child: DefaultButtonWidget(
                                     text: 'Edit Filter',
                                     icon: Icon(
-                                      Icons.save_alt,
+                                      Icons.edit,
                                       color: FlutterFlowTheme.of(context).primaryText,
                                     ),
                                     width: 125.0,
@@ -141,13 +149,8 @@ class _ViewFilterPageState extends State<ViewFilterPage> {
                             ),
                           ),
                         ),
-                        ListView(
-                          padding: EdgeInsets.zero,
-                          shrinkWrap: true,
-                          scrollDirection: Axis.vertical,
-                          children: [
-                            DefualtSongWidget(),
-                          ],
+                        Expanded(
+                          child: SongWidgetList(songs: widget.songs),
                         ),
                       ],
                     ),
