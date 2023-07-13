@@ -136,7 +136,7 @@ class _DefineFilterWidgetState extends State<DefineFilterWidget> {
 
 
     Widget filterSelector = FilterTagSelector(
-      availableTags: tags,
+      availableTags: tags, 
       includedTagIds:  widget.filter.includedTagIds, 
       excludedTagIds: widget.filter.excludedTagIds,
     );

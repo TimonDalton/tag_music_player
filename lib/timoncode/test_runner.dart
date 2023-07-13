@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:tag_music_player/timoncode/functions/appInit.dart';
 import 'package:tag_music_player/timoncode/models/tag.dart';
 import 'dart:math';
 import 'package:flex_list/flex_list.dart';
 import 'package:tag_music_player/timoncode/functions/roundedCorners.dart';
+import 'package:tag_music_player/timoncode/objectbox.dart';
 import 'package:tag_music_player/timoncode/widgets/tag_groups/tagSelector.dart';
 import 'package:tag_music_player/timoncode/widgets/tag_groups/filterTagsSelector.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  objectBox = await ObjectBox.init();
   runApp(const MyApp());
 }
 
@@ -38,16 +42,6 @@ class MyApp extends StatelessWidget {
 class Home extends StatelessWidget {
   Home();
 
-  List<Tag> tags = [
-    Tag(name: 'Banjo', colourIndex: 0, id: 0),
-    Tag(name: 'Loud', colourIndex: 1, id: 1),
-    Tag(name: 'Vibes', colourIndex: 2, id: 2),
-    Tag(name: 'Yeet', colourIndex: 3, id: 3),
-    Tag(name: 'Yoo', colourIndex: 4, id: 4),
-    Tag(name: 'Skroo', colourIndex: 5, id: 5),
-    Tag(name: 'Skra', colourIndex: 6, id: 6),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,7 +49,17 @@ class Home extends StatelessWidget {
         width: MediaQuery.of(context).size.width * 0.9,
         height: MediaQuery.of(context).size.height,
         child: Center(
-          child: FilterTagSelector(availableTags: tags,includedTagIds:[],excludedTagIds:[]),
+          child: InkWell(
+            onTap: () {
+              print(objectBox.getPlaybackFilterBox.removeAll());
+            },
+            child: Container(
+              color: Colors.blue,
+              width: 400,
+              height: 100,
+              child: Text('Do Action'),
+            ),
+          ),
         ),
       ),
     );

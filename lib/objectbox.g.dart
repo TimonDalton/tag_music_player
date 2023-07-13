@@ -14,6 +14,7 @@ import 'package:objectbox/internal.dart'; // generated code can access "internal
 import 'package:objectbox/objectbox.dart';
 import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 
+import 'timoncode/models/playbackFilter.dart';
 import 'timoncode/models/song.dart';
 import 'timoncode/models/tag.dart';
 
@@ -100,7 +101,41 @@ final _entities = <ModelEntity>[
       relations: <ModelRelation>[],
       backlinks: <ModelBacklink>[
         ModelBacklink(name: 'songs', srcEntity: 'Song', srcField: '')
-      ])
+      ]),
+  ModelEntity(
+      id: const IdUid(7, 2557409868432952656),
+      name: 'PlaybackFilter',
+      lastPropertyId: const IdUid(5, 8766596034594712122),
+      flags: 0,
+      properties: <ModelProperty>[
+        ModelProperty(
+            id: const IdUid(1, 7586258636854530005),
+            name: 'id',
+            type: 6,
+            flags: 1),
+        ModelProperty(
+            id: const IdUid(2, 2872838993623638644),
+            name: 'name',
+            type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(3, 8369491077183155537),
+            name: 'lastAccessed',
+            type: 10,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(4, 8187612926945003173),
+            name: 'dbTotalByVersion',
+            type: 9,
+            flags: 0)
+      ],
+      relations: <ModelRelation>[
+        ModelRelation(
+            id: const IdUid(2, 6374847314963343384),
+            name: 'tags',
+            targetId: const IdUid(2, 3379074201238304732))
+      ],
+      backlinks: <ModelBacklink>[])
 ];
 
 /// Open an ObjectBox store with the model declared in this file.
@@ -123,13 +158,41 @@ Future<Store> openStore(
 ModelDefinition getObjectBoxModel() {
   final model = ModelInfo(
       entities: _entities,
-      lastEntityId: const IdUid(2, 3379074201238304732),
+      lastEntityId: const IdUid(7, 2557409868432952656),
       lastIndexId: const IdUid(1, 3324877264777455464),
-      lastRelationId: const IdUid(1, 2933435051223473136),
+      lastRelationId: const IdUid(2, 6374847314963343384),
       lastSequenceId: const IdUid(0, 0),
-      retiredEntityUids: const [],
+      retiredEntityUids: const [
+        8001341518230850695,
+        2695809420363043732,
+        6305852949951424807,
+        7901599631224104933
+      ],
       retiredIndexUids: const [],
-      retiredPropertyUids: const [5489380764927646302, 347302859567081836],
+      retiredPropertyUids: const [
+        5489380764927646302,
+        347302859567081836,
+        6995005639536957438,
+        6977115435854106704,
+        8652738848562534240,
+        2553839442597324993,
+        3719602983658599573,
+        3692236497740312392,
+        1605686068252087171,
+        8930213380727279550,
+        6309408186515916460,
+        7831192010280214150,
+        6060519888185551742,
+        1692085368193444789,
+        6629946317230573522,
+        983891003222283668,
+        7727123918288359283,
+        2015158093280157473,
+        7126892046675706469,
+        2700315743673163372,
+        6152311172718504653,
+        8766596034594712122
+      ],
       retiredRelationUids: const [],
       modelVersion: 5,
       modelVersionParserMinimum: 5,
@@ -218,6 +281,44 @@ ModelDefinition getObjectBoxModel() {
           InternalToManyAccess.setRelInfo<Tag>(
               object.songs, store, RelInfo<Song>.toManyBacklink(1, object.id));
           return object;
+        }),
+    PlaybackFilter: EntityDefinition<PlaybackFilter>(
+        model: _entities[2],
+        toOneRelations: (PlaybackFilter object) => [],
+        toManyRelations: (PlaybackFilter object) =>
+            {RelInfo<PlaybackFilter>.toMany(2, object.id): object.tags},
+        getId: (PlaybackFilter object) => object.id,
+        setId: (PlaybackFilter object, int id) {
+          object.id = id;
+        },
+        objectToFB: (PlaybackFilter object, fb.Builder fbb) {
+          final nameOffset = fbb.writeString(object.name);
+          final dbTotalByVersionOffset = object.dbTotalByVersion == null
+              ? null
+              : fbb.writeString(object.dbTotalByVersion!);
+          fbb.startTable(6);
+          fbb.addInt64(0, object.id);
+          fbb.addOffset(1, nameOffset);
+          fbb.addInt64(2, object.lastAccessed.millisecondsSinceEpoch);
+          fbb.addOffset(3, dbTotalByVersionOffset);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+
+          final object = PlaybackFilter(
+              id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0),
+              name: const fb.StringReader(asciiOptimization: true)
+                  .vTableGet(buffer, rootOffset, 6, ''))
+            ..lastAccessed = DateTime.fromMillisecondsSinceEpoch(
+                const fb.Int64Reader().vTableGet(buffer, rootOffset, 8, 0))
+            ..dbTotalByVersion = const fb.StringReader(asciiOptimization: true)
+                .vTableGetNullable(buffer, rootOffset, 10);
+          InternalToManyAccess.setRelInfo<PlaybackFilter>(
+              object.tags, store, RelInfo<PlaybackFilter>.toMany(2, object.id));
+          return object;
         })
   };
 
@@ -270,4 +371,27 @@ class Tag_ {
   /// see [Tag.userDefined]
   static final userDefined =
       QueryBooleanProperty<Tag>(_entities[1].properties[3]);
+}
+
+/// [PlaybackFilter] entity fields to define ObjectBox queries.
+class PlaybackFilter_ {
+  /// see [PlaybackFilter.id]
+  static final id =
+      QueryIntegerProperty<PlaybackFilter>(_entities[2].properties[0]);
+
+  /// see [PlaybackFilter.name]
+  static final name =
+      QueryStringProperty<PlaybackFilter>(_entities[2].properties[1]);
+
+  /// see [PlaybackFilter.lastAccessed]
+  static final lastAccessed =
+      QueryIntegerProperty<PlaybackFilter>(_entities[2].properties[2]);
+
+  /// see [PlaybackFilter.dbTotalByVersion]
+  static final dbTotalByVersion =
+      QueryStringProperty<PlaybackFilter>(_entities[2].properties[3]);
+
+  /// see [PlaybackFilter.tags]
+  static final tags =
+      QueryRelationToMany<PlaybackFilter, Tag>(_entities[2].relations[0]);
 }

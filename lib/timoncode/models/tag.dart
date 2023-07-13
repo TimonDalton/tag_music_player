@@ -28,4 +28,9 @@ class Tag{
     Colors.green,
     Colors.blue,
     Colors.purple,];
+
+    @override
+    String toString() {
+        return 'Tag(id: $id, name: $name, colour: ${colours[colourIndex].toString()})';
+    }
 }

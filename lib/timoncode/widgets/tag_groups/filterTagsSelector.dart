@@ -18,6 +18,12 @@ class FilterTagSelector extends StatefulWidget {
       }
     }
   }
+  List<Tag> getIncluded(){
+    return availableTags.where((tag) => includedTagIds.contains(tag.id)).toList();
+  }
+  List<Tag> getExcluded(){
+    return availableTags.where((tag) => excludedTagIds.contains(tag.id)).toList();
+  }
 
   @override
   State<FilterTagSelector> createState() => _FilterTagSelectorState();
@@ -52,8 +58,8 @@ class _FilterTagSelectorState extends State<FilterTagSelector> {
     double padding = parentWidth * 0.01;
     double usableWidth = (parentWidth - padding * 4) / 2;
     List<int> availableTagsIntList = List<int>.generate(widget.availableTags.length, (index) => widget.availableTags[index].id);
-    print('Available Tags List: ${availableTagsIntList.toString()}');
-    print('included Tags List: ${widget.includedTagIds.where((tagId) => availableTagsIntList.contains(tagId)).toList().toString()}');
+    // print('Available Tags List: ${availableTagsIntList.toString()}');
+    // print('included Tags List: ${widget.includedTagIds.where((tagId) => availableTagsIntList.contains(tagId)).toList().toString()}');
     tagBoxes[0] = DragTargetBox(
       tagIds: widget.availableTagIdBin,
       typeId: 0,
@@ -168,9 +174,9 @@ class _DragTargetBoxState extends State<DragTargetBox> {
           }, builder: (context, candidateData, rejectedData) {
 
             List<Widget> tagWidgets = [];
-            print('Box typeId ${widget.typeId}');
-            print('tags ${List<int>.generate(widget.tags.length, (index) => widget.tags[index].id).toString()}');
-            print('box tags ${widget.tagIds.toString()}, length: ${widget.tagIds.length}');
+            // print('Box typeId ${widget.typeId}');
+            // print('tags ${List<int>.generate(widget.tags.length, (index) => widget.tags[index].id).toString()}');
+            // print('box tags ${widget.tagIds.toString()}, length: ${widget.tagIds.length}');
             if (widget.typeId != 1) {
               for (int i = 0; i < widget.tagIds.length; i++) {
                 tagWidgets.add(DragTag(

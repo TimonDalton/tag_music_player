@@ -8,6 +8,7 @@ import 'package:tag_music_player/objectbox.g.dart'; // created by `flutter pub r
 import 'package:objectbox/objectbox.dart';
 import 'package:tag_music_player/timoncode/models/tag.dart';
 import 'package:tag_music_player/timoncode/models/song.dart';
+import 'package:tag_music_player/timoncode/models/playbackFilter.dart';
 
 /// Provides access to the ObjectBox Store throughout the app.
 ///
@@ -23,6 +24,7 @@ class ObjectBox {
   /// Two Boxes: one for Songs, one for Tags.
   late final Box<Song> _songBox;
   late final Box<Tag> _tagBox;
+  late final Box<PlaybackFilter> _playbackFilterBox;
 
   Box<Song> get getSongBox {
     return _songBox;
@@ -30,6 +32,10 @@ class ObjectBox {
 
   Box<Tag> get getTagBox {
     return _tagBox;
+  }
+
+  Box<PlaybackFilter> get getPlaybackFilterBox {
+    return _playbackFilterBox;
   }
 
   ObjectBox._create(this._store) {
@@ -42,6 +48,7 @@ class ObjectBox {
 
     _songBox = Box<Song>(_store);
     _tagBox = Box<Tag>(_store);
+    _playbackFilterBox = Box<PlaybackFilter>(_store);
   }
 
   /// Create an instance of ObjectBox to use throughout the app.
@@ -58,6 +65,7 @@ class ObjectBox {
       throw e;
     }
   }
+
   void saveSongs(List<Song> songs) {
     try {
       _songBox.putMany(songs);
@@ -185,11 +193,11 @@ class ObjectBox {
   }
 
   void removeSong(int songId) => _songBox.removeAsync(songId);
-  void removeSongs(List<Song> songs) { 
+  void removeSongs(List<Song> songs) {
     List<int> songIds = List<int>.generate(songs.length, (index) => songs[index].id);
     int deletedCount = _songBox.removeMany(songIds);
     print('Deleted ${deletedCount} songs');
-    }
+  }
 
   // Future<int> addTag(String name) async {
   //   if (name.isEmpty) {
@@ -213,7 +221,7 @@ class ObjectBox {
   // }
 
   Tag getTagById(int id) => _tagBox.get(id)!;
-  List<Tag> getTagsById(List<int> ids) => ids.length > 0?_tagBox.query(Tag_.id.oneOf(ids)).build().find():[];
+  List<Tag> getTagsById(List<int> ids) => ids.length > 0 ? _tagBox.query(Tag_.id.oneOf(ids)).build().find() : [];
 
   Tag getFirstTag() => _tagBox.query().build().findFirst()!;
 
@@ -225,19 +233,25 @@ class ObjectBox {
   List<Tag> getAllPlaylistTags() {
     return _tagBox.query(Tag_.userDefined.equals(false).and(Tag_.name.contains('playlist: '))).build().find();
   }
+
   List<Tag> getAllGenreTags() {
     return _tagBox.query(Tag_.userDefined.equals(false).and(Tag_.name.contains('genre: '))).build().find();
   }
+
   void deleteTag(int tagId) {
     bool didDelete = _tagBox.remove(tagId);
-    if(!didDelete){
+    if (!didDelete) {
       print('Error: Tried to delete tag with id @${tagId}, did not work.');
-    }else{
+    } else {
       print('Deleted tag with id: ${tagId}');
     }
   }
 
   Future<List<Tag>> getAllTagsAsync() => _tagBox.getAllAsync();
+
+  List<PlaybackFilter> getPlaybackFilters() => _playbackFilterBox.getAll();
+  PlaybackFilter? getPlaybackFilter(int id) => _playbackFilterBox.get(id);
+  void saveFilter(PlaybackFilter filter) => _playbackFilterBox.put(filter);
 }
 
 late final ObjectBox objectBox;

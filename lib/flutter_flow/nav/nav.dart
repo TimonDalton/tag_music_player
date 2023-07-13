@@ -3,9 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:tag_music_player/timoncode/models/playbackFilter.dart';
 import 'package:tag_music_player/timoncode/models/songFilter.dart';
 import 'package:tag_music_player/timoncode/models/tag.dart';
 import 'package:tag_music_player/timoncode/widgets/filterPages/create_tag_page.dart';
+import 'package:tag_music_player/timoncode/widgets/filterPages/define_filter_page.dart';
+import 'package:tag_music_player/timoncode/widgets/filterPages/filters_page.dart';
 import 'package:tag_music_player/timoncode/widgets/libraryPage/song_library_page.dart';
 import 'package:tag_music_player/timoncode/widgets/popupPages/confirm_tag_deletion_popup_page.dart';
 import '../flutter_flow_theme.dart';
@@ -55,7 +58,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: 'Filters_Page',
           path: '/filtersPage',
-          builder: (context, params) => FiltersPageWidget(),
+          builder: (context, params) => FiltersPage(),
         ),
         FFRoute(
           name: 'view_filter',
@@ -99,7 +102,16 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: 'define_filter_page',
           path: '/defineFilterPage',
-          builder: (context, params) => DefineFilterPageWidget(),
+          builder: (context, params) {
+            if (params.state.extra == null) {
+              return DefineFilterPage();
+            }
+            var map = params.state.extra as Map<String, PlaybackFilter?>;
+            PlaybackFilter? pbFilter = map['filter'];
+            return DefineFilterPage(
+              filter: pbFilter,
+            );
+          },
         ),
         FFRoute(
           name: 'choose_tag_popup',
