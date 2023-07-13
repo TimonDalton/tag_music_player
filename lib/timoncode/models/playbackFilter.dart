@@ -44,8 +44,8 @@ class PlaybackFilter {
     }
   }
 
-  static const double minRequiredWeight = 100.0;
-  static const double maxExcludedWeight = 0.01;
+  static const double minRequiredWeight = 4;
+  static const double maxExcludedWeight = 1/minRequiredWeight;
 
   ///Splits the tags into
   ///required, included and excluded

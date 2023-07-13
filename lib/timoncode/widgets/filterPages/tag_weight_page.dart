@@ -1,3 +1,8 @@
+import 'dart:math';
+
+import 'package:tag_music_player/timoncode/functions/nav/navBase.dart';
+import 'package:tag_music_player/timoncode/objectbox.dart';
+
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -24,16 +29,17 @@ class TagWeightPage extends StatefulWidget {
 class _TagWeightPageState extends State<TagWeightPage> {
   List<TagWeightSilder> sliders = [];
   @override
-  void initState(){
-    List<Tag> tags = widget.filter.tags.toList(); 
+  void initState() {
+    List<Tag> tags = widget.filter.tags.toList();
     widget.newWeights.forEach((id, tagWeight) {
       sliders.add(TagWeightSilder(
-        changeCallback: (val)=>widget.newWeights[id] = val,
+        changeCallback: (val) => widget.newWeights[id] = val,
         tag: tags.where((tag) => tag.id == id).first,
         weight: tagWeight,
       ));
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -104,6 +110,11 @@ class _TagWeightPageState extends State<TagWeightPage> {
                 BottomOptionsBarWidgetWidget(
                   confirmText: 'Save',
                   confirmColour: Color(0xFF0095FF),
+                  onConfirmCallBack: (){
+                    widget.filter.tagWeights = widget.newWeights;
+                    objectBox.saveFilter(widget.filter);
+                    navBase(context);
+                  },
                 ),
               ],
             ),
@@ -115,16 +126,53 @@ class _TagWeightPageState extends State<TagWeightPage> {
 }
 
 class TagWeightSilder extends StatefulWidget {
-  TagWeightSilder({required this.tag, required this.weight, required this.changeCallback});
+  TagWeightSilder({required this.tag, required this.weight, required this.changeCallback}) {
+    convertedSliderVal = toSliderVal(weight);
+  }
   Tag tag;
   double weight;
   Function(double) changeCallback;
 
+  static const double maxVal = 1.1;
+  static const double minVal = -1.1;
+  double toSliderVal(double val) {
+    // print('toSliderVal on: ${val}');
+    if (val < PlaybackFilter.maxExcludedWeight) {
+      val = pow(PlaybackFilter.minRequiredWeight, minVal) as double;
+    } else if (val > PlaybackFilter.minRequiredWeight) {
+      val = pow(PlaybackFilter.minRequiredWeight, maxVal) as double;
+    }
+    return log(val) / log(PlaybackFilter.minRequiredWeight); //same as logBase(val,PlaybackFilter.minRequiredWeight). logBase not in my dart:math for some reason
+  }
+
+  double fromSliderVal(double val) {
+    // print('fromSliderVal on: ${val}');
+    if (val < minVal) {
+      val = minVal;
+    } else if (val > maxVal) {
+      val = maxVal;
+    }
+    return pow(PlaybackFilter.minRequiredWeight, val) as double;
+  }
+
+  late double convertedSliderVal;
   @override
   State<TagWeightSilder> createState() => _TagWeightSilderState();
 }
 
 class _TagWeightSilderState extends State<TagWeightSilder> {
+  bool near(double search, double target) {
+    const double epsilon = 0.06;
+    double val = target - search;
+    if (val < 0) {
+      val = -val;
+    }
+    if (val < epsilon) {
+      return true;
+    }
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -187,26 +235,37 @@ class _TagWeightSilderState extends State<TagWeightSilder> {
                           decoration: BoxDecoration(
                             color: Color(0x00FFFFFF),
                           ),
-                          child: Padding(
+                          child: Container(
+                            height: 100,
                             padding: EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 10.0, 0.0),
-                            child: Container(
-                              height: 100,
-                              alignment: Alignment.center,
-                              child: Expanded(
-                                child: Slider(
-                                  value: widget.weight,
-                                  onChanged: (val) {
-                                    setState(() {
-                                      widget.weight = val;
-                                    });
-                                  },
-                                  onChangeEnd: (val)=>widget.changeCallback(val),
-                                  min: 0.0,
-                                  max: 2.0,
-                                  inactiveColor: widget.tag.colour(),
-                                  activeColor: widget.tag.colour(),
-                                  thumbColor: Colors.white70,
-                                ),
+                            alignment: Alignment.center,
+                            child: Expanded(
+                              child: Slider(
+                                value: widget.convertedSliderVal,
+                                onChanged: (sliderVal) {
+                                  setState(() {
+                                    if (near(sliderVal, TagWeightSilder.minVal)) {
+                                      widget.convertedSliderVal = TagWeightSilder.minVal;
+                                    } else if (near(sliderVal, 0)) {
+                                      widget.convertedSliderVal = 0;
+                                    } else if (near(sliderVal, TagWeightSilder.maxVal)) {
+                                      widget.convertedSliderVal = TagWeightSilder.maxVal;
+                                    } else {
+                                      widget.convertedSliderVal = sliderVal;
+                                    }
+                                    widget.weight = widget.fromSliderVal(widget.convertedSliderVal);
+                                  });
+                                  // print('widget.weight:${widget.weight}');
+                                  // print('widget.convertedSliderVal:${widget.convertedSliderVal}');
+                                },
+                                onChangeEnd: (sliderVal) {
+                                  widget.changeCallback(widget.weight);
+                                },
+                                min: TagWeightSilder.minVal,
+                                max: TagWeightSilder.maxVal,
+                                inactiveColor: widget.tag.colour(),
+                                activeColor: widget.tag.colour(),
+                                thumbColor: Colors.white70,
                               ),
                             ),
                           ),
@@ -234,8 +293,14 @@ class NumberTracker extends StatefulWidget {
 class _NumberTrackerState extends State<NumberTracker> {
   @override
   Widget build(BuildContext context) {
+    String text = widget.val.toStringAsFixed(2);
+    if (widget.val < PlaybackFilter.maxExcludedWeight) {
+      text = 'Excluded';
+    } else if (widget.val > PlaybackFilter.minRequiredWeight) {
+      text = 'Required';
+    }
     return Text(
-      '${widget.val}',
+      text,
       style: FlutterFlowTheme.of(context).bodyMedium.override(
             fontFamily: 'Roboto Condensed',
             fontWeight: FontWeight.w600,

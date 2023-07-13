@@ -9,6 +9,7 @@ import 'package:tag_music_player/timoncode/models/tag.dart';
 import 'package:tag_music_player/timoncode/widgets/filterPages/create_tag_page.dart';
 import 'package:tag_music_player/timoncode/widgets/filterPages/define_filter_page.dart';
 import 'package:tag_music_player/timoncode/widgets/filterPages/filters_page.dart';
+import 'package:tag_music_player/timoncode/widgets/filterPages/tag_weight_page.dart';
 import 'package:tag_music_player/timoncode/widgets/filterPages/view_filter_page.dart';
 import 'package:tag_music_player/timoncode/widgets/libraryPage/song_library_page.dart';
 import 'package:tag_music_player/timoncode/widgets/popupPages/confirm_tag_deletion_popup_page.dart';
@@ -75,7 +76,14 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: 'tag_weight_page',
           path: '/tagWeightPage',
-          builder: (context, params) => TagWeightPageWidget(),
+          // builder: (context, params) => TagWeightPageWidget(),
+          builder: (context, params) {
+            var map = params.state.extra as Map<String, PlaybackFilter>;
+            PlaybackFilter filter = map['filter']!;
+            return TagWeightPage(
+              filter: filter,
+            );
+          },
         ),
         FFRoute(
           name: 'edit_tags_popup',

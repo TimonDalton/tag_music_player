@@ -102,7 +102,7 @@ class _ViewFilterPageState extends State<ViewFilterPage> {
                                   hoverColor: Colors.transparent,
                                   highlightColor: Colors.transparent,
                                   onTap: () async {
-                                    context.pushNamed('define_filter_page',extra: {'filter':widget.filter});
+                                    context.pushNamed('define_filter_page', extra: {'filter': widget.filter});
                                   },
                                   child: DefaultButtonWidget(
                                     text: 'Edit Filter',
@@ -125,7 +125,7 @@ class _ViewFilterPageState extends State<ViewFilterPage> {
                                   hoverColor: Colors.transparent,
                                   highlightColor: Colors.transparent,
                                   onTap: () async {
-                                    context.pushNamed('tag_weight_page');
+                                    context.pushNamed('tag_weight_page', extra: {'filter': widget.filter});
                                   },
                                   child: DefaultButtonWidget(
                                     text: 'Set Tag \nWeights',
