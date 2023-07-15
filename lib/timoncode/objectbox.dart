@@ -9,6 +9,7 @@ import 'package:objectbox/objectbox.dart';
 import 'package:tag_music_player/timoncode/models/tag.dart';
 import 'package:tag_music_player/timoncode/models/song.dart';
 import 'package:tag_music_player/timoncode/models/playbackFilter.dart';
+import 'package:tag_music_player/timoncode/models/queue.dart';
 
 /// Provides access to the ObjectBox Store throughout the app.
 ///
@@ -25,6 +26,7 @@ class ObjectBox {
   late final Box<Song> _songBox;
   late final Box<Tag> _tagBox;
   late final Box<PlaybackFilter> _playbackFilterBox;
+  late final Box<Queue> _queueBox;
 
   Box<Song> get getSongBox {
     return _songBox;
@@ -49,6 +51,7 @@ class ObjectBox {
     _songBox = Box<Song>(_store);
     _tagBox = Box<Tag>(_store);
     _playbackFilterBox = Box<PlaybackFilter>(_store);
+    _queueBox = Box<Queue>(_store);
   }
 
   /// Create an instance of ObjectBox to use throughout the app.
@@ -252,6 +255,9 @@ class ObjectBox {
   List<PlaybackFilter> getPlaybackFilters() => _playbackFilterBox.getAll();
   PlaybackFilter? getPlaybackFilter(int id) => _playbackFilterBox.get(id);
   void saveFilter(PlaybackFilter filter) => _playbackFilterBox.put(filter);
+
+  void saveQueue(Queue queue) => _queueBox.put(queue);
+  Queue? loadQueue() => _queueBox.get(1);
 }
 
 late final ObjectBox objectBox;

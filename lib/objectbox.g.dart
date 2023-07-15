@@ -15,6 +15,7 @@ import 'package:objectbox/objectbox.dart';
 import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 
 import 'timoncode/models/playbackFilter.dart';
+import 'timoncode/models/queue.dart';
 import 'timoncode/models/song.dart';
 import 'timoncode/models/tag.dart';
 
@@ -135,6 +136,20 @@ final _entities = <ModelEntity>[
             name: 'tags',
             targetId: const IdUid(2, 3379074201238304732))
       ],
+      backlinks: <ModelBacklink>[]),
+  ModelEntity(
+      id: const IdUid(8, 711625210571341736),
+      name: 'Queue',
+      lastPropertyId: const IdUid(1, 9037085816497558069),
+      flags: 0,
+      properties: <ModelProperty>[
+        ModelProperty(
+            id: const IdUid(1, 9037085816497558069),
+            name: 'id',
+            type: 6,
+            flags: 1)
+      ],
+      relations: <ModelRelation>[],
       backlinks: <ModelBacklink>[])
 ];
 
@@ -158,7 +173,7 @@ Future<Store> openStore(
 ModelDefinition getObjectBoxModel() {
   final model = ModelInfo(
       entities: _entities,
-      lastEntityId: const IdUid(7, 2557409868432952656),
+      lastEntityId: const IdUid(8, 711625210571341736),
       lastIndexId: const IdUid(1, 3324877264777455464),
       lastRelationId: const IdUid(2, 6374847314963343384),
       lastSequenceId: const IdUid(0, 0),
@@ -319,6 +334,29 @@ ModelDefinition getObjectBoxModel() {
           InternalToManyAccess.setRelInfo<PlaybackFilter>(
               object.tags, store, RelInfo<PlaybackFilter>.toMany(2, object.id));
           return object;
+        }),
+    Queue: EntityDefinition<Queue>(
+        model: _entities[3],
+        toOneRelations: (Queue object) => [],
+        toManyRelations: (Queue object) => {},
+        getId: (Queue object) => object.id,
+        setId: (Queue object, int id) {
+          object.id = id;
+        },
+        objectToFB: (Queue object, fb.Builder fbb) {
+          fbb.startTable(2);
+          fbb.addInt64(0, object.id);
+          fbb.finish(fbb.endTable());
+          return object.id;
+        },
+        objectFromFB: (Store store, ByteData fbData) {
+          final buffer = fb.BufferContext(fbData);
+          final rootOffset = buffer.derefObject(0);
+
+          final object = Queue(
+              id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0));
+
+          return object;
         })
   };
 
@@ -394,4 +432,10 @@ class PlaybackFilter_ {
   /// see [PlaybackFilter.tags]
   static final tags =
       QueryRelationToMany<PlaybackFilter, Tag>(_entities[2].relations[0]);
+}
+
+/// [Queue] entity fields to define ObjectBox queries.
+class Queue_ {
+  /// see [Queue.id]
+  static final id = QueryIntegerProperty<Queue>(_entities[3].properties[0]);
 }

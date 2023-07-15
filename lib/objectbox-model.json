@@ -118,9 +118,23 @@
           "targetId": "2:3379074201238304732"
         }
       ]
+    },
+    {
+      "id": "8:711625210571341736",
+      "lastPropertyId": "1:9037085816497558069",
+      "name": "Queue",
+      "properties": [
+        {
+          "id": "1:9037085816497558069",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "7:2557409868432952656",
+  "lastEntityId": "8:711625210571341736",
   "lastIndexId": "1:3324877264777455464",
   "lastRelationId": "2:6374847314963343384",
   "lastSequenceId": "0:0",

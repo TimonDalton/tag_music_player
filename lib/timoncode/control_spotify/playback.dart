@@ -76,7 +76,7 @@ Future<Track?> getCurrentTrack() async {
   return pState.track;
 }
 
-void addToQueue(String spotifyUri) async {
+Future<void> addToQueue(String spotifyUri) async {
   try {
     await SpotifySdk.queue(spotifyUri: spotifyUri);
   } on PlatformException catch (e) {
