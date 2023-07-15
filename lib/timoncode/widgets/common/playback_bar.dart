@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:tag_music_player/timoncode/models/song.dart';
 import 'package:tag_music_player/timoncode/control_spotify/playback.dart';
+import 'package:tag_music_player/timoncode/globals.dart';
 
 class PlaybackBar extends StatefulWidget {
   PlaybackBar({
@@ -39,6 +40,9 @@ class _PlaybackBarState extends State<PlaybackBar> {
           child: StreamBuilder(
             builder: (context, snapshot) {
               PlayerState playerState = snapshot.data as PlayerState;
+              if (widget.song.spotifyId != playerState.track!.uri) {
+                queue.onExternalSongChange();
+              }
               String playbackPositionText = playerState.playbackPosition.toString();
               double progress = playerState.playbackPosition.toDouble() / widget.song.duration.toDouble();
               return Column(
@@ -99,19 +103,48 @@ class _PlaybackBarState extends State<PlaybackBar> {
                             ),
                           ),
                           Expanded(
-                            child: InkWell(
-                              onTap: () async{
-                                if(playerState.isPaused){
-                                  await resume();
-                                }else{
-                                  await pause();
-                                }
-                              },
-                              child: Icon(
-                                playerState.isPaused ? Icons.play_arrow_rounded : Icons.pause,
-                                color: FlutterFlowTheme.of(context).primaryText,
-                                size: 50.0,
-                              ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
+                                  child: InkWell(
+                                    onTap: () {},
+                                    child: Icon(
+                                      Icons.skip_previous,
+                                      color: FlutterFlowTheme.of(context).primaryText,
+                                      size: 50.0,
+                                    ),
+                                  ),
+                                ),
+                                InkWell(
+                                  onTap: () async {
+                                    if (playerState.isPaused) {
+                                      await resume();
+                                    } else {
+                                      await pause();
+                                    }
+                                  },
+                                  child: Icon(
+                                    playerState.isPaused ? Icons.play_arrow_rounded : Icons.pause,
+                                    color: FlutterFlowTheme.of(context).primaryText,
+                                    size: 50.0,
+                                  ),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                                  child: InkWell(
+                                    onTap: () {
+                                      queue.skipToNext();
+                                    },
+                                    child: Icon(
+                                      Icons.skip_next,
+                                      color: FlutterFlowTheme.of(context).primaryText,
+                                      size: 50.0,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
