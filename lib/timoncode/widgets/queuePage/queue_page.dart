@@ -1,6 +1,10 @@
+import 'package:spotify_sdk/models/connection_status.dart';
 import 'package:tag_music_player/timoncode/control_spotify/playback.dart';
 import 'package:tag_music_player/timoncode/globals.dart';
+import 'package:tag_music_player/timoncode/models/song.dart';
 import 'package:tag_music_player/timoncode/widgets/common/playback_bar.dart';
+import 'package:tag_music_player/timoncode/widgets/common/songWidget.dart';
+import 'package:tag_music_player/timoncode/widgets/tag_groups/tagGroupWithWeights.dart';
 
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -17,18 +21,16 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-class QueuePageWidget extends StatefulWidget {
-  QueuePageWidget({Key? key}) : super(key: key);
+class QueuePage extends StatefulWidget {
+  QueuePage({Key? key}) : super(key: key);
 
   @override
-  _QueuePageWidgetState createState() => _QueuePageWidgetState();
+  _QueuePageState createState() => _QueuePageState();
 }
 
-class _QueuePageWidgetState extends State<QueuePageWidget> {
+class _QueuePageState extends State<QueuePage> {
   @override
   Widget build(BuildContext context) {
-    context.watch<FFAppState>();
-
     return Scaffold(
       backgroundColor: FlutterFlowTheme.of(context).primary,
       appBar: AppBar(
@@ -83,7 +85,6 @@ class _QueuePageWidgetState extends State<QueuePageWidget> {
                   ),
                   child: SingleChildScrollView(
                     child: Column(
-                      mainAxisSize: MainAxisSize.max,
                       children: [
                         InkWell(
                           splashColor: Colors.transparent,
@@ -93,7 +94,7 @@ class _QueuePageWidgetState extends State<QueuePageWidget> {
                           onTap: () async {
                             context.pushNamed('queue_edit_filter_page');
                           },
-                          child: EditableTagGroupWidget(),
+                          child: TagGroupWithWeights(filter: activePbFilter),
                         ),
                         Padding(
                           padding: EdgeInsetsDirectional.fromSTEB(0.0, 2.0, 0.0, 0.0),
@@ -155,7 +156,7 @@ class _QueuePageWidgetState extends State<QueuePageWidget> {
                           onLongPress: () async {
                             context.pushNamed('queue_song_hold_popup');
                           },
-                          child: DefualtSongWidget(),
+                          child: !queue.songs.isEmpty ? SongWidget(song: queue.songs.first) : Container(),
                         ),
                         Row(
                           mainAxisSize: MainAxisSize.max,
@@ -165,33 +166,32 @@ class _QueuePageWidgetState extends State<QueuePageWidget> {
                               child: Align(
                                 alignment: AlignmentDirectional(-1.0, -1.0),
                                 child: HeadingTextWidget(
-                                  text: 'Next From: [Source]',
+                                  text: queue.songs.length>0?'Next From: [Source]':'',
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(0.0, 2.0, 0.0, 0.0),
-                          child: ListView(
-                            padding: EdgeInsets.zero,
-                            shrinkWrap: true,
-                            scrollDirection: Axis.vertical,
-                            children: [
-                              InkWell(
-                                splashColor: Colors.transparent,
-                                focusColor: Colors.transparent,
-                                hoverColor: Colors.transparent,
-                                highlightColor: Colors.transparent,
-                                onLongPress: () async {
-                                  context.pushNamed('queue_song_hold_popup');
-                                },
-                                child: DefualtSongWidget(),
-                              ),
-                              DefualtSongWidget(),
-                            ],
-                          ),
-                        ),
+                        ...() {
+                              List<Song> songs = queue.songs.toList();
+                              if(songs.length == 0){
+                                return <Widget>[];
+                              }
+                              return List<Widget>.generate(queue.songs.length - 1, (index) {
+                                return InkWell(
+                                  splashColor: Colors.transparent,
+                                  focusColor: Colors.transparent,
+                                  hoverColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  onLongPress: () async {
+                                    context.pushNamed('queue_song_hold_popup');
+                                  },
+                                  child: SongWidget(
+                                    song: songs[index + 1],
+                                  ),
+                                );
+                              });
+                            }(),
                       ],
                     ),
                   ),
@@ -243,9 +243,25 @@ class _QueuePageWidgetState extends State<QueuePageWidget> {
                       ),
                     ],
                   ),
-                  PlaybackBar(
-                    playerStateStream: playerStateStream,
-                    song: queue.songs.first,
+                  StreamBuilder(
+                    stream: conStatusBroadcast,
+                    builder: (context, snapshot) {
+                      bool con;
+                      if (!snapshot.hasData) {
+                        con = remoteConnection;
+                        print('No conStatus snapshot data. Using cached value');
+                      }else{
+                        con = (snapshot.data as ConnectionStatus).connected;
+                      }
+                      if (con) {
+                        return PlaybackBar(
+                          context: context,
+                          playerStateStream: playerStateStream,
+                        );
+                      } else {
+                        return Text('Remote not connected');
+                      }
+                    },
                   ),
                   BottomNavBarWidgetWidget(),
                 ],

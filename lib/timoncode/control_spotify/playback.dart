@@ -1,14 +1,20 @@
 import 'package:spotify_sdk/models/track.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
 import 'package:tag_music_player/timoncode/control_spotify/api_calls.dart';
+import 'package:tag_music_player/timoncode/control_spotify/connectToSpotifyRemote.dart';
 import 'package:flutter/services.dart';
 import 'package:spotify_sdk/models/player_context.dart';
 import 'package:spotify_sdk/models/player_state.dart';
+import 'package:tag_music_player/timoncode/globals.dart';
+import 'package:spotify_sdk/models/connection_status.dart';
 
-
-late Stream<PlayerState> playerStateStream; 
-void initializePlayer()async{
-  playerStateStream = SpotifySdk.subscribePlayerState();
+Future<void> initializePlayer() async {
+  if (!remoteConnection) {
+    //TODO, implement delay
+  }
+  if (remoteConnection) {
+    playerStateStream = SpotifySdk.subscribePlayerState();
+  }
 }
 
 Future<void> play(String spotifyUri) async {
@@ -89,24 +95,23 @@ Future<void> addToQueue(String spotifyUri) async {
   }
 }
 
-void skipToSongUri(String songUri)async{
-  int count = 0; 
+void skipToSongUri(String songUri) async {
+  int count = 0;
   final int countLimit = 500;
-  Track? currentTrack = await getCurrentTrack(); 
-  while( (currentTrack)!= null && (currentTrack).uri != songUri && count++ < countLimit){
+  Track? currentTrack = await getCurrentTrack();
+  while ((currentTrack) != null && (currentTrack).uri != songUri && count++ < countLimit) {
     await skipNext();
     currentTrack = await getCurrentTrack();
   }
-  if(count > countLimit){
+  if (count > countLimit) {
     print('Skip exceeded count limit of ${countLimit}');
   }
-  if (currentTrack == null){
+  if (currentTrack == null) {
     print('Track is null');
   }
-  if (currentTrack!.uri == songUri){
-    print('Track found after ${count-1} skips');
-  }else{
+  if (currentTrack!.uri == songUri) {
+    print('Track found after ${count - 1} skips');
+  } else {
     print('Track not found');
   }
 }
-

@@ -3,6 +3,7 @@ import 'package:tag_music_player/timoncode/models/song.dart';
 import 'package:tag_music_player/timoncode/models/songFilter.dart';
 import 'package:tag_music_player/timoncode/widgets/common/songWidgetList.dart';
 import 'package:tag_music_player/timoncode/widgets/popups/defineFilter.dart';
+import 'package:tag_music_player/timoncode/globals.dart';
 
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -224,7 +225,10 @@ class _SongLibraryPageState extends State<SongLibraryPage> {
                                   Expanded(
                                       child: InkWell(
                                     onTap: () {
-                                      //TODO acually add to queue
+                                      for(int i =0;i<widget.selectedSongIndexes.length;i++){
+                                        queue.songs.add(widget.songs[widget.selectedSongIndexes[i]]);
+                                        // objectBox.saveQueue(queue);
+                                      }
                                       widget.selectedSongIndexes = [];
                                       setState(() {
                                         widget.addingToQueueState = false;

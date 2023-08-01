@@ -13,6 +13,7 @@ import 'package:tag_music_player/timoncode/widgets/filterPages/tag_weight_page.d
 import 'package:tag_music_player/timoncode/widgets/filterPages/view_filter_page.dart';
 import 'package:tag_music_player/timoncode/widgets/libraryPage/song_library_page.dart';
 import 'package:tag_music_player/timoncode/widgets/popupPages/confirm_tag_deletion_popup_page.dart';
+import 'package:tag_music_player/timoncode/widgets/queuePage/queue_page.dart';
 import '../flutter_flow_theme.dart';
 import 'package:tag_music_player/timoncode/widgets/change_tags/changeSongTagByGroupPage.dart';
 import 'package:tag_music_player/timoncode/widgets/change_tags/changeSongTagsIndividually.dart';
@@ -45,17 +46,17 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
       initialLocation: '/',
       debugLogDiagnostics: true,
       refreshListenable: appStateNotifier,
-      errorBuilder: (context, _) => QueuePageWidget(),
+      errorBuilder: (context, _) => QueuePage(),
       routes: [
         FFRoute(
           name: '_initialize',
           path: '/',
-          builder: (context, _) => QueuePageWidget(),
+          builder: (context, _) => QueuePage(),
         ),
         FFRoute(
           name: 'Queue_Page',
           path: '/queuePage',
-          builder: (context, params) => QueuePageWidget(),
+          builder: (context, params) => QueuePage(),
         ),
         FFRoute(
           name: 'Filters_Page',

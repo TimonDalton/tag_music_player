@@ -13,9 +13,9 @@ import 'package:http/http.dart' as http;
 Future<void> connectToSpotifyRemote() async {
   try {
     String token = await getAccessToken();
-    var result = await SpotifySdk.connectToSpotifyRemote(
+    remoteConnection = await SpotifySdk.connectToSpotifyRemote(
         clientId: CLIENT_ID, redirectUrl: REDIRECT_URL, accessToken: token);
-    print('connected');
+    print(remoteConnection?'connected':'could not connect to remote');
   } on PlatformException catch (e) {
     print('connection error:');
     print(e);

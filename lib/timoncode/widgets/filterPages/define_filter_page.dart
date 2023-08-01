@@ -101,36 +101,33 @@ class _DefineFilterPageState extends State<DefineFilterPage> {
               alignment: AlignmentDirectional(0.0, -1.0),
               child: Container(
                 width: MediaQuery.of(context).size.width * 0.85,
-                height: double.infinity,
+                height: MediaQuery.of(context).size.height,
                 decoration: BoxDecoration(
                   color: Color(0x00FFFFFF),
                 ),
                 alignment: AlignmentDirectional(0.0, -1.0),
-                child: Align(
-                  alignment: AlignmentDirectional(0.0, 0.0),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Align(
-                          alignment: AlignmentDirectional(-1.0, 0.0),
-                          child: HeadingTextWidget(
-                            text: 'Name',
-                          ),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Align(
+                        alignment: AlignmentDirectional(-1.0, 0.0),
+                        child: HeadingTextWidget(
+                          text: 'Name',
                         ),
-                        Padding(
-                            padding: EdgeInsetsDirectional.fromSTEB(0.0, 5.0, 0.0, 0.0),
-                            child: TextField(
-                              controller: nameTEC,
-                            )),
-                        () {
-                          filterTagSelector = FilterTagSelector(availableTags: widget.tags, includedTagIds: widget.includedIds, excludedTagIds: widget.excludedIds);
-                          return filterTagSelector;
-                        }(),
-                      ],
-                    ),
+                      ),
+                      Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(0.0, 5.0, 0.0, 0.0),
+                          child: TextField(
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                            controller: nameTEC,
+                          )),
+                      () {
+                        filterTagSelector = FilterTagSelector(availableTags: widget.tags, includedTagIds: widget.includedIds, excludedTagIds: widget.excludedIds);
+                        return filterTagSelector;
+                      }(),
+                    ],
                   ),
                 ),
               ),

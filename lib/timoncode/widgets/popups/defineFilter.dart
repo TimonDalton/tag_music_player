@@ -99,14 +99,14 @@ class _SelectableDropdownItemState extends State<SelectableDropdownItem> {
             margin: EdgeInsets.fromLTRB(0, 0, 10, 0),
             child: InkWell(
               onTap: () {
-                if (widget.onTapCallback != null){
+                if (widget.onTapCallback != null) {
                   widget.onTapCallback!(widget.selected);
                 }
                 setState(() {
                   widget.selected = !widget.selected;
                 });
               },
-              child: widget.selected ? Icon(Icons.check_box) : Icon(Icons.check_box_outline_blank_outlined),
+              child: widget.selected ? Icon(Icons.check_box,color: Colors.white,) : Icon(Icons.check_box_outline_blank_outlined,color: Colors.white,),
             ),
           ),
           widget.child,
@@ -133,11 +133,9 @@ class _DefineFilterWidgetState extends State<DefineFilterWidget> {
     }
     List<Tag> tags = objectBox.getAllUserDefTags();
 
-
-
     Widget filterSelector = FilterTagSelector(
-      availableTags: tags, 
-      includedTagIds:  widget.filter.includedTagIds, 
+      availableTags: tags,
+      includedTagIds: widget.filter.includedTagIds,
       excludedTagIds: widget.filter.excludedTagIds,
     );
 
@@ -146,12 +144,17 @@ class _DefineFilterWidgetState extends State<DefineFilterWidget> {
     List<Widget> playlistDropDowns = List<Widget>.generate(
         playlistTags.length,
         (index) => SelectableDropdownItem(
-              child: Text(playlistTags[index].name.replaceFirst(RegExp(r'playlist: '), ''),maxLines: 2,overflow: TextOverflow.ellipsis,),
+              child: Text(
+                playlistTags[index].name.replaceFirst(RegExp(r'playlist: '), ''),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(color: Colors.white),
+              ),
               selected: widget.filter.includedTagIds.contains(playlistTags[index].id),
-              onTapCallback: (bool selected){
-                if(selected){
+              onTapCallback: (bool selected) {
+                if (selected) {
                   widget.filter.includedTagIds.remove(playlistTags[index].id);
-                }else{
+                } else {
                   widget.filter.includedTagIds.add(playlistTags[index].id);
                 }
               },
@@ -162,7 +165,10 @@ class _DefineFilterWidgetState extends State<DefineFilterWidget> {
 
     Widget minSongDuration = Row(children: [
       InkWell(
-          child: Text(widget.filter.shortestShorterSD.active ? 'Shorter than ${widget.filter.shortestShorterSD.duration.toString()}' : 'Max Duration Inactive'),
+          child: Text(
+            widget.filter.shortestShorterSD.active ? 'Shorter than ${widget.filter.shortestShorterSD.duration.toString()}' : 'Max Duration Inactive',
+            style: TextStyle(color: Colors.white),
+          ),
           onTap: () => showSongDurationPicker(context, (newDuration) {
                 setState(() {
                   widget.filter.shortestShorterSD.duration = newDuration;
@@ -181,7 +187,10 @@ class _DefineFilterWidgetState extends State<DefineFilterWidget> {
     ]);
     Widget maxSongDuration = Row(children: [
       InkWell(
-          child: Text(widget.filter.longestLongerSD.active ? 'Longer than ${widget.filter.longestLongerSD.duration.toString()}' : 'Min Duration Inactive'),
+          child: Text(
+            widget.filter.longestLongerSD.active ? 'Longer than ${widget.filter.longestLongerSD.duration.toString()}' : 'Min Duration Inactive',
+            style: TextStyle(color: Colors.white),
+          ),
           onTap: () => showSongDurationPicker(context, (newDuration) {
                 setState(() {
                   widget.filter.longestLongerSD.duration = newDuration;
@@ -204,6 +213,7 @@ class _DefineFilterWidgetState extends State<DefineFilterWidget> {
           child: Text(
             widget.filter.earliestBefDA.active ? 'Before ${widget.filter.earliestBefDA.dateAdded.toString()}' : 'Added Before Inactive',
             overflow: TextOverflow.fade,
+            style: TextStyle(color: Colors.white),
           ),
           onTap: () async {
             DateTime? newDate = await chooseDate(context);
@@ -215,7 +225,12 @@ class _DefineFilterWidgetState extends State<DefineFilterWidget> {
             }
           }),
       InkWell(
-        child: widget.filter.earliestBefDA.active ? Icon(Icons.refresh) : Container(),
+        child: widget.filter.earliestBefDA.active
+            ? Icon(
+                Icons.refresh,
+                color: Colors.white,
+              )
+            : Container(),
         onTap: () {
           setState(() {
             widget.filter.earliestBefDA.dateAdded = null;
@@ -229,6 +244,7 @@ class _DefineFilterWidgetState extends State<DefineFilterWidget> {
           child: Text(
             widget.filter.latestAfDA.active ? 'After ${widget.filter.latestAfDA.dateAdded.toString()}' : 'Added After Inactive',
             overflow: TextOverflow.fade,
+            style: TextStyle(color: Colors.white),
           ),
           onTap: () async {
             DateTime? newDate = await chooseDate(context);
@@ -240,7 +256,12 @@ class _DefineFilterWidgetState extends State<DefineFilterWidget> {
             }
           }),
       InkWell(
-        child: widget.filter.latestAfDA.active ? Icon(Icons.refresh) : Container(),
+        child: widget.filter.latestAfDA.active
+            ? Icon(
+                Icons.refresh,
+                color: Colors.white,
+              )
+            : Container(),
         onTap: () {
           setState(() {
             widget.filter.latestAfDA.dateAdded = null;
@@ -254,6 +275,7 @@ class _DefineFilterWidgetState extends State<DefineFilterWidget> {
           child: Text(
             widget.filter.earliestBefDC.active ? 'Before ${widget.filter.earliestBefDC.dateCreated.toString()}' : 'Released Before Inactive',
             overflow: TextOverflow.fade,
+            style: TextStyle(color: Colors.white),
           ),
           onTap: () async {
             DateTime? newDate = await chooseDate(context);
@@ -265,7 +287,12 @@ class _DefineFilterWidgetState extends State<DefineFilterWidget> {
             }
           }),
       InkWell(
-        child: widget.filter.earliestBefDC.active ? Icon(Icons.refresh) : Container(),
+        child: widget.filter.earliestBefDC.active
+            ? Icon(
+                Icons.refresh,
+                color: Colors.white,
+              )
+            : Container(),
         onTap: () {
           setState(() {
             widget.filter.earliestBefDC.dateCreated = null;
@@ -279,6 +306,7 @@ class _DefineFilterWidgetState extends State<DefineFilterWidget> {
           child: Text(
             widget.filter.latestAfDC.active ? 'After ${widget.filter.latestAfDC.dateCreated.toString()}' : 'Released After Inactive',
             overflow: TextOverflow.fade,
+            style: TextStyle(color: Colors.white),
           ),
           onTap: () async {
             DateTime? newDate = await chooseDate(context);
@@ -290,7 +318,7 @@ class _DefineFilterWidgetState extends State<DefineFilterWidget> {
             }
           }),
       InkWell(
-        child: widget.filter.latestAfDC.active ? Icon(Icons.refresh) : Container(),
+        child: widget.filter.latestAfDC.active ? Icon(Icons.refresh, color: Colors.white) : Container(),
         onTap: () {
           setState(() {
             widget.filter.latestAfDC.dateCreated = null;

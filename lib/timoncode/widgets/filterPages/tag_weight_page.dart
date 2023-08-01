@@ -113,7 +113,7 @@ class _TagWeightPageState extends State<TagWeightPage> {
                   onConfirmCallBack: (){
                     widget.filter.tagWeights = widget.newWeights;
                     objectBox.saveFilter(widget.filter);
-                    navBase(context);
+                    context.pop();
                   },
                 ),
               ],

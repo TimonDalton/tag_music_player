@@ -16,7 +16,7 @@ class PlaybackFilter {
   late DateTime lastAccessed;
   final tags = ToMany<Tag>();
   @Transient()
-  Map<int, double>? tagWeights;
+  Map<int, double>? tagWeights; //maps tagId to tagWeight
   PlaybackFilter({
     this.id = 0,
     required this.name,
@@ -45,7 +45,7 @@ class PlaybackFilter {
   }
 
   static const double minRequiredWeight = 4;
-  static const double maxExcludedWeight = 1/minRequiredWeight;
+  static const double maxExcludedWeight = 1 / minRequiredWeight;
 
   ///Splits the tags into
   ///required, included and excluded
@@ -111,18 +111,49 @@ class PlaybackFilter {
     }
     List<TagFilterCondition> incConditions = [];
     List<TagFilterCondition> exConditions = [];
-    for(int i =0;i<includedTags.length;i++){
+    for (int i = 0; i < includedTags.length; i++) {
       incConditions.add(TagFilterCondition(
         include: true,
         tagId: includedTags[i].id,
-        ));
+      ));
     }
-    for(int i =0;i<excludedTags.length;i++){
+    for (int i = 0; i < excludedTags.length; i++) {
       incConditions.add(TagFilterCondition(
         include: false,
         tagId: excludedTags[i].id,
-        ));
+      ));
     }
-    return SongFilter(unprocessedConditions: [...incConditions,...exConditions]);
+    return SongFilter(unprocessedConditions: [...incConditions, ...exConditions]);
+  }
+
+  List<Song> generateSongs() {
+    return generateSongFilter().getSongs();
+  }
+
+  List<Song> sortAndFilterSongsByWeight(List<Song> songs) {
+    List<MapEntry<Song, double>> weightedSongs = [];
+    List<int> availableIds = [];
+    if (tagWeights != null) {
+      tagWeights!.entries.forEach((element) => availableIds.add(element.key));
+    }
+    for (int i = 0; i < songs.length; i++) {
+      List<Tag> songTags = songs[i].tags.toList();
+      double weight = 1;
+      for (int tagIndex = 0; tagIndex < songTags.length; tagIndex++) {
+        if (availableIds.contains(songTags[tagIndex].id)) {
+          weight *= tagWeights![songTags[tagIndex].id]!;
+        }
+      }
+      if (weight > 0.01) {
+        weightedSongs.add(MapEntry(songs[i], weight));
+      }
+    }
+
+    weightedSongs.sort((a, b) => a.value.compareTo(b.value));
+    return List<Song>.generate(weightedSongs.length, (index) => weightedSongs[index].key);
+  }
+
+  List<Song> generateSortedSongs() {
+    return sortAndFilterSongsByWeight(generateSongs());
   }
 }

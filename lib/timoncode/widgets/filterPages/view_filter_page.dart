@@ -1,4 +1,8 @@
+import 'package:tag_music_player/project/components/tag_group_widgets/included_excluded_tag_group/included_excluded_tag_group_widget.dart';
+import 'package:tag_music_player/timoncode/control_spotify/playback.dart';
+import 'package:tag_music_player/timoncode/globals.dart';
 import 'package:tag_music_player/timoncode/widgets/common/songWidgetList.dart';
+import 'package:tag_music_player/timoncode/widgets/tag_groups/tagGroupWithWeights.dart';
 
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -89,7 +93,10 @@ class _ViewFilterPageState extends State<ViewFilterPage> {
                     child: Column(
                       mainAxisSize: MainAxisSize.max,
                       children: [
-                        DefaultTagGroupWidget(),
+                        Container(
+                          height: 150,
+                          child: TagGroupWithWeights(filter: widget.filter),
+                        ),
                         Row(
                           mainAxisSize: MainAxisSize.max,
                           children: [
@@ -158,7 +165,49 @@ class _ViewFilterPageState extends State<ViewFilterPage> {
                 ),
               ),
             ),
-            StartPlayingBarWidget(),
+            Container(
+              width: double.infinity,
+              height: 100.0,
+              decoration: BoxDecoration(
+                color: FlutterFlowTheme.of(context).primary,
+              ),
+              child: Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(0.0, 10.0, 0.0, 0.0),
+                child: Container(
+                  width: 100.0,
+                  height: 100.0,
+                  decoration: BoxDecoration(
+                    color: FlutterFlowTheme.of(context).accent1,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Expanded(
+                        child: TextButton(
+                          child:Text('Play'),
+                          onPressed: (){
+                            activePbFilter = widget.filter;
+                            queue.songs.clear();
+                            queue.songs.addAll(activePbFilter.generateSortedSongs());
+                            if(remoteConnection){
+                              resume();
+                            }
+                          },
+                        ),
+                      ),
+                      Expanded(
+                        child: TextButton(
+                          child:Text( 'Shuffle'),
+                          onPressed: (){
+                            print('pressed shuffle');
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),

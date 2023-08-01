@@ -2,6 +2,7 @@ import 'dart:ffi';
 import 'package:objectbox/objectbox.dart';
 import 'package:spotify_sdk/models/player_state.dart';
 import 'package:tag_music_player/objectbox.g.dart';
+import 'package:tag_music_player/timoncode/models/playbackFilter.dart';
 import 'package:tag_music_player/timoncode/objectbox.dart';
 import 'package:tag_music_player/timoncode/control_spotify/playback.dart';
 import 'package:tag_music_player/timoncode/models/song.dart';
@@ -48,6 +49,7 @@ class Queue {
     for (int i = 0; i < songList.length; i++) {
       await addToQueue(songList[i].spotifyId);
     }
+
   }
 
   void onExternalSongChange() async {
@@ -69,14 +71,14 @@ class Queue {
           }
           save();
         }
-      }else{
+      } else {
         print('No songs in queue. Getting song from objectbox to display.');
         Song? currentSong = objectBox.getSongBox.query(Song_.spotifyId.equals(pState.track!.uri)).build().findFirst();
-        if(currentSong != null){
+        if (currentSong != null) {
           songs.add(currentSong);
-        }else{
+        } else {
           print('Could not find song');
-        }        
+        }
       }
     } else {
       await queueAllToPlayer();
@@ -104,9 +106,9 @@ class Queue {
     }
   }
 
-    void skipToNext() async {
-      popForNext();
-      await skipNext();
+  void skipToNext() async {
+    popForNext();
+    await skipNext();
   }
 }
 
