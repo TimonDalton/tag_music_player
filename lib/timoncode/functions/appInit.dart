@@ -6,36 +6,38 @@ import 'package:tag_music_player/timoncode/control_spotify/connectToSpotifyRemot
 import 'package:spotify_sdk/models/connection_status.dart';
 import 'package:spotify_sdk/models/player_state.dart';
 import 'package:spotify_sdk/spotify_sdk.dart';
+import 'package:tag_music_player/timoncode/control_spotify/playbackLogic.dart';
 
+bool hasConnectedPlayer = false;
+StreamSubscription<PlayerState>? psSub;
 onStartup() async {
   objectBox = await ObjectBox.init();
   await initializePlayer();
   queue.load();
   conStatusBroadcast = SpotifySdk.subscribeConnectionStatus().asBroadcastStream();
-  playerStateStream = SpotifySdk.subscribePlayerState().asBroadcastStream();
-  backGroundPlayerStateUpdater();
   backgroundConnectionChecker(conStatusBroadcast);
 }
-void backGroundPlayerStateUpdater(){
-  playerStateStream.listen((data) {
-    playerStateCache = data;
-    print('New Player State data');
-  });
-  PlayerState? prev = null;
-  Timer.periodic(Duration(seconds: 1), (Timer t) async {
-    if(playerStateCache == prev){
-      playerStateCache = await SpotifySdk.getPlayerState();
-    }
-    prev = playerStateCache;
-  });
-}
+
 void backgroundConnectionChecker(Stream<ConnectionStatus> remoteConStream) {
   print('Started background timed spotify connector');
-  remoteConStream.listen((conStatus) {
+  remoteConStream.listen((conStatus) async {
+    print('Connection Status Stream received');
     if (remoteConnection != conStatus.connected) {
-      print('Connection status stream changed to conStatus.connected');
+      remoteConnection = conStatus.connected;
+      print('Connection status stream changed to ${conStatus.connected}');
+      if (remoteConnection == false) {
+        // playerStateCache = null;
+      } else {
+        if (!hasConnectedPlayer) {
+          playerStateStream = SpotifySdk.subscribePlayerState().asBroadcastStream();
+          hasConnectedPlayer = true;
+        }
+        if (psSub != null) {
+          await psSub!.cancel();
+        }
+        psSub = backGroundPlayerStateUpdater(playerStateStream);
+      }
     }
-    remoteConnection = conStatus.connected;
   });
   Timer.periodic(Duration(seconds: 1), (Timer t) async {
     // print('tick rc${remoteConnection} cc${checkingCon} nc${networkConnection} ic${internetConnection}');
@@ -49,4 +51,32 @@ void backgroundConnectionChecker(Stream<ConnectionStatus> remoteConStream) {
       checkingCon = false;
     }
   });
+}
+
+StreamSubscription<PlayerState> backGroundPlayerStateUpdater(Stream<PlayerState> stream) {
+  PlayerState? prev = null;
+
+  StreamSubscription<PlayerState> ret = stream.listen((newPlayerState) async {
+    print('Player State Stream received data: ${newPlayerState.toString()}');
+    playerStateCache = newPlayerState;
+    if (playerStateCache != prev && playerStateCache != null) {
+      if (playerStateCache!.track != null) {
+        print('playerStateCache going to onSongEnded: ${playerStateCache!.track!.name} -> ${playerStateCache!.track!.uri}');
+        if (prev == null) {
+          //if there is no previous track
+          onSongEnded(playerStateCache!);
+        } else if (prev!.track == null) {
+          onSongEnded(playerStateCache!);
+        }else if (playerStateCache!.track!.uri != prev!.track!.uri) {
+          //if the playing external track has changed.
+          onSongEnded(playerStateCache!);
+        }
+      } else {
+        print('Null track');
+      }
+    }
+    //Phase 3: Handle caching
+    prev = playerStateCache;
+  });
+  return ret;
 }

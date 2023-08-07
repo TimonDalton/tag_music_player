@@ -124,6 +124,6 @@ String msToMinutes(int ms){
     min += 1;
   }
   String minStr = min > 9?min.toString():'0${min}';
-  String secStr = sec.toStringAsFixed(0);
+  String secStr = sec > 9?sec.toStringAsFixed(0):'0${sec.toStringAsFixed(0)}';
   return minStr+':'+secStr;
 }

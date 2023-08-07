@@ -1,10 +1,12 @@
 import 'package:spotify_sdk/models/connection_status.dart';
+import 'package:tag_music_player/custom_code/widgets/default_button.dart';
 import 'package:tag_music_player/timoncode/control_spotify/playback.dart';
 import 'package:tag_music_player/timoncode/globals.dart';
 import 'package:tag_music_player/timoncode/models/song.dart';
 import 'package:tag_music_player/timoncode/widgets/common/playback_bar.dart';
 import 'package:tag_music_player/timoncode/widgets/common/songWidget.dart';
 import 'package:tag_music_player/timoncode/widgets/tag_groups/tagGroupWithWeights.dart';
+import 'package:tag_music_player/timoncode/widgets/common/songWidgetList.dart';
 
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -24,6 +26,9 @@ import 'package:provider/provider.dart';
 class QueuePage extends StatefulWidget {
   QueuePage({Key? key}) : super(key: key);
 
+  bool removingState = false;
+  List<int> selectedSongIndexes = [];
+
   @override
   _QueuePageState createState() => _QueuePageState();
 }
@@ -31,6 +36,18 @@ class QueuePage extends StatefulWidget {
 class _QueuePageState extends State<QueuePage> {
   @override
   Widget build(BuildContext context) {
+    List<Widget> queueSongWidgets = [];
+
+    List<Song> songs = queue.songs.toList();
+    if (songs.length > 0) {
+      songs.removeAt(0);
+    }
+    if (!widget.removingState) {
+      queueSongWidgets = buildSongWidgetList(context, songs);
+    } else {
+      queueSongWidgets = buildSelectableSongWidgetList(context, songs, Icon(Icons.remove_circle_outline, color: Colors.red), Icon(Icons.circle_outlined),
+          (songIndex, selected) => selected ? widget.selectedSongIndexes.add(songIndex) : widget.selectedSongIndexes.remove(songIndex));
+    }
     return Scaffold(
       backgroundColor: FlutterFlowTheme.of(context).primary,
       appBar: AppBar(
@@ -166,32 +183,16 @@ class _QueuePageState extends State<QueuePage> {
                               child: Align(
                                 alignment: AlignmentDirectional(-1.0, -1.0),
                                 child: HeadingTextWidget(
-                                  text: queue.songs.length>0?'Next From: [Source]':'',
+                                  text: queue.songs.length > 0 ? 'Next From: [Source]' : '',
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        ...() {
-                              List<Song> songs = queue.songs.toList();
-                              if(songs.length == 0){
-                                return <Widget>[];
-                              }
-                              return List<Widget>.generate(queue.songs.length - 1, (index) {
-                                return InkWell(
-                                  splashColor: Colors.transparent,
-                                  focusColor: Colors.transparent,
-                                  hoverColor: Colors.transparent,
-                                  highlightColor: Colors.transparent,
-                                  onLongPress: () async {
-                                    context.pushNamed('queue_song_hold_popup');
-                                  },
-                                  child: SongWidget(
-                                    song: songs[index + 1],
-                                  ),
-                                );
-                              });
-                            }(),
+                        ...queueSongWidgets,
+                        Container(
+                          height: MediaQuery.of(context).size.height*0.3,
+                        ),
                       ],
                     ),
                   ),
@@ -215,11 +216,22 @@ class _QueuePageState extends State<QueuePage> {
                             focusColor: Colors.transparent,
                             hoverColor: Colors.transparent,
                             highlightColor: Colors.transparent,
-                            onTap: () async {
-                              context.pushNamed('add_to_queue_page');
-                            },
+                            onTap: widget.removingState
+                                ? () async {
+                                    setState(() {
+                                      widget.removingState = false;
+                                      widget.selectedSongIndexes = [];
+                                    });
+                                  }
+                                : () async {
+                                    setState(() {
+                                      widget.removingState = false;
+                                      widget.selectedSongIndexes = [];
+                                    });
+                                    context.pushNamed('add_to_queue_page');
+                                  },
                             child: MiniButtonWidget(
-                              text: 'Add',
+                              text: widget.removingState ? 'Cancel' : 'Add',
                             ),
                           ),
                         ),
@@ -232,11 +244,23 @@ class _QueuePageState extends State<QueuePage> {
                             focusColor: Colors.transparent,
                             hoverColor: Colors.transparent,
                             highlightColor: Colors.transparent,
-                            onTap: () async {
-                              context.pushNamed('trim_queue_page');
-                            },
+                            onTap: widget.removingState
+                                ? () async {
+                                    List<int> ids = List<int>.generate(widget.selectedSongIndexes.length, (index) => songs[widget.selectedSongIndexes[index]].id);
+                                    setState(() {
+                                      queue.songs.removeWhere((song) => ids.contains(song.id));
+                                      widget.removingState = false;
+                                      widget.selectedSongIndexes = [];
+                                    });
+                                  }
+                                : () async {
+                                    setState(() {
+                                      widget.removingState = true;
+                                      widget.selectedSongIndexes = [];
+                                    });
+                                  },
                             child: MiniButtonWidget(
-                              text: 'Remove',
+                              text: widget.removingState ? 'Confirm' : 'Remove',
                             ),
                           ),
                         ),
@@ -250,7 +274,7 @@ class _QueuePageState extends State<QueuePage> {
                       if (!snapshot.hasData) {
                         con = remoteConnection;
                         print('No conStatus snapshot data. Using cached value');
-                      }else{
+                      } else {
                         con = (snapshot.data as ConnectionStatus).connected;
                       }
                       if (con) {
