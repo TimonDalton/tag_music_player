@@ -7,6 +7,7 @@ import 'package:tag_music_player/timoncode/widgets/common/playback_bar.dart';
 import 'package:tag_music_player/timoncode/widgets/common/songWidget.dart';
 import 'package:tag_music_player/timoncode/widgets/tag_groups/tagGroupWithWeights.dart';
 import 'package:tag_music_player/timoncode/widgets/common/songWidgetList.dart';
+import 'package:tag_music_player/timoncode/widgets/popupPages/hold_song_popup_page.dart';
 
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -43,7 +44,12 @@ class _QueuePageState extends State<QueuePage> {
       songs.removeAt(0);
     }
     if (!widget.removingState) {
-      queueSongWidgets = buildSongWidgetList(context, songs);
+      queueSongWidgets = buildSongWidgetList(context, songs, onLongPress: (BuildContext c, Song s) {
+        showHoldSongSnackbar(c, s);
+        setState(() {
+          queue.songs = queue.songs;
+        });
+      });
     } else {
       queueSongWidgets = buildSelectableSongWidgetList(context, songs, Icon(Icons.remove_circle_outline, color: Colors.red), Icon(Icons.circle_outlined),
           (songIndex, selected) => selected ? widget.selectedSongIndexes.add(songIndex) : widget.selectedSongIndexes.remove(songIndex));
@@ -191,7 +197,7 @@ class _QueuePageState extends State<QueuePage> {
                         ),
                         ...queueSongWidgets,
                         Container(
-                          height: MediaQuery.of(context).size.height*0.3,
+                          height: MediaQuery.of(context).size.height * 0.3,
                         ),
                       ],
                     ),
@@ -281,6 +287,11 @@ class _QueuePageState extends State<QueuePage> {
                         return PlaybackBar(
                           context: context,
                           playerStateStream: playerStateStream,
+                          setStateCallback: (){
+                            setState(() {
+                              queue.songs = queue.songs;
+                            });
+                          },
                         );
                       } else {
                         return Text('Remote not connected');

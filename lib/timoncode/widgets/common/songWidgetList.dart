@@ -47,15 +47,20 @@ class _SongWidgetListState extends State<SongWidgetList> {
   }
 }
 
-List<Widget> buildSongWidgetList(BuildContext context, List<Song> songs) {
+List<Widget> buildSongWidgetList(BuildContext context, List<Song> songs,{Function(BuildContext, Song)? onLongPress}) {
   List<Widget> ret = [];
   for (int i = 0; i < songs.length; i++) {
-    ret.add(SongWidget(song: songs[i]));
+    onLongPress == null
+        ? ret.add(SongWidget(song: songs[i]))
+        : ret.add(InkWell(
+            child: SongWidget(song: songs[i]),
+            onLongPress: () => onLongPress(context, songs[i]),
+          ));
   }
   return ret;
 }
 
-List<SelectableSong> buildSelectableSongWidgetList(BuildContext context, List<Song> songs, Widget selectedLeading, Widget defaultLeading, Function(int,bool) callback) {
+List<SelectableSong> buildSelectableSongWidgetList(BuildContext context, List<Song> songs, Widget selectedLeading, Widget defaultLeading, Function(int, bool) callback) {
   List<SelectableSong> ret = [];
   for (int i = 0; i < songs.length; i++) {
     ret.add(
@@ -73,13 +78,13 @@ List<SelectableSong> buildSelectableSongWidgetList(BuildContext context, List<So
 }
 
 class SelectableSong extends StatefulWidget {
-  SelectableSong({required this.song, required this.selected, required this.selectedLeading, required this.defaultLeading, required this.callback,required this.index});
+  SelectableSong({required this.song, required this.selected, required this.selectedLeading, required this.defaultLeading, required this.callback, required this.index});
   Song song;
   bool selected;
   int index;
   Widget selectedLeading;
   Widget defaultLeading;
-  Function(int,bool) callback;
+  Function(int, bool) callback;
 
   @override
   State<SelectableSong> createState() => _SelectableSongState();

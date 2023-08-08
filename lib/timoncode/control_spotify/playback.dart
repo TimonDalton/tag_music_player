@@ -18,8 +18,16 @@ Future<void> initializePlayer() async {
 }
 
 Future<void> play(String spotifyUri) async {
+  // try {
+  //   await SpotifySdk.play(spotifyUri: 'spotify:track:58kNJana4w5BIjlZE2wq5m');
+  // } on PlatformException catch (e) {
+  //   // setStatus(e.code, message: e.message);
+  // } on MissingPluginException {
+  //   // setStatus('not implemented');
+  // }
   try {
     await ensureRequestAvailable();
+    print('received spotify uri: ${spotifyUri}');
     await SpotifySdk.play(spotifyUri: spotifyUri);
   } on PlatformException catch (e) {
     // setStatus(e.code, message: e.message);

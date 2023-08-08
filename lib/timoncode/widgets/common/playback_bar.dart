@@ -15,9 +15,11 @@ class PlaybackBar extends StatefulWidget {
   PlaybackBar({
     required this.context,
     this.playerStateStream,
+    this.setStateCallback,
   });
   BuildContext context;
   Stream<PlayerState>? playerStateStream;
+  Function? setStateCallback;
   @override
   _PlaybackBarState createState() => _PlaybackBarState();
 }
@@ -211,6 +213,9 @@ class _PlaybackBarState extends State<PlaybackBar> {
                         child: InkWell(
                           onTap: () {
                             queue.skipToNext();
+                            if(widget.setStateCallback!=null){
+                              widget.setStateCallback!();
+                            };
                           },
                           child: Icon(
                             Icons.skip_next,

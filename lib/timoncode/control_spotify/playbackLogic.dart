@@ -20,6 +20,8 @@ import 'package:tag_music_player/timoncode/models/song.dart';
 
 Song? currentSong = queue.songs[0];
 bool queuingOneByOne = true;
+bool activatedPlay = false;
+bool busySkipping = false;
 
 Future<void> skipTrackLogic() async {
   skipNext();
@@ -27,33 +29,55 @@ Future<void> skipTrackLogic() async {
 }
 
 Future<void> onSongEnded(PlayerState playerState) async {
-  print('onSongEnded: track ${playerState.track!=null?playerState.track!.name:'null track'}');
-  currentSong = queue.popForNext();
-  print('currentSong: ${currentSong!=null?currentSong!.name +' -> '+currentSong!.spotifyId:'null local current song'}');
-  if (currentSong != null) {
-    if (playerState.track!.uri != currentSong!.spotifyId) {
-      await play(currentSong!.spotifyId);
-      bool successfullyChanged = await skipUntilSongIsPlaying(currentSong!.spotifyId);
-      if (!queuingOneByOne) {
-        //if we want the whole queue to be filled and the queue had just been cleared, then...fill
-        queue.queueAllToPlayer(startingIndex: 1);
+  print('onSongEnded: track ${playerState.track != null ? playerState.track!.name : 'null track'}, activatedPlay:${activatedPlay}, busySkipping: ${busySkipping}');
+  if (!activatedPlay && !busySkipping) {
+    currentSong = queue.popForNext();
+    print('currentSong: ${currentSong != null ? currentSong!.name + ' -> ' + currentSong!.spotifyId : 'null local current song'}');
+    if (currentSong != null) {
+      print('current track uri: ${playerState.track!.uri}');
+      if (playerState.track!.uri != currentSong!.spotifyId) {
+        print('passing to play in onSongEnded: ${'spotify:track:' + currentSong!.spotifyId}');
+        activatedPlay = true;
+        await play('spotify:track:' + currentSong!.spotifyId);
+        // bool successfullyChanged = await skipUntilSongIsPlaying(currentSong!.spotifyId);
+        if (!queuingOneByOne) {
+          //if we want the whole queue to be filled and the queue had just been cleared, then...fill
+          queue.queueAllToPlayer(startingIndex: 1);
+        }
+      }
+      if (queue.songs.length > 1 && queuingOneByOne) {
+        await addToQueue(queue.songs[1].spotifyId);
       }
     }
-    if (queue.songs.length > 1 && queuingOneByOne) {
-      await addToQueue(queue.songs[1].spotifyId);
-    }
+  } else {
+    activatedPlay = false;
   }
 }
 
 Future<bool> skipUntilSongIsPlaying(String uri) async {
+  busySkipping = true;
+  print('skip until uri: ${uri}');
   PlayerState playerState = await getPlayerState();
   int count = 0;
   while (playerState.track != null && count++ < 20) {
     if (playerState.track!.uri == uri) {
+      busySkipping = false;
       return true;
     }
+    print('tried ${playerState.track!.uri}');
     await skipNext();
     playerState = await getPlayerState();
   }
+  busySkipping = false;
   return false;
+}
+
+Future<void> playSong(Song song) async {
+  activatedPlay = true;
+  if (queue.songs.length > 1) {
+    queue.songs[0] = song; //replace playing song
+  } else {
+    queue.songs.add(song);
+  }
+  play('spotify:track:${song.spotifyId}');
 }

@@ -1,4 +1,5 @@
 import 'package:tag_music_player/timoncode/control_spotify/playback.dart';
+import 'package:tag_music_player/timoncode/control_spotify/playbackLogic.dart';
 
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -11,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-void ShowHoldSongSnackbar(BuildContext context, Song song) {
+void showHoldSongSnackbar(BuildContext context, Song song) {
   final snackBar = SnackBar(
     content: Container(
       color: FlutterFlowTheme.of(context).primaryBackground.withOpacity(0.7),
@@ -21,7 +22,7 @@ void ShowHoldSongSnackbar(BuildContext context, Song song) {
       child: Column(
         children: [
           ListTile(title: Text('Play'), onTap: () {
-            play(song.spotifyId);
+            playSong(song);
             context.pop();
           }),
           ListTile(title: Text('Remove From Queue'), onTap: () {}),
