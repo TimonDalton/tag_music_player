@@ -166,6 +166,7 @@ class _AddToQueuePageState extends State<AddToQueuePage> {
                   List<Song> chosenSongs = List<Song>.generate(widget.selectIndexes.length, (index) => widget.songs[widget.selectIndexes[index]]);
                   setState(() {
                     queue.songs.addAll(chosenSongs);
+                    queue.save();
                     widget.selectIndexes.clear();
                   });
                 },

@@ -24,6 +24,7 @@ class Song {
   @Property(type: PropertyType.date) // Store as int in milliseconds
   late final DateTime releaseDate;
   final tags = ToMany<Tag>();
+  
   Song({this.id = 0, required this.name, required this.artist, required this.spotifyId, required this.dateAdded, required this.releaseDate, required this.duration});
 
   static Song fromJsonObj(dynamic obj) {

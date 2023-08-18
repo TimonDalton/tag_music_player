@@ -149,7 +149,12 @@ final _entities = <ModelEntity>[
             type: 6,
             flags: 1)
       ],
-      relations: <ModelRelation>[],
+      relations: <ModelRelation>[
+        ModelRelation(
+            id: const IdUid(3, 569238654345829646),
+            name: 'songs',
+            targetId: const IdUid(1, 9010798967777340560))
+      ],
       backlinks: <ModelBacklink>[])
 ];
 
@@ -175,7 +180,7 @@ ModelDefinition getObjectBoxModel() {
       entities: _entities,
       lastEntityId: const IdUid(8, 711625210571341736),
       lastIndexId: const IdUid(1, 3324877264777455464),
-      lastRelationId: const IdUid(2, 6374847314963343384),
+      lastRelationId: const IdUid(3, 569238654345829646),
       lastSequenceId: const IdUid(0, 0),
       retiredEntityUids: const [
         8001341518230850695,
@@ -338,7 +343,8 @@ ModelDefinition getObjectBoxModel() {
     Queue: EntityDefinition<Queue>(
         model: _entities[3],
         toOneRelations: (Queue object) => [],
-        toManyRelations: (Queue object) => {},
+        toManyRelations: (Queue object) =>
+            {RelInfo<Queue>.toMany(3, object.id): object.songs},
         getId: (Queue object) => object.id,
         setId: (Queue object, int id) {
           object.id = id;
@@ -355,7 +361,8 @@ ModelDefinition getObjectBoxModel() {
 
           final object = Queue(
               id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0));
-
+          InternalToManyAccess.setRelInfo<Queue>(
+              object.songs, store, RelInfo<Queue>.toMany(3, object.id));
           return object;
         })
   };
@@ -438,4 +445,8 @@ class PlaybackFilter_ {
 class Queue_ {
   /// see [Queue.id]
   static final id = QueryIntegerProperty<Queue>(_entities[3].properties[0]);
+
+  /// see [Queue.songs]
+  static final songs =
+      QueryRelationToMany<Queue, Song>(_entities[3].relations[0]);
 }

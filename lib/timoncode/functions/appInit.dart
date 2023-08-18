@@ -14,6 +14,7 @@ onStartup() async {
   objectBox = await ObjectBox.init();
   await initializePlayer();
   queue.load();
+  print('queue size: ${queue.songs.length}');
   conStatusBroadcast = SpotifySdk.subscribeConnectionStatus().asBroadcastStream();
   backgroundConnectionChecker(conStatusBroadcast);
 }

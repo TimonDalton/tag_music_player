@@ -131,12 +131,18 @@
           "flags": 1
         }
       ],
-      "relations": []
+      "relations": [
+        {
+          "id": "3:569238654345829646",
+          "name": "songs",
+          "targetId": "1:9010798967777340560"
+        }
+      ]
     }
   ],
   "lastEntityId": "8:711625210571341736",
   "lastIndexId": "1:3324877264777455464",
-  "lastRelationId": "2:6374847314963343384",
+  "lastRelationId": "3:569238654345829646",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
   "modelVersionParserMinimum": 5,

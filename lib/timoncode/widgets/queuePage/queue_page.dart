@@ -44,10 +44,12 @@ class _QueuePageState extends State<QueuePage> {
       songs.removeAt(0);
     }
     if (!widget.removingState) {
-      queueSongWidgets = buildSongWidgetList(context, songs, onLongPress: (BuildContext c, Song s) {
-        showHoldSongSnackbar(c, s);
+      queueSongWidgets = buildSongWidgetList(context, songs, onLongPress: (BuildContext c, Song s, int index) {
+        showHoldSongSnackbar(c, s, index);
         setState(() {
-          queue.songs = queue.songs;
+          if (queue.songs.length > 0) {
+            queue.songs.first = queue.songs.first;
+          }
         });
       });
     } else {
@@ -287,9 +289,11 @@ class _QueuePageState extends State<QueuePage> {
                         return PlaybackBar(
                           context: context,
                           playerStateStream: playerStateStream,
-                          setStateCallback: (){
+                          setStateCallback: () {
                             setState(() {
-                              queue.songs = queue.songs;
+                              if (queue.songs.length > 0) {
+                                queue.songs.first = queue.songs.first;
+                              }
                             });
                           },
                         );

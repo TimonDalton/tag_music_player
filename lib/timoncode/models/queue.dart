@@ -12,19 +12,21 @@ import 'song.dart';
 class Queue {
   @Id()
   int id;
-  var songs = ToMany<Song>(); //assume that objectbox saves this in the order as entered, else I'll have some work to do
+  final songs = ToMany<Song>(); //assume that objectbox saves this in the order as entered, else I'll have some work to do
+
   Queue({this.id = 0});
-  void save() {
+  void save() async{
     objectBox.saveQueue(this);
   }
-
   void load() {
     Queue? ret = objectBox.loadQueue();
     if (ret != null) {
+      print('Loaded queue as not null:id=${ret.id},songCount:${ret.songs.length}');
       this.id = ret.id;
-      this.songs = ret.songs;
+      this.songs.clear();
+      this.songs.addAll(ret.songs);
     } else {
-      this.save();
+      print('Loaded queue as null');
     }
   }
 
@@ -51,10 +53,6 @@ class Queue {
     }
   }
 
-  void skipToNext() async {
-    popForNext();
-    await skipNext();
-  }
 }
 
 const String silentTrackUri = '5XSKC4d0y0DfcGbvDOiL93';

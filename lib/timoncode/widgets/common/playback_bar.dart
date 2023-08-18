@@ -212,7 +212,7 @@ class _PlaybackBarState extends State<PlaybackBar> {
                         padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
                         child: InkWell(
                           onTap: () {
-                            queue.skipToNext();
+                            skipNext();
                             if(widget.setStateCallback!=null){
                               widget.setStateCallback!();
                             };

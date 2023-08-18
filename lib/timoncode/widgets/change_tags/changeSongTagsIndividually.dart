@@ -25,6 +25,7 @@ class ChangeSongTagsIndividuallyPage extends StatefulWidget {
   ChangeSongTagsIndividuallyPage({Key? key, required this.tagIds}) {
     tags = objectBox.getTagsById(tagIds);
     filter = SongFilter();
+    songs = filter.getSongs();
   }
   List<int> tagIds;
   late List<Tag> tags;
@@ -57,11 +58,14 @@ class _ChangeSongTagsIndividuallyPageWidgetState extends State<ChangeSongTagsInd
   }
 
   @override
+  initState() {
+    super.initState();
+    setSongTagMap();
+  }
+
+  @override
   Widget build(BuildContext context) {
     List<String> filterToStrings = widget.filter.toMultilineString();
-    widget.songs = widget.filter.getSongs();
-    setSongTagMap();
-
     return GestureDetector(
       onTap: () => FocusScope.of(context).requestFocus(_unfocusNode),
       child: Scaffold(
@@ -183,21 +187,23 @@ class _ChangeSongTagsIndividuallyPageWidgetState extends State<ChangeSongTagsInd
                                         color: FlutterFlowTheme.of(context).accent1,
                                         borderRadius: BorderRadius.circular(5.0),
                                       ),
-                                      child: InkWell(
-                                        onTap: () {
-                                          showDefineFilterPopup(
-                                            context,
-                                            widget.filter,
-                                            (newFilter) {
-                                              print('song filter setter called');
-                                              setState(() {
-                                                widget.filter.becomeCloneOf(newFilter);
-                                              });
-                                            },
-                                          );
-                                        },
-                                        child: Padding(
-                                          padding: EdgeInsetsDirectional.fromSTEB(5.0, 10.0, 5.0, 0.0),
+                                      child: Padding(
+                                        padding: EdgeInsetsDirectional.fromSTEB(5.0, 10.0, 5.0, 0.0),
+                                        child: InkWell(
+                                          onTap: () {
+                                            showDefineFilterPopup(
+                                              context,
+                                              widget.filter,
+                                              (newFilter) {
+                                                print('song filter setter called');
+                                                setState(() {
+                                                  widget.filter.becomeCloneOf(newFilter);
+                                                  widget.songs = widget.filter.getSongs();
+                                                  setSongTagMap();
+                                                });
+                                              },
+                                            );
+                                          },
                                           child: RichText(
                                             text: TextSpan(
                                               children: List<TextSpan>.generate(filterToStrings.length, (index) => TextSpan(text: filterToStrings[index])),
@@ -305,18 +311,18 @@ class TapableRadioButton extends StatefulWidget {
 class _TapableRadioButtonState extends State<TapableRadioButton> {
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        setState(() {});
-        widget.active = !widget.active;
-        widget.callback(widget.active);
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(5)),
-          color: widget.colour,
-        ),
-        child: Center(
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(5)),
+        color: widget.colour,
+      ),
+      child: Center(
+        child: InkWell(
+          onTap: () {
+            setState(() {});
+            widget.active = !widget.active;
+            widget.callback(widget.active);
+          },
           child: Container(
             width: 20,
             height: 20,

@@ -189,6 +189,7 @@ class _ViewFilterPageState extends State<ViewFilterPage> {
                             activePbFilter = widget.filter;
                             queue.songs.clear();
                             queue.songs.addAll(activePbFilter.generateSortedSongs());
+                            queue.save();
                             if(remoteConnection){
                               resume();
                             }

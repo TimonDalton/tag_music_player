@@ -25,6 +25,7 @@ bool busySkipping = false;
 
 Future<void> skipTrackLogic() async {
   skipNext();
+  activatedPlay = true;
   //the local change will happen automatically through the stream listener
 }
 
@@ -50,7 +51,9 @@ Future<void> onSongEnded(PlayerState playerState) async {
       }
     }
   } else {
-    activatedPlay = false;
+    if (!busySkipping) {
+      activatedPlay = false;
+    }
   }
 }
 
@@ -72,10 +75,13 @@ Future<bool> skipUntilSongIsPlaying(String uri) async {
   return false;
 }
 
-Future<void> playSong(Song song) async {
+Future<void> playSong(Song song, {int queueIndex = -1}) async {
   activatedPlay = true;
   if (queue.songs.length > 1) {
     queue.songs[0] = song; //replace playing song
+    if (queueIndex != -1) {
+      queue.songs.remove(queueIndex);
+    }
   } else {
     queue.songs.add(song);
   }

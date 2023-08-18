@@ -47,14 +47,14 @@ class _SongWidgetListState extends State<SongWidgetList> {
   }
 }
 
-List<Widget> buildSongWidgetList(BuildContext context, List<Song> songs,{Function(BuildContext, Song)? onLongPress}) {
+List<Widget> buildSongWidgetList(BuildContext context, List<Song> songs,{Function(BuildContext, Song,int)? onLongPress}) {
   List<Widget> ret = [];
   for (int i = 0; i < songs.length; i++) {
     onLongPress == null
         ? ret.add(SongWidget(song: songs[i]))
         : ret.add(InkWell(
             child: SongWidget(song: songs[i]),
-            onLongPress: () => onLongPress(context, songs[i]),
+            onLongPress: () => onLongPress(context, songs[i],i),
           ));
   }
   return ret;

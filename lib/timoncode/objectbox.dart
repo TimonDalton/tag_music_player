@@ -256,7 +256,10 @@ class ObjectBox {
   PlaybackFilter? getPlaybackFilter(int id) => _playbackFilterBox.get(id);
   void saveFilter(PlaybackFilter filter) => _playbackFilterBox.put(filter);
 
-  void saveQueue(Queue queue) => _queueBox.put(queue);
+  Future<void> saveQueue(Queue queue) async{
+    _queueBox.put(queue);
+  }
+
   Queue? loadQueue() => _queueBox.get(1);
 }
 
